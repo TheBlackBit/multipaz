@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN is zwak, kies een ander</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">Wachtwoordzin is zwak, kies een andere</string>
+    <string name="credential_presentment_button_cancel">Annuleren</string>
+    <string name="credential_presentment_button_more">Meer</string>
+    <string name="credential_presentment_button_share">Delen</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">Onbekende aanvrager</string>
+    <string name="credential_presentment_share_with_known_requester">Deze gegevens worden gedeeld met %1$s:</string>
+    <string name="credential_presentment_share_with_unknown_requester">Deze gegevens worden gedeeld:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">Deze gegevens worden opgeslagen door %1$s:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">Deze gegevens worden opgeslagen:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">De identiteitslezer die deze gegevens opvraagt is onbekend. Zorg dat u deze gegevens wilt delen</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">De identiteitslezer die deze gegevens opvraagt is anoniem. Zorg dat u deze gegevens wilt delen</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">De website die deze gegevens opvraagt is onbekend. Zorg dat u deze gegevens wilt delen</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">De applicatie die deze gegevens opvraagt is onbekend. Zorg dat u deze gegevens wilt delen</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">De identiteitslezer die deze gegevens opvraagt is vertrouwd</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">De website die deze gegevens opvraagt is vertrouwd</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">De applicatie die deze gegevens opvraagt is vertrouwd</string>
+    <string name="credential_presentment_privacy_policy">Bekijk het [%1$s privacybeleid](%2$s)</string>
+    <string name="credential_presentment_card_art_description">Kaartafbeelding</string>
+    <string name="credential_presentment_verifier_icon_description">Verificateur pictogram</string>
+    <string name="credential_presentment_data_element_icon_description">Gegevenselement pictogram</string>
+    <string name="credential_presentment_warning_icon_description">Waarschuwingspictogram</string>
+    <string name="credential_presentment_select_document">Document selecteren</string>
+    <string name="credential_presentment_requester_information">Aanvrager informatie</string>
+    <string name="certificate_viewer_sub_basic_info">Basisinformatie</string>
+    <string name="certificate_viewer_k_type">Type</string>
+    <string name="certificate_viewer_k_serial_number">Serienummer</string>
+    <string name="certificate_viewer_k_valid_from">Geldig van</string>
+    <string name="certificate_viewer_k_valid_until">Geldig tot</string>
+    <string name="certificate_viewer_sub_subject">Onderwerp</string>
+    <string name="certificate_viewer_sub_issuer">Uitgever</string>
+    <string name="certificate_viewer_k_country_name">Landnaam</string>
+    <string name="certificate_viewer_k_common_name">Algemene naam</string>
+    <string name="certificate_viewer_k_org_name">Organisatie</string>
+    <string name="certificate_viewer_k_org_unit_name">Organisatie-eenheid</string>
+    <string name="certificate_viewer_k_locality_name">Plaats</string>
+    <string name="certificate_viewer_k_state_name">Provincie</string>
+    <string name="certificate_viewer_k_other_name">Andere naam (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">Publieke sleutel informatie</string>
+    <string name="certificate_viewer_k_pk_algorithm">Algoritme</string>
+    <string name="certificate_viewer_k_pk_named_curve">Benoemde kromme</string>
+    <string name="certificate_viewer_k_pk_value">Waarde</string>
+    <string name="certificate_viewer_sub_extensions">Extensies</string>
+    <string name="certificate_viewer_version_text">X.509 versie %1$s certificaat</string>
+    <string name="certificate_viewer_critical">Kritiek</string>
+    <string name="certificate_viewer_critical_yes">Ja</string>
+    <string name="certificate_viewer_critical_no">Nee</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">Waarde</string>
+    <string name="certificate_viewer_value_digital_signature">Digitale handtekening</string>
+    <string name="certificate_viewer_validity_in_the_past">Dit certificaat is niet meer geldig, het is verlopen op %1$s</string>
+    <string name="certificate_viewer_validity_in_the_future">Dit certificaat is nog niet geldig, het wordt geldig op %1$s</string>
+    <string name="certificate_viewer_valid_now">Momenteel geldig, verloopt op %1$s</string>
+    <string name="presentment_connecting_to_reader">Verbinden met lezer</string>
+    <string name="presentment_success">De informatie is gedeeld</string>
+    <string name="presentment_error">Er is iets misgegaan</string>
+    <string name="presentment_canceled">Presentatie is geannuleerd</string>
+    <string name="presentment_timeout">Time-out bij wachten op lezer</string>
+    <string name="presentment_waiting_for_request">Wachten op aanvraag</string>
+    <string name="presentment_document_picker_title">Document selecteren</string>
+    <string name="presentment_document_picker_text">Meerdere documenten kunnen de aanvraag vervullen. Selecteer er een</string>
+    <string name="presentment_document_picker_cancel">Annuleren</string>
+    <string name="presentment_document_picker_continue">Doorgaan</string>
+    <string name="passphrase_pin_screen_delete">Verwijderen</string>
+    <string name="passphrase_pin_screen_cancel">Annuleren</string>
+    <string name="passphrase_pin_screen_done">Gereed</string>
+    <string name="pin_prompt_try_again">Verkeerde PIN, probeer opnieuw</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">Verkeerde PIN, probeer opnieuw, laatste poging resterend</item>
+        <item quantity="other">Verkeerde PIN, probeer opnieuw, %1$d pogingen resterend</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">Te veel verkeerde PINs geprobeerd, probeer later opnieuw</string>
+    <string name="passphrase_prompt_try_again">Verkeerde wachtwoordzin, probeer opnieuw</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">Verkeerde wachtwoordzin, probeer opnieuw, laatste poging resterend</item>
+        <item quantity="other">Verkeerde wachtwoordzin, probeer opnieuw, %1$d pogingen resterend</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">Te veel verkeerde wachtwoordzinnen geprobeerd, probeer later opnieuw</string>
+    <string name="provisioning_authorization_failed">Autorisatie mislukt</string>
+    <string name="provisioning_idle">Wachten</string>
+    <string name="provisioning_initial">Provisioning starten...</string>
+    <string name="provisioning_connected">Verbonden met back-end</string>
+    <string name="provisioning_processing_authorization">Autorisatie verwerken...</string>
+    <string name="provisioning_authorized">Geautoriseerd</string>
+    <string name="provisioning_requestion_credentials">Credentials opvragen...</string>
+    <string name="provisioning_credentials_issued">Credentials uitgegeven</string>
+    <string name="provisioning_browser">Browser starten, ga daar verder</string>
+    <string name="provisioning_retry">Probeer opnieuw</string>
+    <string name="provisioning_error">Provisioning fout (foutcode: %1$s)</string>
+    <string name="duration_just_now">zojuist</string>
+    <string name="duration_in_a_few_moments">over enkele momenten</string>
+    <string name="duration_less_than_a_minute">minder dan een minuut</string>
+    <string name="duration_years_and_months">%1$s en %2$s</string>
+    <string name="duration_months_and_days">%1$s en %2$s</string>
+    <string name="duration_weeks_and_days">%1$s en %2$s</string>
+    <string name="duration_days_and_hours">%1$s en %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s en %2$s</string>
+    <string name="duration_never">nooit</string>
+    <string name="duration_time_ago">%1$s geleden</string>
+    <string name="duration_time_from_now">over %1$s</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d jaar</item>
+        <item quantity="other">%1$d jaar</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d maand</item>
+        <item quantity="other">%1$d maanden</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d dag</item>
+        <item quantity="other">%1$d dagen</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d week</item>
+        <item quantity="other">%1$d weken</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d uur</item>
+        <item quantity="other">%1$d uur</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d minuut</item>
+        <item quantity="other">%1$d minuten</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">Verifieer dat u het bent</string>
+    <string name="key_unlock_default_subtitle">Authenticatie vereist</string>
+    <string name="key_unlock_present_title">Verifieer dat u het bent om het document te delen</string>
+    <string name="key_unlock_present_bio_subtitle">Authenticatie vereist</string>
+    <string name="key_unlock_present_passphrase_subtitle">Voer de passphrase in die bij het document hoort</string>
+    <string name="key_unlock_present_pin_subtitle">Voer de PIN in die bij het document hoort</string>
+</resources>

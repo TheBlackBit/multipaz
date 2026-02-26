@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN zayıf, lütfen başka bir PIN seçin</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">Parola zayıf, lütfen başka bir parola seçin</string>
+    <string name="credential_presentment_button_cancel">İptal</string>
+    <string name="credential_presentment_button_more">Daha fazla</string>
+    <string name="credential_presentment_button_share">Paylaş</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">Bilinmeyen istek sahibi</string>
+    <string name="credential_presentment_share_with_known_requester">Bu veriler %1$s ile paylaşılacak:</string>
+    <string name="credential_presentment_share_with_unknown_requester">Bu veriler paylaşılacak:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">Bu veriler %1$s tarafından saklanacak:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">Bu veriler saklanacak:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">Bu verileri talep eden kimlik okuyucu bilinmiyor. Bu verileri paylaşmaktan rahat olduğunuzdan emin olun</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">Bu verileri talep eden kimlik okuyucu anonim. Bu verileri paylaşmaktan rahat olduğunuzdan emin olun</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">Bu verileri talep eden web sitesi bilinmiyor. Bu verileri paylaşmaktan rahat olduğunuzdan emin olun</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">Bu verileri talep eden uygulama bilinmiyor. Bu verileri paylaşmaktan rahat olduğunuzdan emin olun</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">Bu verileri talep eden kimlik okuyucu güvenilir</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">Bu verileri talep eden web sitesi güvenilir</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">Bu verileri talep eden uygulama güvenilir</string>
+    <string name="credential_presentment_privacy_policy">[%1$s gizlilik politikasını](%2$s) inceleyin</string>
+    <string name="credential_presentment_card_art_description">Kart görseli</string>
+    <string name="credential_presentment_verifier_icon_description">Doğrulayıcı simgesi</string>
+    <string name="credential_presentment_data_element_icon_description">Veri elemanı simgesi</string>
+    <string name="credential_presentment_warning_icon_description">Uyarı simgesi</string>
+    <string name="credential_presentment_select_document">Belge seç</string>
+    <string name="credential_presentment_requester_information">İstek sahibi bilgisi</string>
+    <string name="certificate_viewer_sub_basic_info">Temel bilgiler</string>
+    <string name="certificate_viewer_k_type">Tür</string>
+    <string name="certificate_viewer_k_serial_number">Seri numarası</string>
+    <string name="certificate_viewer_k_valid_from">Geçerlilik başlangıcı</string>
+    <string name="certificate_viewer_k_valid_until">Geçerlilik bitişi</string>
+    <string name="certificate_viewer_sub_subject">Konu</string>
+    <string name="certificate_viewer_sub_issuer">Yayıncı</string>
+    <string name="certificate_viewer_k_country_name">Ülke</string>
+    <string name="certificate_viewer_k_common_name">Ortak ad</string>
+    <string name="certificate_viewer_k_org_name">Kuruluş</string>
+    <string name="certificate_viewer_k_org_unit_name">Kuruluş birimi</string>
+    <string name="certificate_viewer_k_locality_name">Yer</string>
+    <string name="certificate_viewer_k_state_name">Eyalet veya il</string>
+    <string name="certificate_viewer_k_other_name">Diğer ad (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">Açık anahtar bilgisi</string>
+    <string name="certificate_viewer_k_pk_algorithm">Algoritma</string>
+    <string name="certificate_viewer_k_pk_named_curve">Adlandırılmış eğri</string>
+    <string name="certificate_viewer_k_pk_value">Değer</string>
+    <string name="certificate_viewer_sub_extensions">Uzantılar</string>
+    <string name="certificate_viewer_version_text">X.509 sürüm %1$s sertifikası</string>
+    <string name="certificate_viewer_critical">Kritik</string>
+    <string name="certificate_viewer_critical_yes">Evet</string>
+    <string name="certificate_viewer_critical_no">Hayır</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">Değer</string>
+    <string name="certificate_viewer_value_digital_signature">Dijital imza</string>
+    <string name="certificate_viewer_validity_in_the_past">Bu sertifika artık geçerli değil, %1$s tarihinde süresi doldu</string>
+    <string name="certificate_viewer_validity_in_the_future">Bu sertifika henüz geçerli değil, %1$s tarihinde geçerli olacak</string>
+    <string name="certificate_viewer_valid_now">Şu anda geçerli, %1$s tarihinde süresi dolacak</string>
+    <string name="presentment_connecting_to_reader">Okuyucuya bağlanıyor</string>
+    <string name="presentment_success">Bilgi paylaşıldı</string>
+    <string name="presentment_error">Bir şeyler yanlış gitti</string>
+    <string name="presentment_canceled">Sunum iptal edildi</string>
+    <string name="presentment_timeout">Okuyucu beklenirken zaman aşımı</string>
+    <string name="presentment_waiting_for_request">İstek bekleniyor</string>
+    <string name="presentment_document_picker_title">Belge Seç</string>
+    <string name="presentment_document_picker_text">Birden fazla belge isteği karşılayabilir. Lütfen birini seçin</string>
+    <string name="presentment_document_picker_cancel">İptal</string>
+    <string name="presentment_document_picker_continue">Devam et</string>
+    <string name="passphrase_pin_screen_delete">Sil</string>
+    <string name="passphrase_pin_screen_cancel">İptal</string>
+    <string name="passphrase_pin_screen_done">Bitti</string>
+    <string name="pin_prompt_try_again">Yanlış PIN, tekrar deneyin</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">Yanlış PIN, tekrar deneyin, son deneme hakkı kaldı</item>
+        <item quantity="other">Yanlış PIN, tekrar deneyin, %1$d deneme hakkı kaldı</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">Çok fazla yanlış PIN denemesi, daha sonra tekrar deneyin</string>
+    <string name="passphrase_prompt_try_again">Yanlış parola, tekrar deneyin</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">Yanlış parola, tekrar deneyin, son deneme hakkı kaldı</item>
+        <item quantity="other">Yanlış parola, tekrar deneyin, %1$d deneme hakkı kaldı</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">Çok fazla yanlış parola denemesi, daha sonra tekrar deneyin</string>
+    <string name="provisioning_authorization_failed">Yetkilendirme başarısız</string>
+    <string name="provisioning_idle">Bekleniyor</string>
+    <string name="provisioning_initial">Hazırlama başlatılıyor...</string>
+    <string name="provisioning_connected">Arka uca bağlandı</string>
+    <string name="provisioning_processing_authorization">Yetkilendirme işleniyor...</string>
+    <string name="provisioning_authorized">Yetkilendirildi</string>
+    <string name="provisioning_requestion_credentials">Kimlik bilgileri isteniyor...</string>
+    <string name="provisioning_credentials_issued">Kimlik bilgileri verildi</string>
+    <string name="provisioning_browser">Tarayıcı başlatılıyor, oradan devam edin</string>
+    <string name="provisioning_retry">Lütfen tekrar deneyin</string>
+    <string name="provisioning_error">Hazırlama hatası (hata kodu: %1$s)</string>
+    <string name="duration_just_now">az önce</string>
+    <string name="duration_in_a_few_moments">birkaç dakika içinde</string>
+    <string name="duration_less_than_a_minute">bir dakikadan az</string>
+    <string name="duration_years_and_months">%1$s ve %2$s</string>
+    <string name="duration_months_and_days">%1$s ve %2$s</string>
+    <string name="duration_weeks_and_days">%1$s ve %2$s</string>
+    <string name="duration_days_and_hours">%1$s ve %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s ve %2$s</string>
+    <string name="duration_never">asla</string>
+    <string name="duration_time_ago">%1$s önce</string>
+    <string name="duration_time_from_now">%1$s sonra</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d yıl</item>
+        <item quantity="other">%1$d yıl</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d ay</item>
+        <item quantity="other">%1$d ay</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d gün</item>
+        <item quantity="other">%1$d gün</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d hafta</item>
+        <item quantity="other">%1$d hafta</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d saat</item>
+        <item quantity="other">%1$d saat</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d dakika</item>
+        <item quantity="other">%1$d dakika</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">Siz olduğunuzu doğrulayın</string>
+    <string name="key_unlock_default_subtitle">Kimlik doğrulama gerekli</string>
+    <string name="key_unlock_present_title">Belgeyi paylaşmak için siz olduğunuzu doğrulayın</string>
+    <string name="key_unlock_present_bio_subtitle">Kimlik doğrulama gerekli</string>
+    <string name="key_unlock_present_passphrase_subtitle">Belgeyle ilişkilendirilmiş parolayı girin</string>
+    <string name="key_unlock_present_pin_subtitle">Belgeyle ilişkilendirilmiş PIN'i girin</string>
+</resources>

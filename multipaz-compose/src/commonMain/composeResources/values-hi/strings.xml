@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN कमजोर है, कृपया दूसरा चुनें</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">पासफ्रेज कमजोर है, कृपया दूसरा चुनें</string>
+    <string name="credential_presentment_button_cancel">रद्द करें</string>
+    <string name="credential_presentment_button_more">अधिक</string>
+    <string name="credential_presentment_button_share">साझा करें</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">अज्ञात अनुरोधकर्ता</string>
+    <string name="credential_presentment_share_with_known_requester">यह डेटा %1$s के साथ साझा किया जाएगा:</string>
+    <string name="credential_presentment_share_with_unknown_requester">यह डेटा साझा किया जाएगा:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">यह डेटा %1$s द्वारा संग्रहीत किया जाएगा:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">यह डेटा संग्रहीत किया जाएगा:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">यह डेटा अनुरोध करने वाला पहचान रीडर अज्ञात है। सुनिश्चित करें कि आप इस डेटा को साझा करने में सहज हैं</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">यह डेटा अनुरोध करने वाला पहचान रीडर गुमनाम है। सुनिश्चित करें कि आप इस डेटा को साझा करने में सहज हैं</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">यह डेटा अनुरोध करने वाली वेबसाइट अज्ञात है। सुनिश्चित करें कि आप इस डेटा को साझा करने में सहज हैं</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">यह डेटा अनुरोध करने वाला ऐप अज्ञात है। सुनिश्चित करें कि आप इस डेटा को साझा करने में सहज हैं</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">यह डेटा अनुरोध करने वाला पहचान रीडर भरोसेमंद है</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">यह डेटा अनुरोध करने वाली वेबसाइट भरोसेमंद है</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">यह डेटा अनुरोध करने वाला ऐप भरोसेमंद है</string>
+    <string name="credential_presentment_privacy_policy">[%1$s गोपनीयता नीति](%2$s) देखें</string>
+    <string name="credential_presentment_card_art_description">कार्ड आर्ट</string>
+    <string name="credential_presentment_verifier_icon_description">सत्यापनकर्ता आइकन</string>
+    <string name="credential_presentment_data_element_icon_description">डेटा तत्व आइकन</string>
+    <string name="credential_presentment_warning_icon_description">चेतावनी आइकन</string>
+    <string name="credential_presentment_select_document">दस्तावेज़ चुनें</string>
+    <string name="credential_presentment_requester_information">अनुरोधकर्ता जानकारी</string>
+    <string name="certificate_viewer_sub_basic_info">बुनियादी जानकारी</string>
+    <string name="certificate_viewer_k_type">प्रकार</string>
+    <string name="certificate_viewer_k_serial_number">सीरियल नंबर</string>
+    <string name="certificate_viewer_k_valid_from">मान्यता प्रारंभ</string>
+    <string name="certificate_viewer_k_valid_until">मान्यता समाप्ति</string>
+    <string name="certificate_viewer_sub_subject">विषय</string>
+    <string name="certificate_viewer_sub_issuer">जारी कर्ता</string>
+    <string name="certificate_viewer_k_country_name">देश का नाम</string>
+    <string name="certificate_viewer_k_common_name">सामान्य नाम</string>
+    <string name="certificate_viewer_k_org_name">संगठन</string>
+    <string name="certificate_viewer_k_org_unit_name">संगठन इकाई</string>
+    <string name="certificate_viewer_k_locality_name">स्थान</string>
+    <string name="certificate_viewer_k_state_name">राज्य या प्रांत</string>
+    <string name="certificate_viewer_k_other_name">अन्य नाम (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">सार्वजनिक कुंजी जानकारी</string>
+    <string name="certificate_viewer_k_pk_algorithm">एल्गोरिदम</string>
+    <string name="certificate_viewer_k_pk_named_curve">नामित वक्र</string>
+    <string name="certificate_viewer_k_pk_value">मान</string>
+    <string name="certificate_viewer_sub_extensions">एक्सटेंशन</string>
+    <string name="certificate_viewer_version_text">X.509 संस्करण %1$s प्रमाणपत्र</string>
+    <string name="certificate_viewer_critical">महत्वपूर्ण</string>
+    <string name="certificate_viewer_critical_yes">हाँ</string>
+    <string name="certificate_viewer_critical_no">नहीं</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">मान</string>
+    <string name="certificate_viewer_value_digital_signature">डिजिटल हस्ताक्षर</string>
+    <string name="certificate_viewer_validity_in_the_past">यह प्रमाणपत्र अब मान्य नहीं है, यह %1$s को समाप्त हो गया था</string>
+    <string name="certificate_viewer_validity_in_the_future">यह प्रमाणपत्र अभी मान्य नहीं है, यह %1$s से मान्य होगा</string>
+    <string name="certificate_viewer_valid_now">वर्तमान में मान्य, %1$s को समाप्त होगा</string>
+    <string name="presentment_connecting_to_reader">रीडर से कनेक्ट हो रहा है</string>
+    <string name="presentment_success">जानकारी साझा की गई</string>
+    <string name="presentment_error">कुछ गलत हो गया</string>
+    <string name="presentment_canceled">प्रस्तुत रद्द कर दी गई</string>
+    <string name="presentment_timeout">रीडर का इंतजार करते समय समय समाप्त</string>
+    <string name="presentment_waiting_for_request">अनुरोध की प्रतीक्षा</string>
+    <string name="presentment_document_picker_title">दस्तावेज़ चुनें</string>
+    <string name="presentment_document_picker_text">कई दस्तावेज़ अनुरोध पूरा कर सकते हैं। कृपया एक चुनें</string>
+    <string name="presentment_document_picker_cancel">रद्द करें</string>
+    <string name="presentment_document_picker_continue">जारी रखें</string>
+    <string name="passphrase_pin_screen_delete">हटाएं</string>
+    <string name="passphrase_pin_screen_cancel">रद्द करें</string>
+    <string name="passphrase_pin_screen_done">पूर्ण</string>
+    <string name="pin_prompt_try_again">गलत PIN, पुनः प्रयास करें</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">गलत PIN, पुनः प्रयास करें, अंतिम प्रयास बचा है</item>
+        <item quantity="other">गलत PIN, पुनः प्रयास करें, %1$d प्रयास बचे हैं</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">बहुत अधिक गलत PIN प्रयास, बाद में पुनः प्रयास करें</string>
+    <string name="passphrase_prompt_try_again">गलत पासफ्रेज, पुनः प्रयास करें</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">गलत पासफ्रेज, पुनः प्रयास करें, अंतिम प्रयास बचा है</item>
+        <item quantity="other">गलत पासफ्रेज, पुनः प्रयास करें, %1$d प्रयास बचे हैं</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">बहुत अधिक गलत पासफ्रेज प्रयास, बाद में पुनः प्रयास करें</string>
+    <string name="provisioning_authorization_failed">प्राधिकरण विफल</string>
+    <string name="provisioning_idle">प्रतीक्षा</string>
+    <string name="provisioning_initial">प्रावधान शुरू हो रहा है...</string>
+    <string name="provisioning_connected">बैक-एंड से जुड़ा</string>
+    <string name="provisioning_processing_authorization">प्राधिकरण संसाधित हो रहा है...</string>
+    <string name="provisioning_authorized">अधिकृत</string>
+    <string name="provisioning_requestion_credentials">क्रेडेंशियल अनुरोध किए जा रहे हैं...</string>
+    <string name="provisioning_credentials_issued">क्रेडेंशियल जारी किए गए</string>
+    <string name="provisioning_browser">ब्राउज़र लॉन्च हो रहा है, वहां जारी रखें</string>
+    <string name="provisioning_retry">कृपया पुनः प्रयास करें</string>
+    <string name="provisioning_error">प्रावधान त्रुटि (त्रुटि कोड: %1$s)</string>
+    <string name="duration_just_now">अभी-अभी</string>
+    <string name="duration_in_a_few_moments">कुछ क्षणों में</string>
+    <string name="duration_less_than_a_minute">एक मिनट से कम</string>
+    <string name="duration_years_and_months">%1$s और %2$s</string>
+    <string name="duration_months_and_days">%1$s और %2$s</string>
+    <string name="duration_weeks_and_days">%1$s और %2$s</string>
+    <string name="duration_days_and_hours">%1$s और %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s और %2$s</string>
+    <string name="duration_never">कभी नहीं</string>
+    <string name="duration_time_ago">%1$s पहले</string>
+    <string name="duration_time_from_now">%1$s बाद</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d वर्ष</item>
+        <item quantity="other">%1$d वर्ष</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d महीना</item>
+        <item quantity="other">%1$d महीने</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d दिन</item>
+        <item quantity="other">%1$d दिन</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d सप्ताह</item>
+        <item quantity="other">%1$d सप्ताह</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d घंटा</item>
+        <item quantity="other">%1$d घंटे</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d मिनट</item>
+        <item quantity="other">%1$d मिनट</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">सत्यापित करें कि यह आप हैं</string>
+    <string name="key_unlock_default_subtitle">प्रमाणीकरण आवश्यक है</string>
+    <string name="key_unlock_present_title">दस्तावेज़ साझा करने के लिए सत्यापित करें कि यह आप हैं</string>
+    <string name="key_unlock_present_bio_subtitle">प्रमाणीकरण आवश्यक है</string>
+    <string name="key_unlock_present_passphrase_subtitle">दस्तावेज़ से संबद्ध पासफ़्रेज़ दर्ज करें</string>
+    <string name="key_unlock_present_pin_subtitle">दस्तावेज़ से संबद्ध PIN दर्ज करें</string>
+</resources>

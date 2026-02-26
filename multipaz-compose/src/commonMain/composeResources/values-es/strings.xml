@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">El PIN es débil, elija otro</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">La contraseña es débil, elija otra</string>
+    <string name="credential_presentment_button_cancel">Cancelar</string>
+    <string name="credential_presentment_button_more">Más</string>
+    <string name="credential_presentment_button_share">Compartir</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">Solicitante desconocido</string>
+    <string name="credential_presentment_share_with_known_requester">Estos datos se compartirán con %1$s:</string>
+    <string name="credential_presentment_share_with_unknown_requester">Estos datos se compartirán:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">Estos datos serán almacenados por %1$s:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">Estos datos serán almacenados:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">El lector de identidad que solicita estos datos es desconocido. Asegúrese de sentirse cómodo compartiendo estos datos</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">El lector de identidad que solicita estos datos es anónimo. Asegúrese de sentirse cómodo compartiendo estos datos</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">El sitio web que solicita estos datos es desconocido. Asegúrese de sentirse cómodo compartiendo estos datos</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">La aplicación que solicita estos datos es desconocida. Asegúrese de sentirse cómodo compartiendo estos datos</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">El lector de identidad que solicita estos datos es de confianza</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">El sitio web que solicita estos datos es de confianza</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">La aplicación que solicita estos datos es de confianza</string>
+    <string name="credential_presentment_privacy_policy">Revise la [política de privacidad de %1$s](%2$s)</string>
+    <string name="credential_presentment_card_art_description">Arte de la tarjeta</string>
+    <string name="credential_presentment_verifier_icon_description">Icono del verificador</string>
+    <string name="credential_presentment_data_element_icon_description">Icono del elemento de datos</string>
+    <string name="credential_presentment_warning_icon_description">Icono de advertencia</string>
+    <string name="credential_presentment_select_document">Seleccionar documento</string>
+    <string name="credential_presentment_requester_information">Información del solicitante</string>
+    <string name="certificate_viewer_sub_basic_info">Información básica</string>
+    <string name="certificate_viewer_k_type">Tipo</string>
+    <string name="certificate_viewer_k_serial_number">Número de serie</string>
+    <string name="certificate_viewer_k_valid_from">Válido desde</string>
+    <string name="certificate_viewer_k_valid_until">Válido hasta</string>
+    <string name="certificate_viewer_sub_subject">Sujeto</string>
+    <string name="certificate_viewer_sub_issuer">Emisor</string>
+    <string name="certificate_viewer_k_country_name">País</string>
+    <string name="certificate_viewer_k_common_name">Nombre común</string>
+    <string name="certificate_viewer_k_org_name">Organización</string>
+    <string name="certificate_viewer_k_org_unit_name">Unidad organizativa</string>
+    <string name="certificate_viewer_k_locality_name">Localidad</string>
+    <string name="certificate_viewer_k_state_name">Estado o provincia</string>
+    <string name="certificate_viewer_k_other_name">Otro nombre (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">Información de clave pública</string>
+    <string name="certificate_viewer_k_pk_algorithm">Algoritmo</string>
+    <string name="certificate_viewer_k_pk_named_curve">Curva nombrada</string>
+    <string name="certificate_viewer_k_pk_value">Valor</string>
+    <string name="certificate_viewer_sub_extensions">Extensiones</string>
+    <string name="certificate_viewer_version_text">Certificado X.509 versión %1$s</string>
+    <string name="certificate_viewer_critical">Crítico</string>
+    <string name="certificate_viewer_critical_yes">Sí</string>
+    <string name="certificate_viewer_critical_no">No</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">Valor</string>
+    <string name="certificate_viewer_value_digital_signature">Firma digital</string>
+    <string name="certificate_viewer_validity_in_the_past">Este certificado ya no es válido, expiró el %1$s</string>
+    <string name="certificate_viewer_validity_in_the_future">Este certificado aún no es válido, será válido el %1$s</string>
+    <string name="certificate_viewer_valid_now">Actualmente válido, expira el %1$s</string>
+    <string name="presentment_connecting_to_reader">Conectando al lector</string>
+    <string name="presentment_success">La información fue compartida</string>
+    <string name="presentment_error">Algo salió mal</string>
+    <string name="presentment_canceled">La presentación fue cancelada</string>
+    <string name="presentment_timeout">Tiempo de espera agotado para el lector</string>
+    <string name="presentment_waiting_for_request">Esperando solicitud</string>
+    <string name="presentment_document_picker_title">Seleccionar documento</string>
+    <string name="presentment_document_picker_text">Varios documentos pueden cumplir con la solicitud. Por favor seleccione uno</string>
+    <string name="presentment_document_picker_cancel">Cancelar</string>
+    <string name="presentment_document_picker_continue">Continuar</string>
+    <string name="passphrase_pin_screen_delete">Eliminar</string>
+    <string name="passphrase_pin_screen_cancel">Cancelar</string>
+    <string name="passphrase_pin_screen_done">Listo</string>
+    <string name="pin_prompt_try_again">PIN incorrecto, inténtelo de nuevo</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">PIN incorrecto, inténtelo de nuevo, queda el último intento</item>
+        <item quantity="other">PIN incorrecto, inténtelo de nuevo, quedan %1$d intentos</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">Demasiados intentos de PIN incorrectos, inténtelo más tarde</string>
+    <string name="passphrase_prompt_try_again">Contraseña incorrecta, inténtelo de nuevo</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">Contraseña incorrecta, inténtelo de nuevo, queda el último intento</item>
+        <item quantity="other">Contraseña incorrecta, inténtelo de nuevo, quedan %1$d intentos</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">Demasiados intentos de contraseña incorrectos, inténtelo más tarde</string>
+    <string name="provisioning_authorization_failed">Autorización fallida</string>
+    <string name="provisioning_idle">Esperando</string>
+    <string name="provisioning_initial">Iniciando aprovisionamiento...</string>
+    <string name="provisioning_connected">Conectado al back-end</string>
+    <string name="provisioning_processing_authorization">Procesando autorización...</string>
+    <string name="provisioning_authorized">Autorizado</string>
+    <string name="provisioning_requestion_credentials">Solicitando credenciales...</string>
+    <string name="provisioning_credentials_issued">Credenciales emitidas</string>
+    <string name="provisioning_browser">Abriendo navegador, continúe allí</string>
+    <string name="provisioning_retry">Por favor, inténtelo de nuevo</string>
+    <string name="provisioning_error">Error de aprovisionamiento (código de error: %1$s)</string>
+    <string name="duration_just_now">ahora mismo</string>
+    <string name="duration_in_a_few_moments">en unos momentos</string>
+    <string name="duration_less_than_a_minute">menos de un minuto</string>
+    <string name="duration_years_and_months">%1$s y %2$s</string>
+    <string name="duration_months_and_days">%1$s y %2$s</string>
+    <string name="duration_weeks_and_days">%1$s y %2$s</string>
+    <string name="duration_days_and_hours">%1$s y %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s y %2$s</string>
+    <string name="duration_never">nunca</string>
+    <string name="duration_time_ago">hace %1$s</string>
+    <string name="duration_time_from_now">en %1$s</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d año</item>
+        <item quantity="other">%1$d años</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d mes</item>
+        <item quantity="other">%1$d meses</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d día</item>
+        <item quantity="other">%1$d días</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d semana</item>
+        <item quantity="other">%1$d semanas</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d hora</item>
+        <item quantity="other">%1$d horas</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d minuto</item>
+        <item quantity="other">%1$d minutos</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">Verifique que es usted</string>
+    <string name="key_unlock_default_subtitle">Se requiere autenticación</string>
+    <string name="key_unlock_present_title">Verifique que es usted para compartir el documento</string>
+    <string name="key_unlock_present_bio_subtitle">Se requiere autenticación</string>
+    <string name="key_unlock_present_passphrase_subtitle">Ingrese la contraseña asociada al documento</string>
+    <string name="key_unlock_present_pin_subtitle">Ingrese el PIN asociado al documento</string>
+</resources>

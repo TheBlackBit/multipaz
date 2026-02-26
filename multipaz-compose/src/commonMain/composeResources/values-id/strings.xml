@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN lemah, silakan pilih yang lain</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">Frasa sandi lemah, silakan pilih yang lain</string>
+    <string name="credential_presentment_button_cancel">Batal</string>
+    <string name="credential_presentment_button_more">Lebih</string>
+    <string name="credential_presentment_button_share">Bagikan</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">Peminta tidak dikenal</string>
+    <string name="credential_presentment_share_with_known_requester">Data ini akan dibagikan dengan %1$s:</string>
+    <string name="credential_presentment_share_with_unknown_requester">Data ini akan dibagikan:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">Data ini akan disimpan oleh %1$s:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">Data ini akan disimpan:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">Pembaca identitas yang meminta data ini tidak dikenal. Pastikan Anda nyaman membagikan data ini</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">Pembaca identitas yang meminta data ini anonim. Pastikan Anda nyaman membagikan data ini</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">Situs web yang meminta data ini tidak dikenal. Pastikan Anda nyaman membagikan data ini</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">Aplikasi yang meminta data ini tidak dikenal. Pastikan Anda nyaman membagikan data ini</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">Pembaca identitas yang meminta data ini tepercaya</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">Situs web yang meminta data ini tepercaya</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">Aplikasi yang meminta data ini tepercaya</string>
+    <string name="credential_presentment_privacy_policy">Tinjau [kebijakan privasi %1$s](%2$s)</string>
+    <string name="credential_presentment_card_art_description">Gambar kartu</string>
+    <string name="credential_presentment_verifier_icon_description">Ikon verifikator</string>
+    <string name="credential_presentment_data_element_icon_description">Ikon elemen data</string>
+    <string name="credential_presentment_warning_icon_description">Ikon peringatan</string>
+    <string name="credential_presentment_select_document">Pilih dokumen</string>
+    <string name="credential_presentment_requester_information">Informasi peminta</string>
+    <string name="certificate_viewer_sub_basic_info">Informasi dasar</string>
+    <string name="certificate_viewer_k_type">Jenis</string>
+    <string name="certificate_viewer_k_serial_number">Nomor seri</string>
+    <string name="certificate_viewer_k_valid_from">Berlaku dari</string>
+    <string name="certificate_viewer_k_valid_until">Berlaku sampai</string>
+    <string name="certificate_viewer_sub_subject">Subjek</string>
+    <string name="certificate_viewer_sub_issuer">Penerbit</string>
+    <string name="certificate_viewer_k_country_name">Negara</string>
+    <string name="certificate_viewer_k_common_name">Nama umum</string>
+    <string name="certificate_viewer_k_org_name">Organisasi</string>
+    <string name="certificate_viewer_k_org_unit_name">Unit organisasi</string>
+    <string name="certificate_viewer_k_locality_name">Lokalitas</string>
+    <string name="certificate_viewer_k_state_name">Provinsi</string>
+    <string name="certificate_viewer_k_other_name">Nama lain (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">Informasi kunci publik</string>
+    <string name="certificate_viewer_k_pk_algorithm">Algoritma</string>
+    <string name="certificate_viewer_k_pk_named_curve">Kurva bernama</string>
+    <string name="certificate_viewer_k_pk_value">Nilai</string>
+    <string name="certificate_viewer_sub_extensions">Ekstensi</string>
+    <string name="certificate_viewer_version_text">Sertifikat X.509 versi %1$s</string>
+    <string name="certificate_viewer_critical">Kritis</string>
+    <string name="certificate_viewer_critical_yes">Ya</string>
+    <string name="certificate_viewer_critical_no">Tidak</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">Nilai</string>
+    <string name="certificate_viewer_value_digital_signature">Tanda tangan digital</string>
+    <string name="certificate_viewer_validity_in_the_past">Sertifikat ini tidak lagi berlaku, kedaluwarsa pada %1$s</string>
+    <string name="certificate_viewer_validity_in_the_future">Sertifikat ini belum berlaku, akan berlaku pada %1$s</string>
+    <string name="certificate_viewer_valid_now">Saat ini berlaku, kedaluwarsa pada %1$s</string>
+    <string name="presentment_connecting_to_reader">Menghubungkan ke pembaca</string>
+    <string name="presentment_success">Informasi telah dibagikan</string>
+    <string name="presentment_error">Terjadi kesalahan</string>
+    <string name="presentment_canceled">Presentasi dibatalkan</string>
+    <string name="presentment_timeout">Waktu tunggu pembaca habis</string>
+    <string name="presentment_waiting_for_request">Menunggu permintaan</string>
+    <string name="presentment_document_picker_title">Pilih Dokumen</string>
+    <string name="presentment_document_picker_text">Beberapa dokumen dapat memenuhi permintaan. Silakan pilih satu</string>
+    <string name="presentment_document_picker_cancel">Batal</string>
+    <string name="presentment_document_picker_continue">Lanjutkan</string>
+    <string name="passphrase_pin_screen_delete">Hapus</string>
+    <string name="passphrase_pin_screen_cancel">Batal</string>
+    <string name="passphrase_pin_screen_done">Selesai</string>
+    <string name="pin_prompt_try_again">PIN salah, coba lagi</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">PIN salah, coba lagi, sisa satu percobaan terakhir</item>
+        <item quantity="other">PIN salah, coba lagi, sisa %1$d percobaan</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">Terlalu banyak percobaan PIN salah, coba lagi nanti</string>
+    <string name="passphrase_prompt_try_again">Frasa sandi salah, coba lagi</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">Frasa sandi salah, coba lagi, sisa satu percobaan terakhir</item>
+        <item quantity="other">Frasa sandi salah, coba lagi, sisa %1$d percobaan</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">Terlalu banyak percobaan frasa sandi salah, coba lagi nanti</string>
+    <string name="provisioning_authorization_failed">Otorisasi gagal</string>
+    <string name="provisioning_idle">Menunggu</string>
+    <string name="provisioning_initial">Memulai penyediaan...</string>
+    <string name="provisioning_connected">Terhubung ke back-end</string>
+    <string name="provisioning_processing_authorization">Memproses otorisasi...</string>
+    <string name="provisioning_authorized">Diotorisasi</string>
+    <string name="provisioning_requestion_credentials">Meminta kredensial...</string>
+    <string name="provisioning_credentials_issued">Kredensial diterbitkan</string>
+    <string name="provisioning_browser">Meluncurkan browser, lanjutkan di sana</string>
+    <string name="provisioning_retry">Silakan coba lagi</string>
+    <string name="provisioning_error">Kesalahan penyediaan (kode kesalahan: %1$s)</string>
+    <string name="duration_just_now">baru saja</string>
+    <string name="duration_in_a_few_moments">dalam beberapa saat</string>
+    <string name="duration_less_than_a_minute">kurang dari satu menit</string>
+    <string name="duration_years_and_months">%1$s dan %2$s</string>
+    <string name="duration_months_and_days">%1$s dan %2$s</string>
+    <string name="duration_weeks_and_days">%1$s dan %2$s</string>
+    <string name="duration_days_and_hours">%1$s dan %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s dan %2$s</string>
+    <string name="duration_never">tidak pernah</string>
+    <string name="duration_time_ago">%1$s yang lalu</string>
+    <string name="duration_time_from_now">%1$s dari sekarang</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d tahun</item>
+        <item quantity="other">%1$d tahun</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d bulan</item>
+        <item quantity="other">%1$d bulan</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d hari</item>
+        <item quantity="other">%1$d hari</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d minggu</item>
+        <item quantity="other">%1$d minggu</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d jam</item>
+        <item quantity="other">%1$d jam</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d menit</item>
+        <item quantity="other">%1$d menit</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">Verifikasi bahwa ini adalah Anda</string>
+    <string name="key_unlock_default_subtitle">Autentikasi diperlukan</string>
+    <string name="key_unlock_present_title">Verifikasi bahwa ini adalah Anda untuk membagikan dokumen</string>
+    <string name="key_unlock_present_bio_subtitle">Autentikasi diperlukan</string>
+    <string name="key_unlock_present_passphrase_subtitle">Masukkan passphrase yang terkait dengan dokumen</string>
+    <string name="key_unlock_present_pin_subtitle">Masukkan PIN yang terkait dengan dokumen</string>
+</resources>

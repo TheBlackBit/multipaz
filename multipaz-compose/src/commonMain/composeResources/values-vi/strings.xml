@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">Mã PIN yếu, vui lòng chọn mã khác</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">Cụm mật khẩu yếu, vui lòng chọn cụm khác</string>
+    <string name="credential_presentment_button_cancel">Hủy</string>
+    <string name="credential_presentment_button_more">Thêm</string>
+    <string name="credential_presentment_button_share">Chia sẻ</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">Người yêu cầu không xác định</string>
+    <string name="credential_presentment_share_with_known_requester">Dữ liệu này sẽ được chia sẻ với %1$s:</string>
+    <string name="credential_presentment_share_with_unknown_requester">Dữ liệu này sẽ được chia sẻ:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">Dữ liệu này sẽ được lưu bởi %1$s:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">Dữ liệu này sẽ được lưu:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">Trình đọc danh tính yêu cầu dữ liệu này không xác định. Hãy đảm bảo bạn cảm thấy thoải mái khi chia sẻ dữ liệu này</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">Trình đọc danh tính yêu cầu dữ liệu này là ẩn danh. Hãy đảm bảo bạn cảm thấy thoải mái khi chia sẻ dữ liệu này</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">Trang web yêu cầu dữ liệu này không xác định. Hãy đảm bảo bạn cảm thấy thoải mái khi chia sẻ dữ liệu này</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">Ứng dụng yêu cầu dữ liệu này không xác định. Hãy đảm bảo bạn cảm thấy thoải mái khi chia sẻ dữ liệu này</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">Trình đọc danh tính yêu cầu dữ liệu này là đáng tin cậy</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">Trang web yêu cầu dữ liệu này là đáng tin cậy</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">Ứng dụng yêu cầu dữ liệu này là đáng tin cậy</string>
+    <string name="credential_presentment_privacy_policy">Xem [chính sách quyền riêng tư của %1$s](%2$s)</string>
+    <string name="credential_presentment_card_art_description">Hình nền thẻ</string>
+    <string name="credential_presentment_verifier_icon_description">Biểu tượng trình xác minh</string>
+    <string name="credential_presentment_data_element_icon_description">Biểu tượng phần tử dữ liệu</string>
+    <string name="credential_presentment_warning_icon_description">Biểu tượng cảnh báo</string>
+    <string name="credential_presentment_select_document">Chọn tài liệu</string>
+    <string name="credential_presentment_requester_information">Thông tin người yêu cầu</string>
+    <string name="certificate_viewer_sub_basic_info">Thông tin cơ bản</string>
+    <string name="certificate_viewer_k_type">Loại</string>
+    <string name="certificate_viewer_k_serial_number">Số seri</string>
+    <string name="certificate_viewer_k_valid_from">Có hiệu lực từ</string>
+    <string name="certificate_viewer_k_valid_until">Có hiệu lực đến</string>
+    <string name="certificate_viewer_sub_subject">Chủ thể</string>
+    <string name="certificate_viewer_sub_issuer">Người phát hành</string>
+    <string name="certificate_viewer_k_country_name">Quốc gia</string>
+    <string name="certificate_viewer_k_common_name">Tên thông thường</string>
+    <string name="certificate_viewer_k_org_name">Tổ chức</string>
+    <string name="certificate_viewer_k_org_unit_name">Đơn vị tổ chức</string>
+    <string name="certificate_viewer_k_locality_name">Địa phương</string>
+    <string name="certificate_viewer_k_state_name">Tiểu bang hoặc tỉnh</string>
+    <string name="certificate_viewer_k_other_name">Tên khác (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">Thông tin khóa công khai</string>
+    <string name="certificate_viewer_k_pk_algorithm">Thuật toán</string>
+    <string name="certificate_viewer_k_pk_named_curve">Đường cong đã đặt tên</string>
+    <string name="certificate_viewer_k_pk_value">Giá trị</string>
+    <string name="certificate_viewer_sub_extensions">Tiện ích mở rộng</string>
+    <string name="certificate_viewer_version_text">Chứng chỉ X.509 phiên bản %1$s</string>
+    <string name="certificate_viewer_critical">Quan trọng</string>
+    <string name="certificate_viewer_critical_yes">Có</string>
+    <string name="certificate_viewer_critical_no">Không</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">Giá trị</string>
+    <string name="certificate_viewer_value_digital_signature">Chữ ký số</string>
+    <string name="certificate_viewer_validity_in_the_past">Chứng chỉ này không còn hiệu lực, đã hết hạn vào %1$s</string>
+    <string name="certificate_viewer_validity_in_the_future">Chứng chỉ này chưa có hiệu lực, sẽ có hiệu lực vào %1$s</string>
+    <string name="certificate_viewer_valid_now">Hiện đang có hiệu lực, sẽ hết hạn vào %1$s</string>
+    <string name="presentment_connecting_to_reader">Đang kết nối với trình đọc</string>
+    <string name="presentment_success">Thông tin đã được chia sẻ</string>
+    <string name="presentment_error">Đã xảy ra lỗi</string>
+    <string name="presentment_canceled">Trình bày đã bị hủy</string>
+    <string name="presentment_timeout">Hết thời gian chờ trình đọc</string>
+    <string name="presentment_waiting_for_request">Đang chờ yêu cầu</string>
+    <string name="presentment_document_picker_title">Chọn Tài liệu</string>
+    <string name="presentment_document_picker_text">Nhiều tài liệu có thể đáp ứng yêu cầu. Vui lòng chọn một</string>
+    <string name="presentment_document_picker_cancel">Hủy</string>
+    <string name="presentment_document_picker_continue">Tiếp tục</string>
+    <string name="passphrase_pin_screen_delete">Xóa</string>
+    <string name="passphrase_pin_screen_cancel">Hủy</string>
+    <string name="passphrase_pin_screen_done">Xong</string>
+    <string name="pin_prompt_try_again">Mã PIN sai, thử lại</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">Mã PIN sai, thử lại, còn lại lần thử cuối cùng</item>
+        <item quantity="other">Mã PIN sai, thử lại, còn lại %1$d lần thử</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">Đã thử quá nhiều mã PIN sai, hãy thử lại sau</string>
+    <string name="passphrase_prompt_try_again">Cụm mật khẩu sai, thử lại</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">Cụm mật khẩu sai, thử lại, còn lại lần thử cuối cùng</item>
+        <item quantity="other">Cụm mật khẩu sai, thử lại, còn lại %1$d lần thử</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">Đã thử quá nhiều cụm mật khẩu sai, hãy thử lại sau</string>
+    <string name="provisioning_authorization_failed">Ủy quyền thất bại</string>
+    <string name="provisioning_idle">Đang chờ</string>
+    <string name="provisioning_initial">Đang bắt đầu cấp phát...</string>
+    <string name="provisioning_connected">Đã kết nối với back-end</string>
+    <string name="provisioning_processing_authorization">Đang xử lý ủy quyền...</string>
+    <string name="provisioning_authorized">Đã được ủy quyền</string>
+    <string name="provisioning_requestion_credentials">Đang yêu cầu thông tin xác thực...</string>
+    <string name="provisioning_credentials_issued">Đã cấp thông tin xác thực</string>
+    <string name="provisioning_browser">Đang khởi chạy trình duyệt, tiếp tục ở đó</string>
+    <string name="provisioning_retry">Vui lòng thử lại</string>
+    <string name="provisioning_error">Lỗi cấp phát (mã lỗi: %1$s)</string>
+    <string name="duration_just_now">vừa xong</string>
+    <string name="duration_in_a_few_moments">trong vài phút nữa</string>
+    <string name="duration_less_than_a_minute">chưa đầy một phút</string>
+    <string name="duration_years_and_months">%1$s và %2$s</string>
+    <string name="duration_months_and_days">%1$s và %2$s</string>
+    <string name="duration_weeks_and_days">%1$s và %2$s</string>
+    <string name="duration_days_and_hours">%1$s và %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s và %2$s</string>
+    <string name="duration_never">không bao giờ</string>
+    <string name="duration_time_ago">%1$s trước</string>
+    <string name="duration_time_from_now">%1$s nữa</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d năm</item>
+        <item quantity="other">%1$d năm</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d tháng</item>
+        <item quantity="other">%1$d tháng</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d ngày</item>
+        <item quantity="other">%1$d ngày</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d tuần</item>
+        <item quantity="other">%1$d tuần</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d giờ</item>
+        <item quantity="other">%1$d giờ</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d phút</item>
+        <item quantity="other">%1$d phút</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">Xác minh đây là bạn</string>
+    <string name="key_unlock_default_subtitle">Yêu cầu xác thực</string>
+    <string name="key_unlock_present_title">Xác minh đây là bạn để chia sẻ tài liệu</string>
+    <string name="key_unlock_present_bio_subtitle">Yêu cầu xác thực</string>
+    <string name="key_unlock_present_passphrase_subtitle">Nhập cụm mật khẩu liên quan đến tài liệu</string>
+    <string name="key_unlock_present_pin_subtitle">Nhập mã PIN liên quan đến tài liệu</string>
+</resources>

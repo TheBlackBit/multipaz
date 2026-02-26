@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN 码较弱，请选择其他</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">密码短语较弱，请选择其他</string>
+    <string name="credential_presentment_button_cancel">取消</string>
+    <string name="credential_presentment_button_more">更多</string>
+    <string name="credential_presentment_button_share">分享</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">未知请求者</string>
+    <string name="credential_presentment_share_with_known_requester">此数据将分享给 %1$s：</string>
+    <string name="credential_presentment_share_with_unknown_requester">此数据将被分享：</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">此数据将由 %1$s 存储：</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">此数据将被存储：</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">请求此数据的身份读取器未知。请确保您愿意分享这些数据</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">请求此数据的身份读取器是匿名的。请确保您愿意分享这些数据</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">请求此数据的网站未知。请确保您愿意分享这些数据</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">请求此数据的应用未知。请确保您愿意分享这些数据</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">请求此数据的身份读取器是受信任的</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">请求此数据的网站是受信任的</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">请求此数据的应用是受信任的</string>
+    <string name="credential_presentment_privacy_policy">查看 [%1$s 隐私政策](%2$s)</string>
+    <string name="credential_presentment_card_art_description">卡片图案</string>
+    <string name="credential_presentment_verifier_icon_description">验证者图标</string>
+    <string name="credential_presentment_data_element_icon_description">数据元素图标</string>
+    <string name="credential_presentment_warning_icon_description">警告图标</string>
+    <string name="credential_presentment_select_document">选择文档</string>
+    <string name="credential_presentment_requester_information">请求者信息</string>
+    <string name="certificate_viewer_sub_basic_info">基本信息</string>
+    <string name="certificate_viewer_k_type">类型</string>
+    <string name="certificate_viewer_k_serial_number">序列号</string>
+    <string name="certificate_viewer_k_valid_from">有效期自</string>
+    <string name="certificate_viewer_k_valid_until">有效期至</string>
+    <string name="certificate_viewer_sub_subject">主题</string>
+    <string name="certificate_viewer_sub_issuer">颁发者</string>
+    <string name="certificate_viewer_k_country_name">国家</string>
+    <string name="certificate_viewer_k_common_name">通用名</string>
+    <string name="certificate_viewer_k_org_name">组织</string>
+    <string name="certificate_viewer_k_org_unit_name">组织单位</string>
+    <string name="certificate_viewer_k_locality_name">地区</string>
+    <string name="certificate_viewer_k_state_name">州或省</string>
+    <string name="certificate_viewer_k_other_name">其他名称 (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">公钥信息</string>
+    <string name="certificate_viewer_k_pk_algorithm">算法</string>
+    <string name="certificate_viewer_k_pk_named_curve">命名曲线</string>
+    <string name="certificate_viewer_k_pk_value">值</string>
+    <string name="certificate_viewer_sub_extensions">扩展</string>
+    <string name="certificate_viewer_version_text">X.509 版本 %1$s 证书</string>
+    <string name="certificate_viewer_critical">关键</string>
+    <string name="certificate_viewer_critical_yes">是</string>
+    <string name="certificate_viewer_critical_no">否</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">值</string>
+    <string name="certificate_viewer_value_digital_signature">数字签名</string>
+    <string name="certificate_viewer_validity_in_the_past">此证书已过期，于 %1$s 到期</string>
+    <string name="certificate_viewer_validity_in_the_future">此证书尚未生效，将于 %1$s 生效</string>
+    <string name="certificate_viewer_valid_now">当前有效，将于 %1$s 到期</string>
+    <string name="presentment_connecting_to_reader">正在连接读取器</string>
+    <string name="presentment_success">信息已分享</string>
+    <string name="presentment_error">出现错误</string>
+    <string name="presentment_canceled">出示已取消</string>
+    <string name="presentment_timeout">等待读取器超时</string>
+    <string name="presentment_waiting_for_request">等待请求</string>
+    <string name="presentment_document_picker_title">选择文档</string>
+    <string name="presentment_document_picker_text">多个文档可满足此请求。请选择一个</string>
+    <string name="presentment_document_picker_cancel">取消</string>
+    <string name="presentment_document_picker_continue">继续</string>
+    <string name="passphrase_pin_screen_delete">删除</string>
+    <string name="passphrase_pin_screen_cancel">取消</string>
+    <string name="passphrase_pin_screen_done">完成</string>
+    <string name="pin_prompt_try_again">PIN 码错误，请重试</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">PIN 码错误，请重试，还剩最后一次机会</item>
+        <item quantity="other">PIN 码错误，请重试，还剩 %1$d 次机会</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">PIN 码错误次数过多，请稍后重试</string>
+    <string name="passphrase_prompt_try_again">密码短语错误，请重试</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">密码短语错误，请重试，还剩最后一次机会</item>
+        <item quantity="other">密码短语错误，请重试，还剩 %1$d 次机会</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">密码短语错误次数过多，请稍后重试</string>
+    <string name="provisioning_authorization_failed">授权失败</string>
+    <string name="provisioning_idle">等待中</string>
+    <string name="provisioning_initial">正在开始配置...</string>
+    <string name="provisioning_connected">已连接到后端</string>
+    <string name="provisioning_processing_authorization">正在处理授权...</string>
+    <string name="provisioning_authorized">已授权</string>
+    <string name="provisioning_requestion_credentials">正在请求凭证...</string>
+    <string name="provisioning_credentials_issued">凭证已颁发</string>
+    <string name="provisioning_browser">正在启动浏览器，请在那里继续</string>
+    <string name="provisioning_retry">请重试</string>
+    <string name="provisioning_error">配置错误 (错误代码: %1$s)</string>
+    <string name="duration_just_now">刚刚</string>
+    <string name="duration_in_a_few_moments">片刻之后</string>
+    <string name="duration_less_than_a_minute">不到一分钟</string>
+    <string name="duration_years_and_months">%1$s 和 %2$s</string>
+    <string name="duration_months_and_days">%1$s 和 %2$s</string>
+    <string name="duration_weeks_and_days">%1$s 和 %2$s</string>
+    <string name="duration_days_and_hours">%1$s 和 %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s 和 %2$s</string>
+    <string name="duration_never">从未</string>
+    <string name="duration_time_ago">%1$s 前</string>
+    <string name="duration_time_from_now">%1$s 后</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d 年</item>
+        <item quantity="other">%1$d 年</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d 个月</item>
+        <item quantity="other">%1$d 个月</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d 天</item>
+        <item quantity="other">%1$d 天</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d 周</item>
+        <item quantity="other">%1$d 周</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d 小时</item>
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d 分钟</item>
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">验证是您本人</string>
+    <string name="key_unlock_default_subtitle">需要身份验证</string>
+    <string name="key_unlock_present_title">验证是您本人以分享文档</string>
+    <string name="key_unlock_present_bio_subtitle">需要身份验证</string>
+    <string name="key_unlock_present_passphrase_subtitle">输入与文档关联的密码短语</string>
+    <string name="key_unlock_present_pin_subtitle">输入与文档关联的PIN码</string>
+</resources>

@@ -1,0 +1,126 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN ไม่ปลอดภัย โปรดเลือก PIN อื่น</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">รหัสผ่านไม่ปลอดภัย โปรดเลือกรหัสผ่านอื่น</string>
+    <string name="credential_presentment_button_cancel">ยกเลิก</string>
+    <string name="credential_presentment_button_more">เพิ่มเติม</string>
+    <string name="credential_presentment_button_share">แชร์</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">ผู้ขอไม่ทราบ</string>
+    <string name="credential_presentment_share_with_known_requester">ข้อมูลนี้จะถูกแชร์กับ %1$s:</string>
+    <string name="credential_presentment_share_with_unknown_requester">ข้อมูลนี้จะถูกแชร์:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">ข้อมูลนี้จะถูกเก็บโดย %1$s:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">ข้อมูลนี้จะถูกเก็บ:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">เครื่องอ่านบัตรประชาชนที่ขอข้อมูลนี้ไม่รู้จัก โปรดตรวจสอบว่าคุณสบายใจที่จะแชร์ข้อมูลนี้</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">เครื่องอ่านบัตรประชาชนที่ขอข้อมูลนี้ไม่ระบุตัวตน โปรดตรวจสอบว่าคุณสบายใจที่จะแชร์ข้อมูลนี้</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">เว็บไซต์ที่ขอข้อมูลนี้ไม่รู้จัก โปรดตรวจสอบว่าคุณสบายใจที่จะแชร์ข้อมูลนี้</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">แอปที่ขอข้อมูลนี้ไม่รู้จัก โปรดตรวจสอบว่าคุณสบายใจที่จะแชร์ข้อมูลนี้</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">เครื่องอ่านบัตรประชาชนที่ขอข้อมูลนี้น่าเชื่อถือ</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">เว็บไซต์ที่ขอข้อมูลนี้น่าเชื่อถือ</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">แอปที่ขอข้อมูลนี้น่าเชื่อถือ</string>
+    <string name="credential_presentment_privacy_policy">ตรวจสอบ [นโยบายความเป็นส่วนตัวของ %1$s](%2$s)</string>
+    <string name="credential_presentment_card_art_description">รูปภาพบัตร</string>
+    <string name="credential_presentment_verifier_icon_description">ไอคอนผู้ตรวจสอบ</string>
+    <string name="credential_presentment_data_element_icon_description">ไอคอนองค์ประกอบข้อมูล</string>
+    <string name="credential_presentment_warning_icon_description">ไอคอนเตือน</string>
+    <string name="credential_presentment_select_document">เลือกเอกสาร</string>
+    <string name="credential_presentment_requester_information">ข้อมูลผู้ขอ</string>
+    <string name="certificate_viewer_sub_basic_info">ข้อมูลพื้นฐาน</string>
+    <string name="certificate_viewer_k_type">ประเภท</string>
+    <string name="certificate_viewer_k_serial_number">หมายเลขซีเรียล</string>
+    <string name="certificate_viewer_k_valid_from">ใช้ได้ตั้งแต่</string>
+    <string name="certificate_viewer_k_valid_until">ใช้ได้จนถึง</string>
+    <string name="certificate_viewer_sub_subject">หัวข้อ</string>
+    <string name="certificate_viewer_sub_issuer">ผู้ออก</string>
+    <string name="certificate_viewer_k_country_name">ประเทศ</string>
+    <string name="certificate_viewer_k_common_name">ชื่อทั่วไป</string>
+    <string name="certificate_viewer_k_org_name">องค์กร</string>
+    <string name="certificate_viewer_k_org_unit_name">หน่วยงาน</string>
+    <string name="certificate_viewer_k_locality_name">ท้องถิ่น</string>
+    <string name="certificate_viewer_k_state_name">จังหวัด</string>
+    <string name="certificate_viewer_k_other_name">ชื่ออื่น (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">ข้อมูลกุญแจสาธารณะ</string>
+    <string name="certificate_viewer_k_pk_algorithm">อัลกอริทึม</string>
+    <string name="certificate_viewer_k_pk_named_curve">เส้นโค้งที่ตั้งชื่อ</string>
+    <string name="certificate_viewer_k_pk_value">ค่า</string>
+    <string name="certificate_viewer_sub_extensions">ส่วนขยาย</string>
+    <string name="certificate_viewer_version_text">ใบรับรอง X.509 เวอร์ชัน %1$s</string>
+    <string name="certificate_viewer_critical">สำคัญ</string>
+    <string name="certificate_viewer_critical_yes">ใช่</string>
+    <string name="certificate_viewer_critical_no">ไม่</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">ค่า</string>
+    <string name="certificate_viewer_value_digital_signature">ลายเซ็นดิจิทัล</string>
+    <string name="certificate_viewer_validity_in_the_past">ใบรับรองนี้หมดอายุแล้ว หมดอายุเมื่อ %1$s</string>
+    <string name="certificate_viewer_validity_in_the_future">ใบรับรองนี้ยังไม่มีผล จะมีผลเมื่อ %1$s</string>
+    <string name="certificate_viewer_valid_now">ใช้งานได้ในขณะนี้ จะหมดอายุเมื่อ %1$s</string>
+    <string name="presentment_connecting_to_reader">กำลังเชื่อมต่อกับเครื่องอ่าน</string>
+    <string name="presentment_success">ข้อมูลถูกแชร์แล้ว</string>
+    <string name="presentment_error">เกิดข้อผิดพลาด</string>
+    <string name="presentment_canceled">การนำเสนอถูกยกเลิก</string>
+    <string name="presentment_timeout">หมดเวลารอเครื่องอ่าน</string>
+    <string name="presentment_waiting_for_request">กำลังรอคำขอ</string>
+    <string name="presentment_document_picker_title">เลือกเอกสาร</string>
+    <string name="presentment_document_picker_text">มีเอกสารหลายฉบับที่สามารถตอบสนองคำขอได้ โปรดเลือกหนึ่งรายการ</string>
+    <string name="presentment_document_picker_cancel">ยกเลิก</string>
+    <string name="presentment_document_picker_continue">ดำเนินการต่อ</string>
+    <string name="passphrase_pin_screen_delete">ลบ</string>
+    <string name="passphrase_pin_screen_cancel">ยกเลิก</string>
+    <string name="passphrase_pin_screen_done">เสร็จสิ้น</string>
+    <string name="pin_prompt_try_again">PIN ไม่ถูกต้อง ลองอีกครั้ง</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="other">PIN ไม่ถูกต้อง ลองอีกครั้ง เหลืออีก %1$d ครั้ง</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">พยายามใส่ PIN ผิดเกินจำนวนที่กำหนด โปรดลองอีกครั้งในภายหลัง</string>
+    <string name="passphrase_prompt_try_again">รหัสผ่านไม่ถูกต้อง ลองอีกครั้ง</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="other">รหัสผ่านไม่ถูกต้อง ลองอีกครั้ง เหลืออีก %1$d ครั้ง</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">พยายามใส่รหัสผ่านผิดเกินจำนวนที่กำหนด โปรดลองอีกครั้งในภายหลัง</string>
+    <string name="provisioning_authorization_failed">การอนุญาตล้มเหลว</string>
+    <string name="provisioning_idle">รอ</string>
+    <string name="provisioning_initial">กำลังเริ่มการจัดเตรียม...</string>
+    <string name="provisioning_connected">เชื่อมต่อกับแบ็กเอนด์แล้ว</string>
+    <string name="provisioning_processing_authorization">กำลังประมวลผลการอนุญาต...</string>
+    <string name="provisioning_authorized">ได้รับอนุญาตแล้ว</string>
+    <string name="provisioning_requestion_credentials">กำลังขอข้อมูลรับรอง...</string>
+    <string name="provisioning_credentials_issued">ออกข้อมูลรับรองแล้ว</string>
+    <string name="provisioning_browser">กำลังเปิดเบราว์เซอร์ ดำเนินการต่อที่นั่น</string>
+    <string name="provisioning_retry">โปรดลองอีกครั้ง</string>
+    <string name="provisioning_error">ข้อผิดพลาดในการจัดเตรียม (รหัสข้อผิดพลาด: %1$s)</string>
+    <string name="duration_just_now">เมื่อสักครู่</string>
+    <string name="duration_in_a_few_moments">ในอีกสักครู่</string>
+    <string name="duration_less_than_a_minute">น้อยกว่าหนึ่งนาที</string>
+    <string name="duration_years_and_months">%1$s และ %2$s</string>
+    <string name="duration_months_and_days">%1$s และ %2$s</string>
+    <string name="duration_weeks_and_days">%1$s และ %2$s</string>
+    <string name="duration_days_and_hours">%1$s และ %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s และ %2$s</string>
+    <string name="duration_never">ไม่มีวัน</string>
+    <string name="duration_time_ago">%1$s ที่แล้ว</string>
+    <string name="duration_time_from_now">อีก %1$s</string>
+    <plurals name="duration_year">
+        <item quantity="other">%1$d ปี</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="other">%1$d เดือน</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="other">%1$d วัน</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="other">%1$d สัปดาห์</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="other">%1$d ชั่วโมง</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="other">%1$d นาที</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">ตรวจสอบว่าเป็นคุณ</string>
+    <string name="key_unlock_default_subtitle">ต้องการการตรวจสอบสิทธิ์</string>
+    <string name="key_unlock_present_title">ตรวจสอบว่าเป็นคุณเพื่อแชร์เอกสาร</string>
+    <string name="key_unlock_present_bio_subtitle">ต้องการการตรวจสอบสิทธิ์</string>
+    <string name="key_unlock_present_passphrase_subtitle">ป้อนรหัสผ่านที่เชื่อมโยงกับเอกสาร</string>
+    <string name="key_unlock_present_pin_subtitle">ป้อน PIN ที่เชื่อมโยงกับเอกสาร</string>
+</resources>

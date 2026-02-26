@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PINが弱いです。別のPINを選んでください</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">パスフレーズが弱いです。別のパスフレーズを選んでください</string>
+    <string name="credential_presentment_button_cancel">キャンセル</string>
+    <string name="credential_presentment_button_more">詳細</string>
+    <string name="credential_presentment_button_share">共有</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">不明なリクエスター</string>
+    <string name="credential_presentment_share_with_known_requester">このデータは%1$sと共有されます：</string>
+    <string name="credential_presentment_share_with_unknown_requester">このデータは共有されます：</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">このデータは%1$sに保存されます：</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">このデータは保存されます：</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">このデータをリクエストしているIDリーダーは不明です。このデータを共有してもよいか確認してください</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">このデータをリクエストしているIDリーダーは匿名です。このデータを共有してもよいか確認してください</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">このデータをリクエストしているウェブサイトは不明です。このデータを共有してもよいか確認してください</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">このデータをリクエストしているアプリケーションは不明です。このデータを共有してもよいか確認してください</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">このデータをリクエストしているIDリーダーは信頼できます</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">このデータをリクエストしているウェブサイトは信頼できます</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">このデータをリクエストしているアプリケーションは信頼できます</string>
+    <string name="credential_presentment_privacy_policy">[%1$sプライバシーポリシー](%2$s)を確認</string>
+    <string name="credential_presentment_card_art_description">カード画像</string>
+    <string name="credential_presentment_verifier_icon_description">検証者アイコン</string>
+    <string name="credential_presentment_data_element_icon_description">データ要素アイコン</string>
+    <string name="credential_presentment_warning_icon_description">警告アイコン</string>
+    <string name="credential_presentment_select_document">書類を選択</string>
+    <string name="credential_presentment_requester_information">リクエスター情報</string>
+    <string name="certificate_viewer_sub_basic_info">基本情報</string>
+    <string name="certificate_viewer_k_type">種類</string>
+    <string name="certificate_viewer_k_serial_number">シリアル番号</string>
+    <string name="certificate_viewer_k_valid_from">有効期限（開始）</string>
+    <string name="certificate_viewer_k_valid_until">有効期限（終了）</string>
+    <string name="certificate_viewer_sub_subject">サブジェクト</string>
+    <string name="certificate_viewer_sub_issuer">発行者</string>
+    <string name="certificate_viewer_k_country_name">国名</string>
+    <string name="certificate_viewer_k_common_name">一般名</string>
+    <string name="certificate_viewer_k_org_name">組織</string>
+    <string name="certificate_viewer_k_org_unit_name">組織単位</string>
+    <string name="certificate_viewer_k_locality_name">地域</string>
+    <string name="certificate_viewer_k_state_name">都道府県</string>
+    <string name="certificate_viewer_k_other_name">その他の名前（OID %1$s）</string>
+    <string name="certificate_viewer_sub_public_key_info">公開鍵情報</string>
+    <string name="certificate_viewer_k_pk_algorithm">アルゴリズム</string>
+    <string name="certificate_viewer_k_pk_named_curve">名前付き曲線</string>
+    <string name="certificate_viewer_k_pk_value">値</string>
+    <string name="certificate_viewer_sub_extensions">拡張</string>
+    <string name="certificate_viewer_version_text">X.509バージョン%1$s証明書</string>
+    <string name="certificate_viewer_critical">重要</string>
+    <string name="certificate_viewer_critical_yes">はい</string>
+    <string name="certificate_viewer_critical_no">いいえ</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">値</string>
+    <string name="certificate_viewer_value_digital_signature">デジタル署名</string>
+    <string name="certificate_viewer_validity_in_the_past">この証明書は有効期限が切れています（%1$sに期限切れ）</string>
+    <string name="certificate_viewer_validity_in_the_future">この証明書はまだ有効ではありません（%1$sから有効）</string>
+    <string name="certificate_viewer_valid_now">現在有効、%1$sに期限切れ</string>
+    <string name="presentment_connecting_to_reader">リーダーに接続中</string>
+    <string name="presentment_success">情報が共有されました</string>
+    <string name="presentment_error">エラーが発生しました</string>
+    <string name="presentment_canceled">提示がキャンセルされました</string>
+    <string name="presentment_timeout">リーダーの応答待機時間が切れました</string>
+    <string name="presentment_waiting_for_request">リクエスト待ち</string>
+    <string name="presentment_document_picker_title">書類を選択</string>
+    <string name="presentment_document_picker_text">複数の書類がリクエストに対応できます。1つ選択してください</string>
+    <string name="presentment_document_picker_cancel">キャンセル</string>
+    <string name="presentment_document_picker_continue">続行</string>
+    <string name="passphrase_pin_screen_delete">削除</string>
+    <string name="passphrase_pin_screen_cancel">キャンセル</string>
+    <string name="passphrase_pin_screen_done">完了</string>
+    <string name="pin_prompt_try_again">PINが間違っています。もう一度お試しください</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">PINが間違っています。もう一度お試しください（最後の試行）</item>
+        <item quantity="other">PINが間違っています。もう一度お試しください（残り%1$d回）</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">PINの試行回数が多すぎます。後でもう一度お試しください</string>
+    <string name="passphrase_prompt_try_again">パスフレーズが間違っています。もう一度お試しください</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">パスフレーズが間違っています。もう一度お試しください（最後の試行）</item>
+        <item quantity="other">パスフレーズが間違っています。もう一度お試しください（残り%1$d回）</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">パスフレーズの試行回数が多すぎます。後でもう一度お試しください</string>
+    <string name="provisioning_authorization_failed">認証に失敗しました</string>
+    <string name="provisioning_idle">待機中</string>
+    <string name="provisioning_initial">プロビジョニングを開始...</string>
+    <string name="provisioning_connected">バックエンドに接続しました</string>
+    <string name="provisioning_processing_authorization">認証を処理中...</string>
+    <string name="provisioning_authorized">認証済み</string>
+    <string name="provisioning_requestion_credentials">資格情報をリクエスト中...</string>
+    <string name="provisioning_credentials_issued">資格情報が発行されました</string>
+    <string name="provisioning_browser">ブラウザを起動中です。そちらで続行してください</string>
+    <string name="provisioning_retry">もう一度お試しください</string>
+    <string name="provisioning_error">プロビジョニングエラー（エラーコード：%1$s）</string>
+    <string name="duration_just_now">たった今</string>
+    <string name="duration_in_a_few_moments">数分後</string>
+    <string name="duration_less_than_a_minute">1分未満</string>
+    <string name="duration_years_and_months">%1$s%2$s</string>
+    <string name="duration_months_and_days">%1$s%2$s</string>
+    <string name="duration_weeks_and_days">%1$s%2$s</string>
+    <string name="duration_days_and_hours">%1$s%2$s</string>
+    <string name="duration_hours_and_minutes">%1$s%2$s</string>
+    <string name="duration_never">なし</string>
+    <string name="duration_time_ago">%1$s前</string>
+    <string name="duration_time_from_now">%1$s後</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d年</item>
+        <item quantity="other">%1$d年</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$dヶ月</item>
+        <item quantity="other">%1$dヶ月</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d日</item>
+        <item quantity="other">%1$d日</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d週間</item>
+        <item quantity="other">%1$d週間</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d時間</item>
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d分</item>
+        <item quantity="other">%1$d分</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">本人確認を行ってください</string>
+    <string name="key_unlock_default_subtitle">認証が必要です</string>
+    <string name="key_unlock_present_title">書類を共有するために本人確認を行ってください</string>
+    <string name="key_unlock_present_bio_subtitle">認証が必要です</string>
+    <string name="key_unlock_present_passphrase_subtitle">書類に関連付けられたパスフレーズを入力してください</string>
+    <string name="key_unlock_present_pin_subtitle">書類に関連付けられたPINを入力してください</string>
+</resources>

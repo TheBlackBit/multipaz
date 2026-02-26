@@ -1,0 +1,134 @@
+<resources>
+    <string name="passphrase_entry_field_pin_is_weak">PIN이 취약합니다. 다른 PIN을 선택하세요</string>
+    <string name="passphrase_entry_field_passphrase_is_weak">암호문구가 취약합니다. 다른 암호문구를 선택하세요</string>
+    <string name="credential_presentment_button_cancel">취소</string>
+    <string name="credential_presentment_button_more">더 보기</string>
+    <string name="credential_presentment_button_share">공유</string>
+    <string name="credential_presentment_headline_share_with_unknown_requester">알 수 없는 요청자</string>
+    <string name="credential_presentment_share_with_known_requester">이 데이터는 %1$s와(과) 공유됩니다:</string>
+    <string name="credential_presentment_share_with_unknown_requester">이 데이터는 공유됩니다:</string>
+    <string name="credential_presentment_share_and_stored_by_known_requester">이 데이터는 %1$s에 의해 저장됩니다:</string>
+    <string name="credential_presentment_share_and_stored_by_unknown_requester">이 데이터는 저장됩니다:</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list">이 데이터를 요청하는 신분 판독기가 알 수 없습니다. 이 데이터를 공유해도 괜찮은지 확인하세요</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_anonymous">이 데이터를 요청하는 신분 판독기가 익명입니다. 이 데이터를 공유해도 괜찮은지 확인하세요</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_website">이 데이터를 요청하는 웹사이트가 알 수 없습니다. 이 데이터를 공유해도 괜찮은지 확인하세요</string>
+    <string name="credential_presentment_warning_verifier_not_in_trust_list_app">이 데이터를 요청하는 애플리케이션이 알 수 없습니다. 이 데이터를 공유해도 괜찮은지 확인하세요</string>
+    <string name="credential_presentment_info_verifier_in_trust_list">이 데이터를 요청하는 신분 판독기가 신뢰할 수 있습니다</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_website">이 데이터를 요청하는 웹사이트가 신뢰할 수 있습니다</string>
+    <string name="credential_presentment_info_verifier_in_trust_list_app">이 데이터를 요청하는 애플리케이션이 신뢰할 수 있습니다</string>
+    <string name="credential_presentment_privacy_policy">[%1$s 개인정보처리방침](%2$s) 검토</string>
+    <string name="credential_presentment_card_art_description">카드 이미지</string>
+    <string name="credential_presentment_verifier_icon_description">검증자 아이콘</string>
+    <string name="credential_presentment_data_element_icon_description">데이터 요소 아이콘</string>
+    <string name="credential_presentment_warning_icon_description">경고 아이콘</string>
+    <string name="credential_presentment_select_document">문서 선택</string>
+    <string name="credential_presentment_requester_information">요청자 정보</string>
+    <string name="certificate_viewer_sub_basic_info">기본 정보</string>
+    <string name="certificate_viewer_k_type">유형</string>
+    <string name="certificate_viewer_k_serial_number">일련번호</string>
+    <string name="certificate_viewer_k_valid_from">유효 시작일</string>
+    <string name="certificate_viewer_k_valid_until">유효 만료일</string>
+    <string name="certificate_viewer_sub_subject">주체</string>
+    <string name="certificate_viewer_sub_issuer">발급자</string>
+    <string name="certificate_viewer_k_country_name">국가명</string>
+    <string name="certificate_viewer_k_common_name">일반명</string>
+    <string name="certificate_viewer_k_org_name">조직</string>
+    <string name="certificate_viewer_k_org_unit_name">조직 단위</string>
+    <string name="certificate_viewer_k_locality_name">지역</string>
+    <string name="certificate_viewer_k_state_name">시/도</string>
+    <string name="certificate_viewer_k_other_name">기타 이름 (OID %1$s)</string>
+    <string name="certificate_viewer_sub_public_key_info">공개 키 정보</string>
+    <string name="certificate_viewer_k_pk_algorithm">알고리즘</string>
+    <string name="certificate_viewer_k_pk_named_curve">명명된 곡선</string>
+    <string name="certificate_viewer_k_pk_value">값</string>
+    <string name="certificate_viewer_sub_extensions">확장</string>
+    <string name="certificate_viewer_version_text">X.509 버전 %1$s 인증서</string>
+    <string name="certificate_viewer_critical">필수</string>
+    <string name="certificate_viewer_critical_yes">예</string>
+    <string name="certificate_viewer_critical_no">아니오</string>
+    <string name="certificate_viewer_oid">OID</string>
+    <string name="certificate_viewer_value">값</string>
+    <string name="certificate_viewer_value_digital_signature">디지털 서명</string>
+    <string name="certificate_viewer_validity_in_the_past">이 인증서는 더 이상 유효하지 않습니다. %1$s에 만료되었습니다</string>
+    <string name="certificate_viewer_validity_in_the_future">이 인증서는 아직 유효하지 않습니다. %1$s부터 유효합니다</string>
+    <string name="certificate_viewer_valid_now">현재 유효함, %1$s에 만료</string>
+    <string name="presentment_connecting_to_reader">판독기에 연결 중</string>
+    <string name="presentment_success">정보가 공유되었습니다</string>
+    <string name="presentment_error">문제가 발생했습니다</string>
+    <string name="presentment_canceled">제시가 취소되었습니다</string>
+    <string name="presentment_timeout">판독기 대기 시간 초과</string>
+    <string name="presentment_waiting_for_request">요청 대기 중</string>
+    <string name="presentment_document_picker_title">문서 선택</string>
+    <string name="presentment_document_picker_text">여러 문서가 요청을 충족할 수 있습니다. 하나를 선택하세요</string>
+    <string name="presentment_document_picker_cancel">취소</string>
+    <string name="presentment_document_picker_continue">계속</string>
+    <string name="passphrase_pin_screen_delete">삭제</string>
+    <string name="passphrase_pin_screen_cancel">취소</string>
+    <string name="passphrase_pin_screen_done">완료</string>
+    <string name="pin_prompt_try_again">PIN이 잘못되었습니다. 다시 시도하세요</string>
+    <plurals name="pin_prompt_try_again_attempts_remain">
+        <item quantity="one">PIN이 잘못되었습니다. 다시 시도하세요, 마지막 시도 남음</item>
+        <item quantity="other">PIN이 잘못되었습니다. 다시 시도하세요, %1$d회 남음</item>
+    </plurals>
+    <string name="pin_prompt_too_many_attempts">PIN 시도 횟수가 너무 많습니다. 나중에 다시 시도하세요</string>
+    <string name="passphrase_prompt_try_again">암호문구가 잘못되었습니다. 다시 시도하세요</string>
+    <plurals name="passphrase_prompt_try_again_attempts_remain">
+        <item quantity="one">암호문구가 잘못되었습니다. 다시 시도하세요, 마지막 시도 남음</item>
+        <item quantity="other">암호문구가 잘못되었습니다. 다시 시도하세요, %1$d회 남음</item>
+    </plurals>
+    <string name="passphrase_prompt_too_many_attempts">암호문구 시도 횟수가 너무 많습니다. 나중에 다시 시도하세요</string>
+    <string name="provisioning_authorization_failed">인증 실패</string>
+    <string name="provisioning_idle">대기 중</string>
+    <string name="provisioning_initial">프로비저닝 시작 중...</string>
+    <string name="provisioning_connected">백엔드에 연결됨</string>
+    <string name="provisioning_processing_authorization">인증 처리 중...</string>
+    <string name="provisioning_authorized">인증됨</string>
+    <string name="provisioning_requestion_credentials">자격 증명 요청 중...</string>
+    <string name="provisioning_credentials_issued">자격 증명이 발급되었습니다</string>
+    <string name="provisioning_browser">브라우저를 실행합니다. 거기에서 계속하세요</string>
+    <string name="provisioning_retry">다시 시도하세요</string>
+    <string name="provisioning_error">프로비저닝 오류 (오류 코드: %1$s)</string>
+    <string name="duration_just_now">방금</string>
+    <string name="duration_in_a_few_moments">잠시 후</string>
+    <string name="duration_less_than_a_minute">1분 미만</string>
+    <string name="duration_years_and_months">%1$s, %2$s</string>
+    <string name="duration_months_and_days">%1$s, %2$s</string>
+    <string name="duration_weeks_and_days">%1$s, %2$s</string>
+    <string name="duration_days_and_hours">%1$s, %2$s</string>
+    <string name="duration_hours_and_minutes">%1$s, %2$s</string>
+    <string name="duration_never">없음</string>
+    <string name="duration_time_ago">%1$s 전</string>
+    <string name="duration_time_from_now">%1$s 후</string>
+    <plurals name="duration_year">
+        <item quantity="one">%1$d년</item>
+        <item quantity="other">%1$d년</item>
+    </plurals>
+    <plurals name="duration_month">
+        <item quantity="one">%1$d개월</item>
+        <item quantity="other">%1$d개월</item>
+    </plurals>
+    <plurals name="duration_day">
+        <item quantity="one">%1$d일</item>
+        <item quantity="other">%1$d일</item>
+    </plurals>
+    <plurals name="duration_week">
+        <item quantity="one">%1$d주</item>
+        <item quantity="other">%1$d주</item>
+    </plurals>
+    <plurals name="duration_hour">
+        <item quantity="one">%1$d시간</item>
+        <item quantity="other">%1$d시간</item>
+    </plurals>
+    <plurals name="duration_minute">
+        <item quantity="one">%1$d분</item>
+        <item quantity="other">%1$d분</item>
+    </plurals>
+
+    <!-- PromptModel - Key Unlock Strings -->
+    <string name="key_unlock_default_title">본인 인증을 해주세요</string>
+    <string name="key_unlock_default_subtitle">인증이 필요합니다</string>
+    <string name="key_unlock_present_title">문서를 공유하기 위해 본인 인증을 해주세요</string>
+    <string name="key_unlock_present_bio_subtitle">인증이 필요합니다</string>
+    <string name="key_unlock_present_passphrase_subtitle">문서와 연결된 비밀문구를 입력하세요</string>
+    <string name="key_unlock_present_pin_subtitle">문서와 연결된 PIN을 입력하세요</string>
+</resources>
