@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">Le code PIN est faible, veuillez en choisir un autre</string>
     <string name="passphrase_entry_field_passphrase_is_weak">La phrase secrète est faible, veuillez en choisir une autre</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d minute</item>
         <item quantity="other">%1$d minutes</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Vérifiez que c'est bien vous</string>
     <string name="key_unlock_default_subtitle">Authentification requise</string>
     <string name="key_unlock_present_title">Vérifiez que c'est bien vous pour partager le document</string>
     <string name="key_unlock_present_bio_subtitle">Authentification requise</string>
     <string name="key_unlock_present_passphrase_subtitle">Entrez la phrase de passe associée au document</string>
     <string name="key_unlock_present_pin_subtitle">Entrez le code PIN associé au document</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Site web inconnu</string>
+    <string name="provisioning_title">Provisionnement</string>
+    <string name="aks_unlock_present_pin_subtitle">Saisissez le code PIN associé au document</string>
+    <string name="trust_entry_vical_fallback_name">VICAL de %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL de %1$s</string>
+    <string name="trust_entry_details_certificate">Certificat</string>
+    <string name="trust_entry_warning_x509_just_imported">Ce certificat vient d'être importé. Veuillez vérifier son empreinte pour vous assurer de sa fiabilité.</string>
+    <string name="trust_entry_warning_vical_just_imported">Ce VICAL vient d'être importé. Veuillez vérifier la chaîne de certificats du signataire pour vous assurer de la fiabilité du fournisseur.</string>
+    <string name="trust_entry_warning_rical_just_imported">Ce RICAL vient d'être importé. Veuillez vérifier la chaîne de certificats du signataire pour vous assurer de la fiabilité du fournisseur.</string>
+    <string name="trust_entry_test_only_label">Uniquement pour test</string>
+    <string name="trust_entry_yes">Oui</string>
+    <string name="trust_entry_no">Non</string>
+    <string name="trust_entry_vical_details_version">Version</string>
+    <string name="trust_entry_vical_details_provider">Fournisseur</string>
+    <string name="trust_entry_vical_details_issue">Objet</string>
+    <string name="trust_entry_vical_details_issued_at">Émis le</string>
+    <string name="trust_entry_vical_details_next_update">Prochaine mise à jour</string>
+    <string name="trust_entry_signer">Signataire</string>
+    <string name="trust_entry_click_to_view_chain">Cliquer pour afficher la chaîne de certificats</string>
+    <string name="trust_entry_vical_data_title">Données VICAL</string>
+    <string name="trust_entry_certificates_title">Certificats</string>
+    <string name="trust_entry_rical_details_type">Type</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Valide jusqu'au</string>
+    <string name="trust_entry_rical_data_title">Données RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Types de documents</string>
+    <string name="trust_entry_vical_entry_title">Entrée VICAL</string>
+    <string name="trust_entry_editor_change">Modifier</string>
+    <string name="trust_entry_editor_remove">Supprimer</string>
+    <string name="trust_entry_editor_name_label">Nom</string>
+    <string name="trust_entry_editor_test_only_x509">Ce certificat est uniquement à des fins de test</string>
+    <string name="trust_entry_editor_test_only_vical">Ce VICAL est uniquement à des fins de test</string>
+    <string name="trust_entry_editor_test_only_rical">Ce RICAL est seulement pour les tests.</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL contenant %1$d certificat</item>
+        <item quantity="other">VICAL contenant %1$d certificats</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL contenant %1$d certificat</item>
+        <item quantity="other">RICAL contenant %1$d certificats</item>
+    </plurals>
 </resources>

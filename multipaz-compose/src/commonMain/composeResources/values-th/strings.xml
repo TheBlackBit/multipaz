@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN ไม่ปลอดภัย โปรดเลือก PIN อื่น</string>
     <string name="passphrase_entry_field_passphrase_is_weak">รหัสผ่านไม่ปลอดภัย โปรดเลือกรหัสผ่านอื่น</string>
@@ -115,12 +116,52 @@
     <plurals name="duration_minute">
         <item quantity="other">%1$d นาที</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">ตรวจสอบว่าเป็นคุณ</string>
     <string name="key_unlock_default_subtitle">ต้องการการตรวจสอบสิทธิ์</string>
     <string name="key_unlock_present_title">ตรวจสอบว่าเป็นคุณเพื่อแชร์เอกสาร</string>
     <string name="key_unlock_present_bio_subtitle">ต้องการการตรวจสอบสิทธิ์</string>
     <string name="key_unlock_present_passphrase_subtitle">ป้อนรหัสผ่านที่เชื่อมโยงกับเอกสาร</string>
     <string name="key_unlock_present_pin_subtitle">ป้อน PIN ที่เชื่อมโยงกับเอกสาร</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">เว็บไซต์ที่ไม่รู้จัก</string>
+    <string name="provisioning_title">การจัดเตรียม</string>
+    <string name="aks_unlock_present_pin_subtitle">ป้อน PIN ที่เชื่อมโยงกับเอกสาร</string>
+    <string name="trust_entry_vical_fallback_name">VICAL จาก %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL จาก %1$s</string>
+    <string name="trust_entry_details_certificate">ใบรับรอง</string>
+    <string name="trust_entry_warning_x509_just_imported">ใบรับรองนี้เพิ่งนำเข้า โปรดตรวจสอบลายนิ้วมือเพื่อให้แน่ใจว่าคุณเชื่อถือได้</string>
+    <string name="trust_entry_warning_vical_just_imported">VICAL นี้เพิ่งนำเข้า โปรดตรวจสอบห่วงโซ่ใบรับรองของผู้ลงนามเพื่อให้แน่ใจว่าคุณเชื่อถือผู้ให้บริการ</string>
+    <string name="trust_entry_warning_rical_just_imported">RICAL นี้เพิ่งนำเข้า โปรดตรวจสอบห่วงโซ่ใบรับรองของผู้ลงนามเพื่อให้แน่ใจว่าคุณเชื่อถือผู้ให้บริการ</string>
+    <string name="trust_entry_test_only_label">ทดสอบเท่านั้น</string>
+    <string name="trust_entry_yes">ใช่</string>
+    <string name="trust_entry_no">ไม่</string>
+    <string name="trust_entry_vical_details_version">เวอร์ชัน</string>
+    <string name="trust_entry_vical_details_provider">ผู้ให้บริการ</string>
+    <string name="trust_entry_vical_details_issue">ประเด็น</string>
+    <string name="trust_entry_vical_details_issued_at">ออกเมื่อ</string>
+    <string name="trust_entry_vical_details_next_update">อัปเดตครั้งถัดไป</string>
+    <string name="trust_entry_signer">ผู้ลงนาม</string>
+    <string name="trust_entry_click_to_view_chain">แตะเพื่อดูสายโซ่ใบรับรอง</string>
+    <string name="trust_entry_vical_data_title">ข้อมูล VICAL</string>
+    <string name="trust_entry_certificates_title">ใบรับรอง</string>
+    <string name="trust_entry_rical_details_type">ประเภท</string>
+    <string name="trust_entry_rical_details_id">รหัส</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">ใช้ได้ถึง</string>
+    <string name="trust_entry_rical_data_title">ข้อมูล RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">ประเภทเอกสาร</string>
+    <string name="trust_entry_vical_entry_title">รายการ VICAL</string>
+    <string name="trust_entry_editor_change">เปลี่ยน</string>
+    <string name="trust_entry_editor_remove">นำออก</string>
+    <string name="trust_entry_editor_name_label">ชื่อ</string>
+    <string name="trust_entry_editor_test_only_x509">ใบรับรองนี้มีไว้สำหรับการทดสอบเท่านั้น</string>
+    <string name="trust_entry_editor_test_only_vical">VICAL นี้มีไว้สำหรับการทดสอบเท่านั้น</string>
+    <string name="trust_entry_editor_test_only_rical">RICAL นี้สำหรับทดสอบเท่านั้น</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL containing %1$d certificate</item>
+        <item quantity="other">VICAL บรรจุใบรับรอง %1$d ใบ</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL containing %1$d certificate</item>
+        <item quantity="other">RICAL บรรจุใบรับรอง %1$d ใบ</item>
+    </plurals>
 </resources>

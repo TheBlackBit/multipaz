@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">رمز PIN ضعيف، يرجى اختيار رمز آخر</string>
     <string name="passphrase_entry_field_passphrase_is_weak">عبارة المرور ضعيفة، يرجى اختيار عبارة أخرى</string>
@@ -72,6 +73,7 @@
         <item quantity="two">رمز PIN غير صحيح، حاول مرة أخرى، باقٍ محاولتان</item>
         <item quantity="few">رمز PIN غير صحيح، حاول مرة أخرى، باقٍ %1$d محاولات</item>
         <item quantity="many">رمز PIN غير صحيح، حاول مرة أخرى، باقٍ %1$d محاولة</item>
+        <item quantity="zero">رمز PIN خاطئ، حاول مجدداً، تبقى %1$d محاولات</item>
     </plurals>
     <string name="pin_prompt_too_many_attempts">تم تجاوز عدد محاولات رمز PIN الخاطئة، حاول مرة أخرى لاحقاً</string>
     <string name="passphrase_prompt_try_again">عبارة المرور غير صحيحة، حاول مرة أخرى</string>
@@ -81,6 +83,7 @@
         <item quantity="two">عبارة المرور غير صحيحة، حاول مرة أخرى، باقٍ محاولتان</item>
         <item quantity="few">عبارة المرور غير صحيحة، حاول مرة أخرى، باقٍ %1$d محاولات</item>
         <item quantity="many">عبارة المرور غير صحيحة، حاول مرة أخرى، باقٍ %1$d محاولة</item>
+        <item quantity="zero">عبارة المرور خاطئة، حاول مجدداً، تبقى %1$d محاولات</item>
     </plurals>
     <string name="passphrase_prompt_too_many_attempts">تم تجاوز عدد محاولات عبارة المرور الخاطئة، حاول مرة أخرى لاحقاً</string>
     <string name="provisioning_authorization_failed">فشل التفويض</string>
@@ -111,6 +114,7 @@
         <item quantity="two">%1$d سنتان</item>
         <item quantity="few">%1$d سنوات</item>
         <item quantity="many">%1$d سنة</item>
+        <item quantity="zero">%1$d سنوات</item>
     </plurals>
     <plurals name="duration_month">
         <item quantity="one">%1$d شهر</item>
@@ -118,6 +122,7 @@
         <item quantity="two">%1$d شهران</item>
         <item quantity="few">%1$d أشهر</item>
         <item quantity="many">%1$d شهراً</item>
+        <item quantity="zero">%1$d أشهر</item>
     </plurals>
     <plurals name="duration_day">
         <item quantity="one">%1$d يوم</item>
@@ -125,6 +130,7 @@
         <item quantity="two">%1$d يومان</item>
         <item quantity="few">%1$d أيام</item>
         <item quantity="many">%1$d يوماً</item>
+        <item quantity="zero">%1$d أيام</item>
     </plurals>
     <plurals name="duration_week">
         <item quantity="one">%1$d أسبوع</item>
@@ -132,6 +138,7 @@
         <item quantity="two">%1$d أسبوعان</item>
         <item quantity="few">%1$d أسابيع</item>
         <item quantity="many">%1$d أسبوعاً</item>
+        <item quantity="zero">%1$d أسابيع</item>
     </plurals>
     <plurals name="duration_hour">
         <item quantity="one">%1$d ساعة</item>
@@ -139,6 +146,7 @@
         <item quantity="two">%1$d ساعتان</item>
         <item quantity="few">%1$d ساعات</item>
         <item quantity="many">%1$d ساعة</item>
+        <item quantity="zero">%1$d ساعات</item>
     </plurals>
     <plurals name="duration_minute">
         <item quantity="one">%1$d دقيقة</item>
@@ -146,13 +154,62 @@
         <item quantity="two">%1$d دقيقتان</item>
         <item quantity="few">%1$d دقائق</item>
         <item quantity="many">%1$d دقيقة</item>
+        <item quantity="zero">%1$d دقائق</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">تحقق من أنك أنت</string>
     <string name="key_unlock_default_subtitle">المصادقة مطلوبة</string>
     <string name="key_unlock_present_title">تحقق من أنك أنت لمشاركة المستند</string>
     <string name="key_unlock_present_bio_subtitle">المصادقة مطلوبة</string>
     <string name="key_unlock_present_passphrase_subtitle">أدخل عبارة المرور المرتبطة بالمستند</string>
     <string name="key_unlock_present_pin_subtitle">أدخل رمز PIN المرتبط بالمستند</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">موقع غير معروف</string>
+    <string name="provisioning_title">التوفير</string>
+    <string name="aks_unlock_present_pin_subtitle">أدخل رقم التعريف الشخصي المرتبط بالمستند</string>
+    <string name="trust_entry_vical_fallback_name">VICAL من %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL من %1$s</string>
+    <string name="trust_entry_details_certificate">الشهادة</string>
+    <string name="trust_entry_warning_x509_just_imported">تم استيراد هذه الشهادة للتو. يرجى التحقق من بصمتها للتأكد من أنك تثق بها</string>
+    <string name="trust_entry_warning_vical_just_imported">تم استيراد VICAL هذه للتو. يرجى التحقق من سلسلة شهادات الموقّع للتأكد من أنك تثق بالمزود</string>
+    <string name="trust_entry_warning_rical_just_imported">تم استيراد RICAL هذه للتو. يرجى التحقق من سلسلة شهادات الموقّع للتأكد من أنك تثق بالمزود</string>
+    <string name="trust_entry_test_only_label">للاختبار فقط</string>
+    <string name="trust_entry_yes">نعم</string>
+    <string name="trust_entry_no">لا</string>
+    <string name="trust_entry_vical_details_version">الإصدار</string>
+    <string name="trust_entry_vical_details_provider">مزود</string>
+    <string name="trust_entry_vical_details_issue">المسألة</string>
+    <string name="trust_entry_vical_details_issued_at">صدر في</string>
+    <string name="trust_entry_vical_details_next_update">التحديث التالي</string>
+    <string name="trust_entry_signer">الموقّع</string>
+    <string name="trust_entry_click_to_view_chain">انقر لعرض سلسلة الشهادات</string>
+    <string name="trust_entry_vical_data_title">بيانات VICAL</string>
+    <string name="trust_entry_certificates_title">الشهادات</string>
+    <string name="trust_entry_rical_details_type">النوع</string>
+    <string name="trust_entry_rical_details_id">المعرّف</string>
+    <string name="trust_entry_rical_details_url">عنوان URL</string>
+    <string name="trust_entry_rical_details_valid_until">صالح حتى</string>
+    <string name="trust_entry_rical_data_title">بيانات RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">أنواع المستندات</string>
+    <string name="trust_entry_vical_entry_title">مدخل VICAL</string>
+    <string name="trust_entry_editor_change">تغيير</string>
+    <string name="trust_entry_editor_remove">إزالة</string>
+    <string name="trust_entry_editor_name_label">الاسم</string>
+    <string name="trust_entry_editor_test_only_x509">هذه الشهادة مخصصة للاختبار فقط</string>
+    <string name="trust_entry_editor_test_only_vical">هذا الـ VICAL مخصص للاختبار فقط</string>
+    <string name="trust_entry_editor_test_only_rical">هذا RICAL للاختبار فقط</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL تحتوي على %1$d شهادة</item>
+        <item quantity="other">VICAL تحتوي على %1$d شهادات</item>
+        <item quantity="zero">VICAL يتضمن %1$d شهادات</item>
+        <item quantity="two">VICAL يتضمن %1$d شهادات</item>
+        <item quantity="few">VICAL يتضمن %1$d شهادات</item>
+        <item quantity="many">VICAL يتضمن %1$d شهادات</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL تحتوي على %1$d شهادة</item>
+        <item quantity="other">RICAL يحتوي على %1$d شهادات</item>
+        <item quantity="zero">RICAL يتضمن %1$d شهادات</item>
+        <item quantity="two">RICAL يتضمن %1$d شهادات</item>
+        <item quantity="few">RICAL يتضمن %1$d شهادات</item>
+        <item quantity="many">RICAL يتضمن %1$d شهادات</item>
+    </plurals>
 </resources>

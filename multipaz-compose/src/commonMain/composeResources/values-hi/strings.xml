@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN कमजोर है, कृपया दूसरा चुनें</string>
     <string name="passphrase_entry_field_passphrase_is_weak">पासफ्रेज कमजोर है, कृपया दूसरा चुनें</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d मिनट</item>
         <item quantity="other">%1$d मिनट</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">सत्यापित करें कि यह आप हैं</string>
     <string name="key_unlock_default_subtitle">प्रमाणीकरण आवश्यक है</string>
     <string name="key_unlock_present_title">दस्तावेज़ साझा करने के लिए सत्यापित करें कि यह आप हैं</string>
     <string name="key_unlock_present_bio_subtitle">प्रमाणीकरण आवश्यक है</string>
     <string name="key_unlock_present_passphrase_subtitle">दस्तावेज़ से संबद्ध पासफ़्रेज़ दर्ज करें</string>
     <string name="key_unlock_present_pin_subtitle">दस्तावेज़ से संबद्ध PIN दर्ज करें</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">अज्ञात वेबसाइट</string>
+    <string name="provisioning_title">प्रावधान</string>
+    <string name="aks_unlock_present_pin_subtitle">दस्तावेज़ से संबंधित पिन दर्ज करें</string>
+    <string name="trust_entry_vical_fallback_name">VICAL %1$s से</string>
+    <string name="trust_entry_rical_fallback_name">RICAL %1$s से</string>
+    <string name="trust_entry_details_certificate">प्रमाणपत्र</string>
+    <string name="trust_entry_warning_x509_just_imported">यह प्रमाणपत्र अभी-अभी इंपोर्ट किया गया है। इस पर भरोसा करने के लिए कृपया इसकी फ़िंगरप्रिंट की जाँच करें।</string>
+    <string name="trust_entry_warning_vical_just_imported">यह VICAL अभी-अभी इंपोर्ट किया गया है। प्रदाता पर भरोसा करने के लिए कृपया हस्ताक्षरकर्ता प्रमाणपत्र शृंखला की जाँच करें।</string>
+    <string name="trust_entry_warning_rical_just_imported">यह RICAL अभी-अभी इंपोर्ट किया गया है। प्रदाता पर भरोसा करने के लिए कृपया हस्ताक्षरकर्ता प्रमाणपत्र शृंखला की जाँच करें।</string>
+    <string name="trust_entry_test_only_label">केवल परीक्षण के लिए</string>
+    <string name="trust_entry_yes">हाँ</string>
+    <string name="trust_entry_no">नहीं</string>
+    <string name="trust_entry_vical_details_version">संस्करण</string>
+    <string name="trust_entry_vical_details_provider">प्रदाता</string>
+    <string name="trust_entry_vical_details_issue">मुद्दा</string>
+    <string name="trust_entry_vical_details_issued_at">जारी किया गया</string>
+    <string name="trust_entry_vical_details_next_update">अगला अपडेट</string>
+    <string name="trust_entry_signer">हस्ताक्षरकर्ता</string>
+    <string name="trust_entry_click_to_view_chain">प्रमाणपत्र श्रृंखला देखने के लिए क्लिक करें</string>
+    <string name="trust_entry_vical_data_title">VICAL डेटा</string>
+    <string name="trust_entry_certificates_title">प्रमाणपत्र</string>
+    <string name="trust_entry_rical_details_type">प्रकार</string>
+    <string name="trust_entry_rical_details_id">आईडी</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">तक मान्य</string>
+    <string name="trust_entry_rical_data_title">RICAL डेटा</string>
+    <string name="trust_entry_vical_entry_document_types">दस्तावेज़ प्रकार</string>
+    <string name="trust_entry_vical_entry_title">VICAL एंट्री</string>
+    <string name="trust_entry_editor_change">बदलें</string>
+    <string name="trust_entry_editor_remove">हटाएँ</string>
+    <string name="trust_entry_editor_name_label">नाम</string>
+    <string name="trust_entry_editor_test_only_x509">यह प्रमाण पत्र केवल परीक्षण के लिए है</string>
+    <string name="trust_entry_editor_test_only_vical">यह VICAL केवल परीक्षण के लिए है</string>
+    <string name="trust_entry_editor_test_only_rical">यह RICAL केवल परीक्षण के लिए है</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL में %1$d प्रमाणपत्र</item>
+        <item quantity="other">VICAL में %1$d प्रमाणपत्र</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL में %1$d प्रमाणपत्र</item>
+        <item quantity="other">RICAL में %1$d प्रमाणपत्र</item>
+    </plurals>
 </resources>

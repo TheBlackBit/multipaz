@@ -17,6 +17,7 @@ startParameter.excludedTaskNames +=
     )
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             mavenContent {
@@ -45,6 +46,8 @@ dependencyResolutionManagement {
                 includeGroup("com.github.yuriy-budiyev")
             }
         }
+        // Koog repository for Lokalize plugin worker dependencies
+        maven("https://packages.jetbrains.team/maven/p/kt/koog")
     }
 }
 

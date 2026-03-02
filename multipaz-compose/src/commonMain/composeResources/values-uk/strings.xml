@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN-код слабкий, оберіть інший</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Парольна фраза слабка, оберіть іншу</string>
@@ -70,6 +71,7 @@
         <item quantity="one">Невірний PIN-код, спробуйте ще раз, залишилася остання спроба</item>
         <item quantity="other">Невірний PIN-код, спробуйте ще раз, залишилося %1$d спроб</item>
         <item quantity="few">Невірний PIN-код, спробуйте ще раз, залишилося %1$d спроби</item>
+        <item quantity="many">Неправильний PIN-код, спробуйте ще раз, залишилося %1$d спроб</item>
     </plurals>
     <string name="pin_prompt_too_many_attempts">Занадто багато невдалих спроб введення PIN-коду, спробуйте пізніше</string>
     <string name="passphrase_prompt_try_again">Невірна парольна фраза, спробуйте ще раз</string>
@@ -77,6 +79,7 @@
         <item quantity="one">Невірна парольна фраза, спробуйте ще раз, залишилася остання спроба</item>
         <item quantity="other">Невірна парольна фраза, спробуйте ще раз, залишилося %1$d спроб</item>
         <item quantity="few">Невірна парольна фраза, спробуйте ще раз, залишилося %1$d спроби</item>
+        <item quantity="many">Неправильна кодова фраза, спробуйте ще раз, залишилося %1$d спроб</item>
     </plurals>
     <string name="passphrase_prompt_too_many_attempts">Занадто багато невдалих спроб введення парольної фрази, спробуйте пізніше</string>
     <string name="provisioning_authorization_failed">Помилка авторизації</string>
@@ -105,38 +108,88 @@
         <item quantity="one">%1$d рік</item>
         <item quantity="other">%1$d років</item>
         <item quantity="few">%1$d роки</item>
+        <item quantity="many">%1$d років</item>
     </plurals>
     <plurals name="duration_month">
         <item quantity="one">%1$d місяць</item>
         <item quantity="other">%1$d місяців</item>
         <item quantity="few">%1$d місяці</item>
+        <item quantity="many">%1$d місяців</item>
     </plurals>
     <plurals name="duration_day">
         <item quantity="one">%1$d день</item>
         <item quantity="other">%1$d днів</item>
         <item quantity="few">%1$d дні</item>
+        <item quantity="many">%1$d днів</item>
     </plurals>
     <plurals name="duration_week">
         <item quantity="one">%1$s тиждень</item>
         <item quantity="other">%1$s тижнів</item>
         <item quantity="few">%1$s тижні</item>
+        <item quantity="many">%1$d тижнів</item>
     </plurals>
     <plurals name="duration_hour">
         <item quantity="one">%1$d година</item>
         <item quantity="other">%1$d годин</item>
         <item quantity="few">%1$d години</item>
+        <item quantity="many">%1$d годин</item>
     </plurals>
     <plurals name="duration_minute">
         <item quantity="one">%1$d хвилина</item>
         <item quantity="other">%1$d хвилин</item>
         <item quantity="few">%1$d хвилини</item>
+        <item quantity="many">%1$d хвилин</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Підтвердіть, що це ви</string>
     <string name="key_unlock_default_subtitle">Потрібна автентифікація</string>
     <string name="key_unlock_present_title">Підтвердіть, що це ви, щоб поділитися документом</string>
     <string name="key_unlock_present_bio_subtitle">Потрібна автентифікація</string>
     <string name="key_unlock_present_passphrase_subtitle">Введіть парольну фразу, пов'язану з документом</string>
     <string name="key_unlock_present_pin_subtitle">Введіть PIN-код, пов'язаний з документом</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Невідомий вебсайт</string>
+    <string name="provisioning_title">Забезпечення</string>
+    <string name="aks_unlock_present_pin_subtitle">Введіть PIN-код, пов'язаний з документом</string>
+    <string name="trust_entry_vical_fallback_name">VICAL від %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL від %1$s</string>
+    <string name="trust_entry_details_certificate">Сертифікат</string>
+    <string name="trust_entry_warning_x509_just_imported">Цей сертифікат щойно імпортовано. Будь ласка, перевірте його відбиток, щоб переконатися, що ви йому довіряєте</string>
+    <string name="trust_entry_warning_vical_just_imported">Цей VICAL щойно імпортовано. Будь ласка, перевірте ланцюжок сертифікатів підписувача, щоб переконатися, що ви довіряєте постачальнику</string>
+    <string name="trust_entry_warning_rical_just_imported">Цей RICAL щойно імпортовано. Будь ласка, перевірте ланцюжок сертифікатів підписувача, щоб переконатися, що ви довіряєте постачальнику</string>
+    <string name="trust_entry_test_only_label">Лише для тестування</string>
+    <string name="trust_entry_yes">Так</string>
+    <string name="trust_entry_no">Ні</string>
+    <string name="trust_entry_vical_details_version">Версія</string>
+    <string name="trust_entry_vical_details_provider">Постачальник</string>
+    <string name="trust_entry_vical_details_issue">Питання</string>
+    <string name="trust_entry_vical_details_issued_at">Видано о</string>
+    <string name="trust_entry_vical_details_next_update">Наступне оновлення</string>
+    <string name="trust_entry_signer">Підписувач</string>
+    <string name="trust_entry_click_to_view_chain">Натисніть, щоб переглянути ланцюжок сертифікатів</string>
+    <string name="trust_entry_vical_data_title">Дані VICAL</string>
+    <string name="trust_entry_certificates_title">Сертифікати</string>
+    <string name="trust_entry_rical_details_type">Тип</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Дійсний до</string>
+    <string name="trust_entry_rical_data_title">Дані RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Типи документів</string>
+    <string name="trust_entry_vical_entry_title">Запис VICAL</string>
+    <string name="trust_entry_editor_change">Змінити</string>
+    <string name="trust_entry_editor_remove">Видалити</string>
+    <string name="trust_entry_editor_name_label">Назва</string>
+    <string name="trust_entry_editor_test_only_x509">Цей сертифікат призначений лише для тестування</string>
+    <string name="trust_entry_editor_test_only_vical">Цей VICAL призначений лише для тестування</string>
+    <string name="trust_entry_editor_test_only_rical">Цей RICAL тільки для тестування.</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL, що містить %1$d сертифікат</item>
+        <item quantity="other">VICAL, що містить %1$d сертифікатів</item>
+        <item quantity="few">VICAL, що містить %1$d сертифікати</item>
+        <item quantity="many">VICAL, що містить %1$d сертифікатів</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL, що містить %1$d сертифікат</item>
+        <item quantity="other">RICAL, що містить %1$d сертифікатів</item>
+        <item quantity="few">RICAL, що містить %1$d сертифікати</item>
+        <item quantity="many">RICAL, що містить %1$d сертифікатів</item>
+    </plurals>
 </resources>

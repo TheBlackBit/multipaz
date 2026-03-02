@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN zayıf, lütfen başka bir PIN seçin</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Parola zayıf, lütfen başka bir parola seçin</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d dakika</item>
         <item quantity="other">%1$d dakika</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Siz olduğunuzu doğrulayın</string>
     <string name="key_unlock_default_subtitle">Kimlik doğrulama gerekli</string>
     <string name="key_unlock_present_title">Belgeyi paylaşmak için siz olduğunuzu doğrulayın</string>
     <string name="key_unlock_present_bio_subtitle">Kimlik doğrulama gerekli</string>
     <string name="key_unlock_present_passphrase_subtitle">Belgeyle ilişkilendirilmiş parolayı girin</string>
     <string name="key_unlock_present_pin_subtitle">Belgeyle ilişkilendirilmiş PIN'i girin</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Bilinmeyen web sitesi</string>
+    <string name="provisioning_title">Sağlama</string>
+    <string name="aks_unlock_present_pin_subtitle">Belgeyle ilişkili PIN'i girin</string>
+    <string name="trust_entry_vical_fallback_name">VICAL, %1$s'den</string>
+    <string name="trust_entry_rical_fallback_name">RICAL, %1$s'den</string>
+    <string name="trust_entry_details_certificate">Sertifika</string>
+    <string name="trust_entry_warning_x509_just_imported">Bu sertifika yeni içe aktarıldı. Güvenilirliğini doğrulamak için lütfen parmak izini kontrol edin.</string>
+    <string name="trust_entry_warning_vical_just_imported">Bu VICAL yeni içe aktarıldı. Sağlayıcıya güvenilirliğini doğrulamak için lütfen imzalayan sertifika zincirini kontrol edin.</string>
+    <string name="trust_entry_warning_rical_just_imported">Bu RICAL yeni içe aktarıldı. Sağlayıcıya güvenilirliğini doğrulamak için lütfen imzalayan sertifika zincirini kontrol edin.</string>
+    <string name="trust_entry_test_only_label">Yalnızca test</string>
+    <string name="trust_entry_yes">Evet</string>
+    <string name="trust_entry_no">Hayır</string>
+    <string name="trust_entry_vical_details_version">Sürüm</string>
+    <string name="trust_entry_vical_details_provider">Sağlayıcı</string>
+    <string name="trust_entry_vical_details_issue">Konu</string>
+    <string name="trust_entry_vical_details_issued_at">Düzenlenme tarihi</string>
+    <string name="trust_entry_vical_details_next_update">Sonraki güncelleme</string>
+    <string name="trust_entry_signer">İmzalayan</string>
+    <string name="trust_entry_click_to_view_chain">Sertifika zincirini görüntülemek için tıklayın</string>
+    <string name="trust_entry_vical_data_title">VICAL verileri</string>
+    <string name="trust_entry_certificates_title">Sertifikalar</string>
+    <string name="trust_entry_rical_details_type">Tür</string>
+    <string name="trust_entry_rical_details_id">Kimlik</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Şu tarihe kadar geçerli</string>
+    <string name="trust_entry_rical_data_title">RICAL verileri</string>
+    <string name="trust_entry_vical_entry_document_types">Belge Türleri</string>
+    <string name="trust_entry_vical_entry_title">VICAL girişi</string>
+    <string name="trust_entry_editor_change">Değiştir</string>
+    <string name="trust_entry_editor_remove">Kaldır</string>
+    <string name="trust_entry_editor_name_label">Ad</string>
+    <string name="trust_entry_editor_test_only_x509">Bu sertifika yalnızca test amaçlıdır.</string>
+    <string name="trust_entry_editor_test_only_vical">Bu VICAL yalnızca test amaçlıdır.</string>
+    <string name="trust_entry_editor_test_only_rical">Bu RICAL sadece test amaçlıdır</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL, %1$d sertifika içeren</item>
+        <item quantity="other">VICAL, %1$d sertifika içeren</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL, %1$d sertifika içeren</item>
+        <item quantity="other">RICAL, %1$d sertifika içeren</item>
+    </plurals>
 </resources>

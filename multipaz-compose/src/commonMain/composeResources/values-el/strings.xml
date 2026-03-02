@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">Ο κωδικός PIN είναι αδύναμος, επιλέξτε άλλον</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Η φράση πρόσβασης είναι αδύναμη, επιλέξτε άλλη</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d λεπτό</item>
         <item quantity="other">%1$d λεπτά</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Επιβεβαιώστε ότι είστε εσείς</string>
     <string name="key_unlock_default_subtitle">Απαιτείται ταυτοποίηση</string>
     <string name="key_unlock_present_title">Επιβεβαιώστε ότι είστε εσείς για να μοιραστείτε το έγγραφο</string>
     <string name="key_unlock_present_bio_subtitle">Απαιτείται ταυτοποίηση</string>
     <string name="key_unlock_present_passphrase_subtitle">Εισαγάγετε τη φράση πρόσβασης που συνδέεται με το έγγραφο</string>
     <string name="key_unlock_present_pin_subtitle">Εισαγάγετε το PIN που συνδέεται με το έγγραφο</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Άγνωστος ιστότοπος</string>
+    <string name="provisioning_title">Προμήθεια</string>
+    <string name="aks_unlock_present_pin_subtitle">Εισαγάγετε το PIN που αντιστοιχεί στο έγγραφο</string>
+    <string name="trust_entry_vical_fallback_name">VICAL από %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL από %1$s</string>
+    <string name="trust_entry_details_certificate">Πιστοποιητικό</string>
+    <string name="trust_entry_warning_x509_just_imported">Αυτό το πιστοποιητικό μόλις εισήχθη. Ελέγξτε το δακτυλικό του αποτύπωμα για να βεβαιωθείτε ότι το εμπιστεύεστε.</string>
+    <string name="trust_entry_warning_vical_just_imported">Αυτό το VICAL μόλις εισήχθη. Ελέγξτε την αλυσίδα πιστοποιητικών υπογραφής για να βεβαιωθείτε ότι εμπιστεύεστε τον πάροχο.</string>
+    <string name="trust_entry_warning_rical_just_imported">Αυτό το RICAL μόλις εισήχθη. Ελέγξτε την αλυσίδα πιστοποιητικών υπογραφής για να βεβαιωθείτε ότι εμπιστεύεστε τον πάροχο.</string>
+    <string name="trust_entry_test_only_label">Μόνο δοκιμαστικό</string>
+    <string name="trust_entry_yes">Ναι</string>
+    <string name="trust_entry_no">Όχι</string>
+    <string name="trust_entry_vical_details_version">Έκδοση</string>
+    <string name="trust_entry_vical_details_provider">Πάροχος</string>
+    <string name="trust_entry_vical_details_issue">Θέμα</string>
+    <string name="trust_entry_vical_details_issued_at">Εκδόθηκε στις</string>
+    <string name="trust_entry_vical_details_next_update">Επόμενη ενημέρωση</string>
+    <string name="trust_entry_signer">Υπογράφων</string>
+    <string name="trust_entry_click_to_view_chain">Πατήστε για προβολή αλυσίδας πιστοποιητικών</string>
+    <string name="trust_entry_vical_data_title">Δεδομένα VICAL</string>
+    <string name="trust_entry_certificates_title">Πιστοποιητικά</string>
+    <string name="trust_entry_rical_details_type">Τύπος</string>
+    <string name="trust_entry_rical_details_id">Αναγνωριστικό</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Έγκυρο έως</string>
+    <string name="trust_entry_rical_data_title">Δεδομένα RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Τύποι εγγράφων</string>
+    <string name="trust_entry_vical_entry_title">Εγγραφή VICAL</string>
+    <string name="trust_entry_editor_change">Αλλαγή</string>
+    <string name="trust_entry_editor_remove">Κατάργηση</string>
+    <string name="trust_entry_editor_name_label">Όνομα</string>
+    <string name="trust_entry_editor_test_only_x509">Αυτό το πιστοποιητικό είναι μόνο για δοκιμή</string>
+    <string name="trust_entry_editor_test_only_vical">Αυτό το VICAL είναι μόνο για δοκιμή</string>
+    <string name="trust_entry_editor_test_only_rical">Αυτό το RICAL είναι μόνο για δοκιμή</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL που περιέχει %1$d πιστοποιητικό</item>
+        <item quantity="other">VICAL που περιέχει %1$d πιστοποιητικά</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL που περιέχει %1$d πιστοποιητικό</item>
+        <item quantity="other">RICAL που περιέχει %1$d πιστοποιητικά</item>
+    </plurals>
 </resources>

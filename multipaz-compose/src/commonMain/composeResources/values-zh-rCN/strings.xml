@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN 码较弱，请选择其他</string>
     <string name="passphrase_entry_field_passphrase_is_weak">密码短语较弱，请选择其他</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d 分钟</item>
         <item quantity="other">%1$d 分钟</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">验证是您本人</string>
     <string name="key_unlock_default_subtitle">需要身份验证</string>
     <string name="key_unlock_present_title">验证是您本人以分享文档</string>
     <string name="key_unlock_present_bio_subtitle">需要身份验证</string>
     <string name="key_unlock_present_passphrase_subtitle">输入与文档关联的密码短语</string>
     <string name="key_unlock_present_pin_subtitle">输入与文档关联的PIN码</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">未知网站</string>
+    <string name="provisioning_title">配置</string>
+    <string name="aks_unlock_present_pin_subtitle">输入与文档关联的PIN码</string>
+    <string name="trust_entry_vical_fallback_name">来自 %1$s 的 VICAL</string>
+    <string name="trust_entry_rical_fallback_name">来自 %1$s 的 RICAL</string>
+    <string name="trust_entry_details_certificate">证书</string>
+    <string name="trust_entry_warning_x509_just_imported">此证书刚刚导入。请检查其指纹以确保您信任它</string>
+    <string name="trust_entry_warning_vical_just_imported">此 VICAL 刚刚导入。请检查签名者证书链以确保您信任提供方</string>
+    <string name="trust_entry_warning_rical_just_imported">此 RICAL 刚刚导入。请检查签名者证书链以确保您信任提供方</string>
+    <string name="trust_entry_test_only_label">仅供测试</string>
+    <string name="trust_entry_yes">是</string>
+    <string name="trust_entry_no">否</string>
+    <string name="trust_entry_vical_details_version">版本</string>
+    <string name="trust_entry_vical_details_provider">提供者</string>
+    <string name="trust_entry_vical_details_issue">事项</string>
+    <string name="trust_entry_vical_details_issued_at">签发时间</string>
+    <string name="trust_entry_vical_details_next_update">下次更新</string>
+    <string name="trust_entry_signer">签名者</string>
+    <string name="trust_entry_click_to_view_chain">点击查看证书链</string>
+    <string name="trust_entry_vical_data_title">VICAL 数据</string>
+    <string name="trust_entry_certificates_title">证书</string>
+    <string name="trust_entry_rical_details_type">类型</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">有效期至</string>
+    <string name="trust_entry_rical_data_title">RICAL 数据</string>
+    <string name="trust_entry_vical_entry_document_types">文档类型</string>
+    <string name="trust_entry_vical_entry_title">VICAL 条目</string>
+    <string name="trust_entry_editor_change">更改</string>
+    <string name="trust_entry_editor_remove">移除</string>
+    <string name="trust_entry_editor_name_label">名称</string>
+    <string name="trust_entry_editor_test_only_x509">此证书仅用于测试</string>
+    <string name="trust_entry_editor_test_only_vical">此 VICAL 仅用于测试</string>
+    <string name="trust_entry_editor_test_only_rical">此 RICAL 仅供测试</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL containing %1$d certificate</item>
+        <item quantity="other">VICAL 包含 %1$d 个证书</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL containing %1$d certificate</item>
+        <item quantity="other">RICAL 包含 %1$d 个证书</item>
+    </plurals>
 </resources>

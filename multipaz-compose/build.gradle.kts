@@ -1,12 +1,13 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.multipaz.lokalize.util.LLMProvider
+import org.multipaz.lokalize.util.LLmModel
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,6 +16,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("maven-publish")
     id("org.jetbrains.dokka") version "2.1.0"
+    id("org.multipaz.lokalize")
 }
 
 val projectVersionCode: Int by rootProject.extra
@@ -201,3 +203,11 @@ publishing {
 
 tasks.named("generateResourceAccessorsForAndroidMain").configure { dependsOn("sourceReleaseJar") }
 
+lokalize {
+    defaultLocale = "en"
+    targetLocales = listOf("da", "ar", "cs", "de", "el", "es", "fr", "he", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "th", "tr", "uk", "vi", "zh-rCN")
+    resourcesDir.set("src/commonMain/composeResources")
+    llmProvider.set(LLMProvider.GOOGLE)
+    llModel.set(LLmModel.GEMINI2_5_FLASH)
+    llmApiKey.set("API_KEY")
+}

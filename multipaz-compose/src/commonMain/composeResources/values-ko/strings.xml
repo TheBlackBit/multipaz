@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN이 취약합니다. 다른 PIN을 선택하세요</string>
     <string name="passphrase_entry_field_passphrase_is_weak">암호문구가 취약합니다. 다른 암호문구를 선택하세요</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d분</item>
         <item quantity="other">%1$d분</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">본인 인증을 해주세요</string>
     <string name="key_unlock_default_subtitle">인증이 필요합니다</string>
     <string name="key_unlock_present_title">문서를 공유하기 위해 본인 인증을 해주세요</string>
     <string name="key_unlock_present_bio_subtitle">인증이 필요합니다</string>
     <string name="key_unlock_present_passphrase_subtitle">문서와 연결된 비밀문구를 입력하세요</string>
     <string name="key_unlock_present_pin_subtitle">문서와 연결된 PIN을 입력하세요</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">알 수 없는 웹사이트</string>
+    <string name="provisioning_title">프로비저닝</string>
+    <string name="aks_unlock_present_pin_subtitle">문서와 연결된 PIN을 입력하세요.</string>
+    <string name="trust_entry_vical_fallback_name">VICAL(출처: %1$s)</string>
+    <string name="trust_entry_rical_fallback_name">RICAL(출처: %1$s)</string>
+    <string name="trust_entry_details_certificate">인증서</string>
+    <string name="trust_entry_warning_x509_just_imported">방금 가져온 인증서입니다. 지문을 확인하여 신뢰할 수 있는지 확인하세요.</string>
+    <string name="trust_entry_warning_vical_just_imported">방금 가져온 VICAL입니다. 제공자를 신뢰할 수 있는지 서명자 인증서 체인을 확인하세요.</string>
+    <string name="trust_entry_warning_rical_just_imported">방금 가져온 RICAL입니다. 제공자를 신뢰할 수 있는지 서명자 인증서 체인을 확인하세요.</string>
+    <string name="trust_entry_test_only_label">테스트 전용</string>
+    <string name="trust_entry_yes">예</string>
+    <string name="trust_entry_no">아니요</string>
+    <string name="trust_entry_vical_details_version">버전</string>
+    <string name="trust_entry_vical_details_provider">제공자</string>
+    <string name="trust_entry_vical_details_issue">이슈</string>
+    <string name="trust_entry_vical_details_issued_at">발행일</string>
+    <string name="trust_entry_vical_details_next_update">다음 업데이트</string>
+    <string name="trust_entry_signer">서명자</string>
+    <string name="trust_entry_click_to_view_chain">인증서 체인 보려면 클릭</string>
+    <string name="trust_entry_vical_data_title">VICAL 데이터</string>
+    <string name="trust_entry_certificates_title">인증서</string>
+    <string name="trust_entry_rical_details_type">유형</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">유효 기간</string>
+    <string name="trust_entry_rical_data_title">RICAL 데이터</string>
+    <string name="trust_entry_vical_entry_document_types">문서 종류</string>
+    <string name="trust_entry_vical_entry_title">VICAL 항목</string>
+    <string name="trust_entry_editor_change">변경</string>
+    <string name="trust_entry_editor_remove">제거</string>
+    <string name="trust_entry_editor_name_label">이름</string>
+    <string name="trust_entry_editor_test_only_x509">이 인증서는 테스트 전용입니다</string>
+    <string name="trust_entry_editor_test_only_vical">이 VICAL은 테스트 전용입니다</string>
+    <string name="trust_entry_editor_test_only_rical">이 RICAL은 테스트 전용입니다.</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL containing %1$d certificate</item>
+        <item quantity="other">VICAL에 인증서 %1$d개 포함</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL containing %1$d certificate</item>
+        <item quantity="other">RICAL에 인증서 %1$d개 포함</item>
+    </plurals>
 </resources>

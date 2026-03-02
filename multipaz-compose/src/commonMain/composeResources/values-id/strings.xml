@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN lemah, silakan pilih yang lain</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Frasa sandi lemah, silakan pilih yang lain</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d menit</item>
         <item quantity="other">%1$d menit</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Verifikasi bahwa ini adalah Anda</string>
     <string name="key_unlock_default_subtitle">Autentikasi diperlukan</string>
     <string name="key_unlock_present_title">Verifikasi bahwa ini adalah Anda untuk membagikan dokumen</string>
     <string name="key_unlock_present_bio_subtitle">Autentikasi diperlukan</string>
     <string name="key_unlock_present_passphrase_subtitle">Masukkan passphrase yang terkait dengan dokumen</string>
     <string name="key_unlock_present_pin_subtitle">Masukkan PIN yang terkait dengan dokumen</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Situs web tidak dikenal</string>
+    <string name="provisioning_title">Penyediaan</string>
+    <string name="aks_unlock_present_pin_subtitle">Masukkan PIN yang terkait dengan dokumen</string>
+    <string name="trust_entry_vical_fallback_name">VICAL dari %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL dari %1$s</string>
+    <string name="trust_entry_details_certificate">Sertifikat</string>
+    <string name="trust_entry_warning_x509_just_imported">Sertifikat ini baru saja diimpor. Harap periksa sidik jarinya untuk memastikan Anda memercayainya</string>
+    <string name="trust_entry_warning_vical_just_imported">VICAL ini baru saja diimpor. Harap periksa rantai sertifikat penandatangan untuk memastikan Anda memercayai penyedianya</string>
+    <string name="trust_entry_warning_rical_just_imported">RICAL ini baru saja diimpor. Harap periksa rantai sertifikat penandatangan untuk memastikan Anda memercayai penyedianya</string>
+    <string name="trust_entry_test_only_label">Hanya untuk uji coba</string>
+    <string name="trust_entry_yes">Ya</string>
+    <string name="trust_entry_no">Tidak</string>
+    <string name="trust_entry_vical_details_version">Versi</string>
+    <string name="trust_entry_vical_details_provider">Penyedia</string>
+    <string name="trust_entry_vical_details_issue">Perihal</string>
+    <string name="trust_entry_vical_details_issued_at">Diterbitkan pada</string>
+    <string name="trust_entry_vical_details_next_update">Pembaruan berikutnya</string>
+    <string name="trust_entry_signer">Penandatangan</string>
+    <string name="trust_entry_click_to_view_chain">Ketuk untuk melihat rantai sertifikat</string>
+    <string name="trust_entry_vical_data_title">Data VICAL</string>
+    <string name="trust_entry_certificates_title">Sertifikat</string>
+    <string name="trust_entry_rical_details_type">Tipe</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Berlaku hingga</string>
+    <string name="trust_entry_rical_data_title">Data RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Jenis Dokumen</string>
+    <string name="trust_entry_vical_entry_title">Entri VICAL</string>
+    <string name="trust_entry_editor_change">Ubah</string>
+    <string name="trust_entry_editor_remove">Hapus</string>
+    <string name="trust_entry_editor_name_label">Nama</string>
+    <string name="trust_entry_editor_test_only_x509">Sertifikat ini hanya untuk pengujian</string>
+    <string name="trust_entry_editor_test_only_vical">VICAL ini hanya untuk pengujian</string>
+    <string name="trust_entry_editor_test_only_rical">RICAL ini hanya untuk tes</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL berisi %1$d sertifikat</item>
+        <item quantity="other">VICAL berisi %1$d sertifikat</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL berisi %1$d sertifikat</item>
+        <item quantity="other">RICAL berisi %1$d sertifikat</item>
+    </plurals>
 </resources>

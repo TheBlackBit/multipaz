@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">קוד PIN חלש, אנא בחר קוד אחר</string>
     <string name="passphrase_entry_field_passphrase_is_weak">מילת המעבר חלשה, אנא בחר מילה אחרת</string>
@@ -139,12 +140,52 @@
         <item quantity="many">%1$d דקות</item>
         <item quantity="other">%1$d דקות</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">אמת שאתה זה</string>
     <string name="key_unlock_default_subtitle">נדרש אימות</string>
     <string name="key_unlock_present_title">אמת שאתה זה לשיתוף המסמך</string>
     <string name="key_unlock_present_bio_subtitle">נדרש אימות</string>
     <string name="key_unlock_present_passphrase_subtitle">הזן את מילת הקשר המשויכת למסמך</string>
     <string name="key_unlock_present_pin_subtitle">הזן את הקוד PIN המשויך למסמך</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">אתר לא מוכר</string>
+    <string name="provisioning_title">הקצאה</string>
+    <string name="aks_unlock_present_pin_subtitle">הזן את קוד ה-PIN המשויך למסמך</string>
+    <string name="trust_entry_vical_fallback_name">VICAL מאת %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL מאת %1$s</string>
+    <string name="trust_entry_details_certificate">אישור</string>
+    <string name="trust_entry_warning_x509_just_imported">אישור זה יובא כעת. אנא בדוק את טביעת האצבע שלו כדי לוודא שאתה סומך עליו.</string>
+    <string name="trust_entry_warning_vical_just_imported">VICAL זה יובא כעת. אנא בדוק את שרשרת אישורי החותם כדי לוודא שאתה סומך על הספק.</string>
+    <string name="trust_entry_warning_rical_just_imported">RICAL זה יובא כעת. אנא בדוק את שרשרת אישורי החותם כדי לוודא שאתה סומך על הספק.</string>
+    <string name="trust_entry_test_only_label">לצורך בדיקה בלבד</string>
+    <string name="trust_entry_yes">כן</string>
+    <string name="trust_entry_no">לא</string>
+    <string name="trust_entry_vical_details_version">גרסה</string>
+    <string name="trust_entry_vical_details_provider">ספק</string>
+    <string name="trust_entry_vical_details_issue">נושא</string>
+    <string name="trust_entry_vical_details_issued_at">הונפק ב-</string>
+    <string name="trust_entry_vical_details_next_update">עדכון הבא</string>
+    <string name="trust_entry_signer">חותם</string>
+    <string name="trust_entry_click_to_view_chain">לחץ לצפייה בשרשרת האישורים</string>
+    <string name="trust_entry_vical_data_title">נתוני VICAL</string>
+    <string name="trust_entry_certificates_title">אישורים</string>
+    <string name="trust_entry_rical_details_type">סוג</string>
+    <string name="trust_entry_rical_details_id">מזהה</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">תקף עד</string>
+    <string name="trust_entry_rical_data_title">נתוני RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">סוגי מסמכים</string>
+    <string name="trust_entry_vical_entry_title">ערך VICAL</string>
+    <string name="trust_entry_editor_change">שנה</string>
+    <string name="trust_entry_editor_remove">הסר</string>
+    <string name="trust_entry_editor_name_label">שם</string>
+    <string name="trust_entry_editor_test_only_x509">אישור זה מיועד לבדיקה בלבד</string>
+    <string name="trust_entry_editor_test_only_vical">VICAL זה מיועד לבדיקה בלבד</string>
+    <string name="trust_entry_editor_test_only_rical">RICAL זה מיועד לבדיקה בלבד</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL מכיל %1$d תעודה</item>
+        <item quantity="other">VICAL מכיל %1$d תעודות</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL מכיל %1$d תעודה</item>
+        <item quantity="other">RICAL מכיל %1$d תעודות</item>
+    </plurals>
 </resources>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN is zwak, kies een ander</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Wachtwoordzin is zwak, kies een andere</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d minuut</item>
         <item quantity="other">%1$d minuten</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Verifieer dat u het bent</string>
     <string name="key_unlock_default_subtitle">Authenticatie vereist</string>
     <string name="key_unlock_present_title">Verifieer dat u het bent om het document te delen</string>
     <string name="key_unlock_present_bio_subtitle">Authenticatie vereist</string>
     <string name="key_unlock_present_passphrase_subtitle">Voer de passphrase in die bij het document hoort</string>
     <string name="key_unlock_present_pin_subtitle">Voer de PIN in die bij het document hoort</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Onbekende website</string>
+    <string name="provisioning_title">Provisioning</string>
+    <string name="aks_unlock_present_pin_subtitle">Voer de pincode in die aan het document is gekoppeld</string>
+    <string name="trust_entry_vical_fallback_name">VICAL van %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL van %1$s</string>
+    <string name="trust_entry_details_certificate">Certificaat</string>
+    <string name="trust_entry_warning_x509_just_imported">Dit certificaat is zojuist geïmporteerd. Controleer de vingerafdruk om er zeker van te zijn dat u het vertrouwt.</string>
+    <string name="trust_entry_warning_vical_just_imported">Deze VICAL is zojuist geïmporteerd. Controleer de certificaatketen van de ondertekenaar om er zeker van te zijn dat u de provider vertrouwt.</string>
+    <string name="trust_entry_warning_rical_just_imported">Deze RICAL is zojuist geïmporteerd. Controleer de certificaatketen van de ondertekenaar om er zeker van te zijn dat u de provider vertrouwt.</string>
+    <string name="trust_entry_test_only_label">Alleen test</string>
+    <string name="trust_entry_yes">Ja</string>
+    <string name="trust_entry_no">Nee</string>
+    <string name="trust_entry_vical_details_version">Versie</string>
+    <string name="trust_entry_vical_details_provider">Provider</string>
+    <string name="trust_entry_vical_details_issue">Uitgifte</string>
+    <string name="trust_entry_vical_details_issued_at">Uitgegeven op</string>
+    <string name="trust_entry_vical_details_next_update">Volgende update</string>
+    <string name="trust_entry_signer">Ondertekenaar</string>
+    <string name="trust_entry_click_to_view_chain">Klik om de certificaatketen te bekijken</string>
+    <string name="trust_entry_vical_data_title">VICAL-gegevens</string>
+    <string name="trust_entry_certificates_title">Certificaten</string>
+    <string name="trust_entry_rical_details_type">Type</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Geldig tot</string>
+    <string name="trust_entry_rical_data_title">RICAL-gegevens</string>
+    <string name="trust_entry_vical_entry_document_types">Documenttypen</string>
+    <string name="trust_entry_vical_entry_title">VICAL-vermelding</string>
+    <string name="trust_entry_editor_change">Wijzigen</string>
+    <string name="trust_entry_editor_remove">Verwijderen</string>
+    <string name="trust_entry_editor_name_label">Naam</string>
+    <string name="trust_entry_editor_test_only_x509">Dit certificaat is alleen voor testen</string>
+    <string name="trust_entry_editor_test_only_vical">Deze VICAL is alleen voor testen</string>
+    <string name="trust_entry_editor_test_only_rical">Deze RICAL is alleen voor testen.</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL bevat %1$d certificaat</item>
+        <item quantity="other">VICAL bevat %1$d certificaten</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL bevat %1$d certificaat</item>
+        <item quantity="other">RICAL bevat %1$d certificaten</item>
+    </plurals>
 </resources>

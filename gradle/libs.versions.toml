@@ -56,12 +56,21 @@ compottie = "2.0.2"
 kotlin-wrappers = "2025.12.1"
 kotlin-wrappers-rx = "2025.12.1-19.2.0"
 kotlin-wrappers-em = "2025.12.1-11.14.0"
+koog = "0.5.1"
+junit-jupiter = "5.10.0"
 jetbrains-navigationevent = "1.0.1"
 
 [libraries]
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref="kotlinx-coroutines" }
+kotlinx-coroutines-core-jvm = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref="kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref="kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref="kotlinx-coroutines" }
@@ -137,6 +146,17 @@ kotlin-wrappers-react-dom = { module = "org.jetbrains.kotlin-wrappers:kotlin-rea
 kotlin-wrappers-emotion-react-js = { module = "org.jetbrains.kotlin-wrappers:kotlin-emotion-react-js", version.ref="kotlin-wrappers-em" }
 skie-annotations = { module = "co.touchlab.skie:configuration-annotations", version.ref = "skie" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref="compottie" }
+# Build Logic
+gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+android-tools-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+# Koog Ai Agent
+koog-agent = { module = "ai.koog:koog-agents", version.ref = "koog" }
+koog-executor-openai-client = { module = "ai.koog:prompt-executor-openai-client", version.ref = "koog" }
+koog-executor-google-client = { module = "ai.koog:prompt-executor-google-client", version.ref = "koog" }
+koog-executor-anthropic-client = { module = "ai.koog:prompt-executor-anthropic-client", version.ref = "koog" }
+koog-executor-llms-all = { module = "ai.koog:prompt-executor-llms-all", version.ref = "koog" }
+koog-prompt-model = { module = "ai.koog:prompt-model", version.ref = "koog" }
+koog-agents-ext = { module = "ai.koog:agents-ext", version.ref = "koog" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

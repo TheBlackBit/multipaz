@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">Mã PIN yếu, vui lòng chọn mã khác</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Cụm mật khẩu yếu, vui lòng chọn cụm khác</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d phút</item>
         <item quantity="other">%1$d phút</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Xác minh đây là bạn</string>
     <string name="key_unlock_default_subtitle">Yêu cầu xác thực</string>
     <string name="key_unlock_present_title">Xác minh đây là bạn để chia sẻ tài liệu</string>
     <string name="key_unlock_present_bio_subtitle">Yêu cầu xác thực</string>
     <string name="key_unlock_present_passphrase_subtitle">Nhập cụm mật khẩu liên quan đến tài liệu</string>
     <string name="key_unlock_present_pin_subtitle">Nhập mã PIN liên quan đến tài liệu</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Trang web không xác định</string>
+    <string name="provisioning_title">Cấp phép</string>
+    <string name="aks_unlock_present_pin_subtitle">Nhập mã PIN liên quan đến tài liệu</string>
+    <string name="trust_entry_vical_fallback_name">VICAL từ %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL từ %1$s</string>
+    <string name="trust_entry_details_certificate">Chứng chỉ</string>
+    <string name="trust_entry_warning_x509_just_imported">Chứng chỉ này vừa được nhập. Vui lòng kiểm tra dấu vân tay của nó để đảm bảo bạn tin cậy.</string>
+    <string name="trust_entry_warning_vical_just_imported">VICAL này vừa được nhập. Vui lòng kiểm tra chuỗi chứng chỉ của người ký để đảm bảo bạn tin cậy nhà cung cấp.</string>
+    <string name="trust_entry_warning_rical_just_imported">RICAL này vừa được nhập. Vui lòng kiểm tra chuỗi chứng chỉ của người ký để đảm bảo bạn tin cậy nhà cung cấp.</string>
+    <string name="trust_entry_test_only_label">Chỉ kiểm tra</string>
+    <string name="trust_entry_yes">Có</string>
+    <string name="trust_entry_no">Không</string>
+    <string name="trust_entry_vical_details_version">Phiên bản</string>
+    <string name="trust_entry_vical_details_provider">Nhà cung cấp</string>
+    <string name="trust_entry_vical_details_issue">Vấn đề</string>
+    <string name="trust_entry_vical_details_issued_at">Phát hành lúc</string>
+    <string name="trust_entry_vical_details_next_update">Cập nhật tiếp theo</string>
+    <string name="trust_entry_signer">Người ký</string>
+    <string name="trust_entry_click_to_view_chain">Nhấn để xem chuỗi chứng chỉ</string>
+    <string name="trust_entry_vical_data_title">Dữ liệu VICAL</string>
+    <string name="trust_entry_certificates_title">Chứng chỉ</string>
+    <string name="trust_entry_rical_details_type">Loại</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Có hiệu lực đến</string>
+    <string name="trust_entry_rical_data_title">Dữ liệu RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Các loại tài liệu</string>
+    <string name="trust_entry_vical_entry_title">Mục VICAL</string>
+    <string name="trust_entry_editor_change">Thay đổi</string>
+    <string name="trust_entry_editor_remove">Xóa</string>
+    <string name="trust_entry_editor_name_label">Tên</string>
+    <string name="trust_entry_editor_test_only_x509">Chứng chỉ này chỉ để thử nghiệm</string>
+    <string name="trust_entry_editor_test_only_vical">VICAL này chỉ để thử nghiệm</string>
+    <string name="trust_entry_editor_test_only_rical">RICAL này chỉ để thử nghiệm</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL containing %1$d certificate</item>
+        <item quantity="other">VICAL chứa %1$d chứng chỉ</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL containing %1$d certificate</item>
+        <item quantity="other">RICAL chứa %1$d chứng chỉ</item>
+    </plurals>
 </resources>

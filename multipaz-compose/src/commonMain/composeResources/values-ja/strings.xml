@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PINが弱いです。別のPINを選んでください</string>
     <string name="passphrase_entry_field_passphrase_is_weak">パスフレーズが弱いです。別のパスフレーズを選んでください</string>
@@ -123,12 +124,52 @@
         <item quantity="one">%1$d分</item>
         <item quantity="other">%1$d分</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">本人確認を行ってください</string>
     <string name="key_unlock_default_subtitle">認証が必要です</string>
     <string name="key_unlock_present_title">書類を共有するために本人確認を行ってください</string>
     <string name="key_unlock_present_bio_subtitle">認証が必要です</string>
     <string name="key_unlock_present_passphrase_subtitle">書類に関連付けられたパスフレーズを入力してください</string>
     <string name="key_unlock_present_pin_subtitle">書類に関連付けられたPINを入力してください</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">不明なウェブサイト</string>
+    <string name="provisioning_title">プロビジョニング</string>
+    <string name="aks_unlock_present_pin_subtitle">ドキュメントに関連付けられたPINを入力してください</string>
+    <string name="trust_entry_vical_fallback_name">%1$s からの VICAL</string>
+    <string name="trust_entry_rical_fallback_name">%1$s からの RICAL</string>
+    <string name="trust_entry_details_certificate">証明書</string>
+    <string name="trust_entry_warning_x509_just_imported">この証明書はインポートされたばかりです。信頼できることを確認するため、フィンガープリントをご確認ください。</string>
+    <string name="trust_entry_warning_vical_just_imported">この VICAL はインポートされたばかりです。プロバイダを信頼できることを確認するため、署名者の証明書チェーンをご確認ください。</string>
+    <string name="trust_entry_warning_rical_just_imported">この RICAL はインポートされたばかりです。プロバイダを信頼できることを確認するため、署名者の証明書チェーンをご確認ください。</string>
+    <string name="trust_entry_test_only_label">テスト用</string>
+    <string name="trust_entry_yes">はい</string>
+    <string name="trust_entry_no">いいえ</string>
+    <string name="trust_entry_vical_details_version">バージョン</string>
+    <string name="trust_entry_vical_details_provider">提供元</string>
+    <string name="trust_entry_vical_details_issue">発行元</string>
+    <string name="trust_entry_vical_details_issued_at">発行日</string>
+    <string name="trust_entry_vical_details_next_update">次回更新</string>
+    <string name="trust_entry_signer">署名者</string>
+    <string name="trust_entry_click_to_view_chain">クリックして証明書チェーンを表示</string>
+    <string name="trust_entry_vical_data_title">VICALデータ</string>
+    <string name="trust_entry_certificates_title">証明書</string>
+    <string name="trust_entry_rical_details_type">種類</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">有効期限</string>
+    <string name="trust_entry_rical_data_title">RICALデータ</string>
+    <string name="trust_entry_vical_entry_document_types">文書種別</string>
+    <string name="trust_entry_vical_entry_title">VICALエントリ</string>
+    <string name="trust_entry_editor_change">変更</string>
+    <string name="trust_entry_editor_remove">削除</string>
+    <string name="trust_entry_editor_name_label">名前</string>
+    <string name="trust_entry_editor_test_only_x509">この証明書はテスト専用です</string>
+    <string name="trust_entry_editor_test_only_vical">このVICALはテスト専用です</string>
+    <string name="trust_entry_editor_test_only_rical">この RICAL はテスト専用です</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL containing %1$d certificate</item>
+        <item quantity="other">VICAL: %1$d 個の証明書を格納</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL containing %1$d certificate</item>
+        <item quantity="other">RICAL: %1$d 個の証明書を格納</item>
+    </plurals>
 </resources>

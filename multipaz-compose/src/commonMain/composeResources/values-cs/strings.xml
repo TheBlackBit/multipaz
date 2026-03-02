@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN je slabý, vyberte prosím jiný</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Přístupová fráze je slabá, vyberte prosím jinou</string>
@@ -131,12 +132,52 @@
         <item quantity="other">%1$d minut</item>
         <item quantity="few">%1$d minuty</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Ověřte, že jste to vy</string>
     <string name="key_unlock_default_subtitle">Vyžadováno ověření</string>
     <string name="key_unlock_present_title">Ověřte, že jste to vy, abyste sdíleli dokument</string>
     <string name="key_unlock_present_bio_subtitle">Vyžadováno ověření</string>
     <string name="key_unlock_present_passphrase_subtitle">Zadejte přístupovou frázi přidruženou k dokumentu</string>
     <string name="key_unlock_present_pin_subtitle">Zadejte PIN přidružený k dokumentu</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Neznámý web</string>
+    <string name="provisioning_title">Zřizování</string>
+    <string name="aks_unlock_present_pin_subtitle">Zadejte kód PIN spojený s dokumentem.</string>
+    <string name="trust_entry_vical_fallback_name">VICAL od %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL od %1$s</string>
+    <string name="trust_entry_details_certificate">Certifikát</string>
+    <string name="trust_entry_warning_x509_just_imported">Tento certifikát byl právě importován. Zkontrolujte jeho otisk, abyste se ujistili, že mu důvěřujete</string>
+    <string name="trust_entry_warning_vical_just_imported">Tento VICAL byl právě importován. Zkontrolujte řetězec certifikátů podepisujícího, abyste se ujistili, že důvěřujete poskytovateli</string>
+    <string name="trust_entry_warning_rical_just_imported">Tento RICAL byl právě importován. Zkontrolujte řetězec certifikátů podepisujícího, abyste se ujistili, že důvěřujete poskytovateli</string>
+    <string name="trust_entry_test_only_label">Pouze pro testování</string>
+    <string name="trust_entry_yes">Ano</string>
+    <string name="trust_entry_no">Ne</string>
+    <string name="trust_entry_vical_details_version">Verze</string>
+    <string name="trust_entry_vical_details_provider">Poskytovatel</string>
+    <string name="trust_entry_vical_details_issue">Vydání</string>
+    <string name="trust_entry_vical_details_issued_at">Vydáno dne</string>
+    <string name="trust_entry_vical_details_next_update">Další aktualizace</string>
+    <string name="trust_entry_signer">Podepisující</string>
+    <string name="trust_entry_click_to_view_chain">Kliknutím zobrazíte řetězec certifikátů</string>
+    <string name="trust_entry_vical_data_title">Data VICAL</string>
+    <string name="trust_entry_certificates_title">Certifikáty</string>
+    <string name="trust_entry_rical_details_type">Typ</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Platnost do</string>
+    <string name="trust_entry_rical_data_title">Data RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Typy dokumentů</string>
+    <string name="trust_entry_vical_entry_title">Záznam VICAL</string>
+    <string name="trust_entry_editor_change">Změnit</string>
+    <string name="trust_entry_editor_remove">Odebrat</string>
+    <string name="trust_entry_editor_name_label">Název</string>
+    <string name="trust_entry_editor_test_only_x509">Tento certifikát je pouze pro testování</string>
+    <string name="trust_entry_editor_test_only_vical">Tento VICAL je pouze pro testování</string>
+    <string name="trust_entry_editor_test_only_rical">Tento RICAL je pouze pro testování.</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL obsahující %1$d certifikát</item>
+        <item quantity="other">VICAL obsahující %1$d certifikátů</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL obsahující %1$d certifikát</item>
+        <item quantity="other">RICAL obsahující %1$d certifikátů</item>
+    </plurals>
 </resources>

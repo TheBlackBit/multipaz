@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN-код слабый, выберите другой</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Парольная фраза слабая, выберите другую</string>
@@ -70,6 +71,7 @@
         <item quantity="one">Неверный PIN-код, попробуйте снова, осталась последняя попытка</item>
         <item quantity="other">Неверный PIN-код, попробуйте снова, осталось %1$d попыток</item>
         <item quantity="few">Неверный PIN-код, попробуйте снова, осталось %1$d попытки</item>
+        <item quantity="many">Неверный ПИН-код, попробуйте еще раз, осталось %1$d попыток</item>
     </plurals>
     <string name="pin_prompt_too_many_attempts">Слишком много неверных попыток ввода PIN-кода, попробуйте позже</string>
     <string name="passphrase_prompt_try_again">Неверная парольная фраза, попробуйте снова</string>
@@ -77,6 +79,7 @@
         <item quantity="one">Неверная парольная фраза, попробуйте снова, осталась последняя попытка</item>
         <item quantity="other">Неверная парольная фраза, попробуйте снова, осталось %1$d попыток</item>
         <item quantity="few">Неверная парольная фраза, попробуйте снова, осталось %1$d попытки</item>
+        <item quantity="many">Неверная кодовая фраза, попробуйте еще раз, осталось %1$d попыток</item>
     </plurals>
     <string name="passphrase_prompt_too_many_attempts">Слишком много неверных попыток ввода парольной фразы, попробуйте позже</string>
     <string name="provisioning_authorization_failed">Авторизация не удалась</string>
@@ -105,38 +108,88 @@
         <item quantity="one">%1$d год</item>
         <item quantity="other">%1$d лет</item>
         <item quantity="few">%1$d года</item>
+        <item quantity="many">%1$d лет</item>
     </plurals>
     <plurals name="duration_month">
         <item quantity="one">%1$d месяц</item>
         <item quantity="other">%1$d месяцев</item>
         <item quantity="few">%1$d месяца</item>
+        <item quantity="many">%1$d месяцев</item>
     </plurals>
     <plurals name="duration_day">
         <item quantity="one">%1$d день</item>
         <item quantity="other">%1$d дней</item>
         <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
     </plurals>
     <plurals name="duration_week">
         <item quantity="one">%1$d неделя</item>
         <item quantity="other">%1$d недель</item>
         <item quantity="few">%1$d недели</item>
+        <item quantity="many">%1$d недель</item>
     </plurals>
     <plurals name="duration_hour">
         <item quantity="one">%1$d час</item>
         <item quantity="other">%1$d часов</item>
         <item quantity="few">%1$d часа</item>
+        <item quantity="many">%1$d часов</item>
     </plurals>
     <plurals name="duration_minute">
         <item quantity="one">%1$d минута</item>
         <item quantity="other">%1$d минут</item>
         <item quantity="few">%1$d минуты</item>
+        <item quantity="many">%1$d минут</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Подтвердите, что это вы</string>
     <string name="key_unlock_default_subtitle">Требуется аутентификация</string>
     <string name="key_unlock_present_title">Подтвердите, что это вы, чтобы поделиться документом</string>
     <string name="key_unlock_present_bio_subtitle">Требуется аутентификация</string>
     <string name="key_unlock_present_passphrase_subtitle">Введите парольную фразу, связанную с документом</string>
     <string name="key_unlock_present_pin_subtitle">Введите PIN-код, связанный с документом</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Неизвестный сайт</string>
+    <string name="provisioning_title">Инициализация</string>
+    <string name="aks_unlock_present_pin_subtitle">Введите ПИН-код, связанный с документом</string>
+    <string name="trust_entry_vical_fallback_name">VICAL от %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL от %1$s</string>
+    <string name="trust_entry_details_certificate">Сертификат</string>
+    <string name="trust_entry_warning_x509_just_imported">Этот сертификат был только что импортирован. Проверьте его отпечаток, чтобы убедиться в доверии.</string>
+    <string name="trust_entry_warning_vical_just_imported">Этот VICAL был только что импортирован. Проверьте цепочку сертификатов подписывающего, чтобы убедиться в доверии к поставщику.</string>
+    <string name="trust_entry_warning_rical_just_imported">Этот RICAL был только что импортирован. Проверьте цепочку сертификатов подписывающего, чтобы убедиться в доверии к поставщику.</string>
+    <string name="trust_entry_test_only_label">Только для тестирования</string>
+    <string name="trust_entry_yes">Да</string>
+    <string name="trust_entry_no">Нет</string>
+    <string name="trust_entry_vical_details_version">Версия</string>
+    <string name="trust_entry_vical_details_provider">Поставщик</string>
+    <string name="trust_entry_vical_details_issue">Тема</string>
+    <string name="trust_entry_vical_details_issued_at">Выдано</string>
+    <string name="trust_entry_vical_details_next_update">Следующее обновление</string>
+    <string name="trust_entry_signer">Подписант</string>
+    <string name="trust_entry_click_to_view_chain">Нажмите, чтобы просмотреть цепочку сертификатов</string>
+    <string name="trust_entry_vical_data_title">Данные VICAL</string>
+    <string name="trust_entry_certificates_title">Сертификаты</string>
+    <string name="trust_entry_rical_details_type">Тип</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Действителен до</string>
+    <string name="trust_entry_rical_data_title">Данные RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Типы документов</string>
+    <string name="trust_entry_vical_entry_title">Запись VICAL</string>
+    <string name="trust_entry_editor_change">Изменить</string>
+    <string name="trust_entry_editor_remove">Удалить</string>
+    <string name="trust_entry_editor_name_label">Имя</string>
+    <string name="trust_entry_editor_test_only_x509">Этот сертификат предназначен только для тестирования</string>
+    <string name="trust_entry_editor_test_only_vical">Этот VICAL предназначен только для тестирования</string>
+    <string name="trust_entry_editor_test_only_rical">Этот RICAL предназначен только для тестирования</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL содержит %1$d сертификат</item>
+        <item quantity="other">VICAL содержит %1$d сертификатов</item>
+        <item quantity="few">VICAL, содержащий %1$d сертификата</item>
+        <item quantity="many">VICAL, содержащий %1$d сертификатов</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL содержит %1$d сертификат</item>
+        <item quantity="other">RICAL содержит %1$d сертификатов</item>
+        <item quantity="few">RICAL, содержащий %1$d сертификата</item>
+        <item quantity="many">RICAL, содержащий %1$d сертификатов</item>
+    </plurals>
 </resources>

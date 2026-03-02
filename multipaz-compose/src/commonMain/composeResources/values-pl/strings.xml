@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="passphrase_entry_field_pin_is_weak">PIN jest słaby, wybierz inny</string>
     <string name="passphrase_entry_field_passphrase_is_weak">Hasło jest słabe, wybierz inne</string>
@@ -107,38 +108,88 @@
         <item quantity="one">%1$d rok</item>
         <item quantity="other">%1$d lat</item>
         <item quantity="few">%1$d lata</item>
+        <item quantity="many">%1$d lat</item>
     </plurals>
     <plurals name="duration_month">
         <item quantity="one">%1$d miesiąc</item>
         <item quantity="other">%1$d miesięcy</item>
         <item quantity="few">%1$d miesiące</item>
+        <item quantity="many">%1$d miesięcy</item>
     </plurals>
     <plurals name="duration_day">
         <item quantity="one">%1$d dzień</item>
         <item quantity="other">%1$d dni</item>
         <item quantity="few">%1$d dni</item>
+        <item quantity="many">%1$d dni</item>
     </plurals>
     <plurals name="duration_week">
         <item quantity="one">%1$s tydzień</item>
         <item quantity="other">%1$s tygodni</item>
         <item quantity="few">%1$s tygodnie</item>
+        <item quantity="many">%1$d tygodni</item>
     </plurals>
     <plurals name="duration_hour">
         <item quantity="one">%1$d godzina</item>
         <item quantity="other">%1$d godzin</item>
         <item quantity="few">%1$d godziny</item>
+        <item quantity="many">%1$d godzin</item>
     </plurals>
     <plurals name="duration_minute">
         <item quantity="one">%1$d minuta</item>
         <item quantity="other">%1$d minut</item>
         <item quantity="few">%1$d minuty</item>
+        <item quantity="many">%1$d minut</item>
     </plurals>
-
-    <!-- PromptModel - Key Unlock Strings -->
     <string name="key_unlock_default_title">Zweryfikuj, że to Ty</string>
     <string name="key_unlock_default_subtitle">Wymagane uwierzytelnienie</string>
     <string name="key_unlock_present_title">Zweryfikuj, że to Ty, aby udostępnić dokument</string>
     <string name="key_unlock_present_bio_subtitle">Wymagane uwierzytelnienie</string>
     <string name="key_unlock_present_passphrase_subtitle">Wprowadź hasło przypisane do dokumentu</string>
     <string name="key_unlock_present_pin_subtitle">Wprowadź PIN przypisany do dokumentu</string>
+    <string name="credential_presentment_headline_share_with_unknown_website">Nieznana witryna</string>
+    <string name="provisioning_title">Udostępnianie</string>
+    <string name="aks_unlock_present_pin_subtitle">Wprowadź kod PIN powiązany z dokumentem</string>
+    <string name="trust_entry_vical_fallback_name">VICAL od %1$s</string>
+    <string name="trust_entry_rical_fallback_name">RICAL od %1$s</string>
+    <string name="trust_entry_details_certificate">Certyfikat</string>
+    <string name="trust_entry_warning_x509_just_imported">Ten certyfikat został właśnie zaimportowany. Sprawdź jego odcisk palca, aby upewnić się, że mu ufasz.</string>
+    <string name="trust_entry_warning_vical_just_imported">Ten VICAL został właśnie zaimportowany. Sprawdź łańcuch certyfikatów sygnatariusza, aby upewnić się, że ufasz dostawcy.</string>
+    <string name="trust_entry_warning_rical_just_imported">Ten RICAL został właśnie zaimportowany. Sprawdź łańcuch certyfikatów sygnatariusza, aby upewnić się, że ufasz dostawcy.</string>
+    <string name="trust_entry_test_only_label">Tylko do testów</string>
+    <string name="trust_entry_yes">Tak</string>
+    <string name="trust_entry_no">Nie</string>
+    <string name="trust_entry_vical_details_version">Wersja</string>
+    <string name="trust_entry_vical_details_provider">Dostawca</string>
+    <string name="trust_entry_vical_details_issue">Wystawca</string>
+    <string name="trust_entry_vical_details_issued_at">Wydano</string>
+    <string name="trust_entry_vical_details_next_update">Następna aktualizacja</string>
+    <string name="trust_entry_signer">Podpisujący</string>
+    <string name="trust_entry_click_to_view_chain">Kliknij, aby wyświetlić łańcuch certyfikatów</string>
+    <string name="trust_entry_vical_data_title">Dane VICAL</string>
+    <string name="trust_entry_certificates_title">Certyfikaty</string>
+    <string name="trust_entry_rical_details_type">Typ</string>
+    <string name="trust_entry_rical_details_id">ID</string>
+    <string name="trust_entry_rical_details_url">URL</string>
+    <string name="trust_entry_rical_details_valid_until">Ważne do</string>
+    <string name="trust_entry_rical_data_title">Dane RICAL</string>
+    <string name="trust_entry_vical_entry_document_types">Typy dokumentów</string>
+    <string name="trust_entry_vical_entry_title">Wpis VICAL</string>
+    <string name="trust_entry_editor_change">Zmień</string>
+    <string name="trust_entry_editor_remove">Usuń</string>
+    <string name="trust_entry_editor_name_label">Nazwa</string>
+    <string name="trust_entry_editor_test_only_x509">Ten certyfikat służy wyłącznie do celów testowych</string>
+    <string name="trust_entry_editor_test_only_vical">Ten VICAL służy wyłącznie do celów testowych</string>
+    <string name="trust_entry_editor_test_only_rical">Ten RICAL jest tylko do testowania</string>
+    <plurals name="trust_entry_details_vical">
+        <item quantity="one">VICAL zawierający %1$d certyfikat</item>
+        <item quantity="other">VICAL zawierający %1$d certyfikatów</item>
+        <item quantity="few">VICAL zawierający %1$d certyfikaty</item>
+        <item quantity="many">VICAL zawierający %1$d certyfikatów</item>
+    </plurals>
+    <plurals name="trust_entry_details_rical">
+        <item quantity="one">RICAL zawierający %1$d certyfikat</item>
+        <item quantity="other">RICAL zawierający %1$d certyfikatów</item>
+        <item quantity="few">RICAL zawierający %1$d certyfikaty</item>
+        <item quantity="many">RICAL zawierający %1$d certyfikatów</item>
+    </plurals>
 </resources>
