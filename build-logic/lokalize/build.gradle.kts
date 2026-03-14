@@ -46,6 +46,9 @@ dependencies {
     compileOnly(libs.gradlePlugin.kotlin)
     compileOnly(libs.android.tools.gradle.plugin)
 
+    // JSON serialization
+    implementation(libs.kotlinx.serialization.json)
+
     // Koog AI Agents and executors - for compilation
     implementation(libs.koog.agent)
     implementation(libs.koog.agents.ext)

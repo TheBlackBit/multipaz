@@ -2,6 +2,8 @@ package org.multipaz.documenttype.knowntypes
 
 import org.multipaz.documenttype.DocumentType
 import org.multipaz.documenttype.knowntypes.DrivingLicense.MDL_NAMESPACE
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 /**
  * Object containing Google Wallet ID pass metadata.
@@ -12,14 +14,21 @@ import org.multipaz.documenttype.knowntypes.DrivingLicense.MDL_NAMESPACE
 object IDPass {
     const val IDPASS_DOCTYPE = "com.google.wallet.idcard.1"
 
-    fun getDocumentType(): DocumentType {
+    /**
+     * Creates the ID Pass document type definition using localized display text.
+     *
+     * @param locale BCP-47 language tag used to resolve localized strings.
+     */
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
         val mDLNamespace = DrivingLicense.getDocumentType().mdocDocumentType!!.namespaces[MDL_NAMESPACE]!!
-        return DocumentType.Builder("Google Wallet ID pass")
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_GOOGLE_WALLET_ID_PASS))
             .addMdocDocumentType(IDPASS_DOCTYPE)
             .addMdocNamespace(mDLNamespace)
             .addSampleRequest(
                 id = "age_over_18",
-                displayName ="Age over 18",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_18),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -28,7 +37,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "age_over_21",
-                displayName ="Age over 21",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_21),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -37,7 +46,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName ="Age over 18 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_18_ZKP),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -47,7 +56,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "age_over_21_zkp",
-                displayName ="Age over 21 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_21_ZKP),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -57,7 +66,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "age_over_18_and_portrait",
-                displayName ="Age over 18 + portrait",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_18_AND_PORTRAIT),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -67,7 +76,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "age_over_21_and_portrait",
-                displayName ="Age over 21 + portrait",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_AGE_OVER_21_AND_PORTRAIT),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -77,7 +86,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_MANDATORY_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to false,
@@ -96,7 +105,7 @@ object IDPass {
             )
             .addSampleRequest(
                 id = "full",
-                displayName ="All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.ID_PASS_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(),
                 )

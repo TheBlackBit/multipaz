@@ -16,22 +16,22 @@
 
 package org.multipaz.documenttype.knowntypes
 
+import kotlinx.datetime.LocalDate
+import org.multipaz.cbor.Simple
 import org.multipaz.cbor.Tagged
 import org.multipaz.cbor.Tstr
+import org.multipaz.cbor.addCborMap
+import org.multipaz.cbor.buildCborArray
 import org.multipaz.cbor.toDataItem
 import org.multipaz.cbor.toDataItemFullDate
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.DocumentType
 import org.multipaz.documenttype.Icon
 import org.multipaz.documenttype.IntegerOption
 import org.multipaz.documenttype.StringOption
 import org.multipaz.util.fromBase64Url
-import kotlinx.datetime.LocalDate
-import org.multipaz.cbor.Simple
-import org.multipaz.cbor.addCborMap
-import org.multipaz.cbor.buildCborArray
-import org.multipaz.cbor.buildCborMap
-import org.multipaz.cbor.putCborMap
 
 /**
  * Object containing the metadata of the Driving License
@@ -45,8 +45,10 @@ object DrivingLicense {
     /**
      * Build the Driving License Document Type. This is ISO mdoc only.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Driving license")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_DRIVING_LICENSE))
             .addMdocDocumentType(MDL_DOCTYPE)
             /*
              * First the attributes that the mDL and VC Credential Type have in common
@@ -54,8 +56,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "family_name",
-                "Family name",
-                "Last name, surname, or primary identifier, of the mDL holder.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_FAMILY_NAME),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_FAMILY_NAME),
                 true,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -64,8 +66,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "given_name",
-                "Given names",
-                "First name(s), other name(s), or secondary identifier, of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_GIVEN_NAMES),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_GIVEN_NAMES),
                 true,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -74,8 +76,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "birth_date",
-                "Date of birth",
-                "Day, month and year on which the mDL holder was born. If unknown, approximate date of birth",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_DATE_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_DATE_OF_BIRTH),
                 true,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -84,8 +86,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "issue_date",
-                "Date of issue",
-                "Date when mDL was issued",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_DATE_OF_ISSUE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_DATE_OF_ISSUE),
                 true,
                 MDL_NAMESPACE,
                 Icon.DATE_RANGE,
@@ -94,8 +96,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "expiry_date",
-                "Date of expiry",
-                "Date when mDL expires",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_DATE_OF_EXPIRY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_DATE_OF_EXPIRY),
                 true,
                 MDL_NAMESPACE,
                 Icon.CALENDAR_CLOCK,
@@ -104,8 +106,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "issuing_country",
-                "Issuing country",
-                "Alpha-2 country code, as defined in ISO 3166-1, of the issuing authority’s country or territory",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ISSUING_COUNTRY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ISSUING_COUNTRY),
                 true,
                 MDL_NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -114,8 +116,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "issuing_authority",
-                "Issuing authority",
-                "Issuing authority name.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ISSUING_AUTHORITY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ISSUING_AUTHORITY),
                 true,
                 MDL_NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -124,8 +126,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "document_number",
-                "License number",
-                "The number assigned or calculated by the issuing authority.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_LICENSE_NUMBER),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_LICENSE_NUMBER),
                 true,
                 MDL_NAMESPACE,
                 Icon.NUMBERS,
@@ -134,8 +136,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "portrait",
-                "Photo of holder",
-                "A reproduction of the mDL holder’s portrait.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_PHOTO_OF_HOLDER),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_PHOTO_OF_HOLDER),
                 true,
                 MDL_NAMESPACE,
                 Icon.ACCOUNT_BOX,
@@ -144,8 +146,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "driving_privileges",
-                "Driving privileges",
-                "Driving privileges of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_DRIVING_PRIVILEGES),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_DRIVING_PRIVILEGES),
                 true,
                 MDL_NAMESPACE,
                 Icon.DIRECTIONS_CAR,
@@ -165,8 +167,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.DISTINGUISHING_SIGN_ISO_IEC_18013_1_ANNEX_F),
                 "un_distinguishing_sign",
-                "UN distinguishing sign",
-                "Distinguishing sign of the issuing country",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_UN_DISTINGUISHING_SIGN),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_UN_DISTINGUISHING_SIGN),
                 true,
                 MDL_NAMESPACE,
                 Icon.LANGUAGE,
@@ -175,8 +177,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "administrative_number",
-                "Administrative number",
-                "An audit control number assigned by the issuing authority",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ADMINISTRATIVE_NUMBER),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ADMINISTRATIVE_NUMBER),
                 false,
                 MDL_NAMESPACE,
                 Icon.NUMBERS,
@@ -185,8 +187,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.IntegerOptions(Options.SEX_ISO_IEC_5218),
                 "sex",
-                "Sex",
-                "mDL holder’s sex",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_SEX),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_SEX),
                 false,
                 MDL_NAMESPACE,
                 Icon.EMERGENCY,
@@ -195,8 +197,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "height",
-                "Height",
-                "mDL holder’s height in centimetres",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_HEIGHT),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_HEIGHT),
                 false,
                 MDL_NAMESPACE,
                 Icon.EMERGENCY,
@@ -205,8 +207,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "weight",
-                "Weight",
-                "mDL holder’s weight in kilograms",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_WEIGHT),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_WEIGHT),
                 false,
                 MDL_NAMESPACE,
                 Icon.EMERGENCY,
@@ -229,8 +231,8 @@ object DrivingLicense {
                     )
                 ),
                 "eye_colour",
-                "Eye color",
-                "mDL holder’s eye color",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_EYE_COLOR),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_EYE_COLOR),
                 false,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -253,8 +255,8 @@ object DrivingLicense {
                     )
                 ),
                 "hair_colour",
-                "Hair color",
-                "mDL holder’s hair color",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_HAIR_COLOR),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_HAIR_COLOR),
                 false,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -263,8 +265,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "birth_place",
-                "Place of birth",
-                "Country and municipality or state/province where the mDL holder was born",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_PLACE_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_PLACE_OF_BIRTH),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -273,8 +275,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "resident_address",
-                "Resident address",
-                "The place where the mDL holder resides and/or may be contacted (street/house number, municipality etc.)",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_ADDRESS),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_ADDRESS),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -283,8 +285,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "portrait_capture_date",
-                "Portrait image timestamp",
-                "Date when portrait was taken",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_PORTRAIT_IMAGE_TIMESTAMP),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_PORTRAIT_IMAGE_TIMESTAMP),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -293,8 +295,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "age_in_years",
-                "Age in years",
-                "The age of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_AGE_IN_YEARS),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_AGE_IN_YEARS),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -303,8 +305,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "age_birth_year",
-                "Year of birth",
-                "The year when the mDL holder was born",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_YEAR_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_YEAR_OF_BIRTH),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -313,8 +315,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_13",
-                "Older than 13 years",
-                "Indication whether the mDL holder is as old or older than 13",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_13),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_13),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -323,8 +325,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_16",
-                "Older than 16 years",
-                "Indication whether the mDL holder is as old or older than 16",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_16),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_16),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -333,8 +335,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_18",
-                "Older than 18 years",
-                "Indication whether the mDL holder is as old or older than 18",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_18),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_18),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -343,8 +345,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_21",
-                "Older than 21 years",
-                "Indication whether the mDL holder is as old or older than 21",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_21),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_21),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -353,8 +355,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_25",
-                "Older than 25 years",
-                "Indication whether the mDL holder is as old or older than 25",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_25),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_25),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -363,8 +365,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_60",
-                "Older than 60 years",
-                "Indication whether the mDL holder is as old or older than 60",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_60),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_60),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -373,8 +375,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_62",
-                "Older than 62 years",
-                "Indication whether the mDL holder is as old or older than 62",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_62),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_62),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -383,8 +385,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_65",
-                "Older than 65 years",
-                "Indication whether the mDL holder is as old or older than 65",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_65),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_65),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -393,8 +395,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_68",
-                "Older than 68 years",
-                "Indication whether the mDL holder is as old or older than 68",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_OLDER_THAN_68),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_OLDER_THAN_68),
                 false,
                 MDL_NAMESPACE,
                 Icon.TODAY,
@@ -403,8 +405,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "issuing_jurisdiction",
-                "Issuing jurisdiction",
-                "Country subdivision code of the jurisdiction that issued the mDL",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ISSUING_JURISDICTION),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ISSUING_JURISDICTION),
                 false,
                 MDL_NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -413,8 +415,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "nationality",
-                "Nationality",
-                "Nationality of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_NATIONALITY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_NATIONALITY),
                 false,
                 MDL_NAMESPACE,
                 Icon.LANGUAGE,
@@ -423,8 +425,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "resident_city",
-                "Resident city",
-                "The city where the mDL holder lives",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_CITY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_CITY),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -433,8 +435,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "resident_state",
-                "Resident state",
-                "The state/province/district where the mDL holder lives",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_STATE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_STATE),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -443,8 +445,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "resident_postal_code",
-                "Resident postal code",
-                "The postal code of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_POSTAL_CODE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_POSTAL_CODE),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -453,8 +455,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "resident_country",
-                "Resident country",
-                "The country where the mDL holder lives",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_COUNTRY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_COUNTRY),
                 false,
                 MDL_NAMESPACE,
                 Icon.PLACE,
@@ -463,8 +465,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "family_name_national_character",
-                "Family name national characters",
-                "The family name of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_FAMILY_NAME_NATIONAL_CHARACTERS),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_FAMILY_NAME_NATIONAL_CHARACTERS),
                 false,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -473,8 +475,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "given_name_national_character",
-                "Given name national characters",
-                "The given name of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_GIVEN_NAME_NATIONAL_CHARACTERS),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_GIVEN_NAME_NATIONAL_CHARACTERS),
                 false,
                 MDL_NAMESPACE,
                 Icon.PERSON,
@@ -483,8 +485,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "signature_usual_mark",
-                "Signature / usual mark",
-                "Image of the signature or usual mark of the mDL holder,",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_SIGNATURE_USUAL_MARK),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_SIGNATURE_USUAL_MARK),
                 false,
                 MDL_NAMESPACE,
                 Icon.SIGNATURE,
@@ -493,8 +495,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "domestic_driving_privileges",
-                "Domestic driving privileges",
-                "Vehicle types the license holder is authorized to operate",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_DOMESTIC_DRIVING_PRIVILEGES),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_DOMESTIC_DRIVING_PRIVILEGES),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.DIRECTIONS_CAR,
@@ -503,8 +505,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.AAMVA_NAME_SUFFIX),
                 "name_suffix",
-                "Name suffix",
-                "Name suffix of the individual that has been issued the driver license or identification document.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_NAME_SUFFIX),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_NAME_SUFFIX),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -518,8 +520,8 @@ object DrivingLicense {
                     )
                 ),
                 "organ_donor",
-                "Organ donor",
-                "An indicator that denotes whether the credential holder is an organ donor.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ORGAN_DONOR),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ORGAN_DONOR),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.EMERGENCY,
@@ -533,8 +535,8 @@ object DrivingLicense {
                     )
                 ),
                 "veteran",
-                "Veteran",
-                "An indicator that denotes whether the credential holder is a veteran.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_VETERAN),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_VETERAN),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.MILITARY_TECH,
@@ -550,8 +552,8 @@ object DrivingLicense {
                     )
                 ),
                 "family_name_truncation",
-                "Family name truncation",
-                "A code that indicates whether the field has been truncated",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_FAMILY_NAME_TRUNCATION),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_FAMILY_NAME_TRUNCATION),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -567,8 +569,8 @@ object DrivingLicense {
                     )
                 ),
                 "given_name_truncation",
-                "Given name truncation",
-                "A code that indicates whether either the first name or the middle name(s) have been truncated",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_GIVEN_NAME_TRUNCATION),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_GIVEN_NAME_TRUNCATION),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -577,8 +579,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "aka_family_name",
-                "Alias / AKA family name",
-                "Other family name by which credential holder is known.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ALIAS_FAMILY_NAME),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ALIAS_FAMILY_NAME),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -587,8 +589,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "aka_given_name",
-                "Alias / AKA given name",
-                "Other given name by which credential holder is known.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ALIAS_GIVEN_NAME),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ALIAS_GIVEN_NAME),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -597,8 +599,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.StringOptions(Options.AAMVA_NAME_SUFFIX),
                 "aka_suffix",
-                "Alias / AKA suffix name",
-                "Other suffix by which credential holder is known.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_ALIAS_SUFFIX),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_ALIAS_SUFFIX),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.PERSON,
@@ -621,8 +623,8 @@ object DrivingLicense {
                     )
                 ),
                 "weight_range",
-                "Weight range",
-                "Indicates the approximate weight range of the cardholder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_WEIGHT_RANGE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_WEIGHT_RANGE),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.EMERGENCY,
@@ -642,8 +644,8 @@ object DrivingLicense {
                     )
                 ),
                 "race_ethnicity",
-                "Race / ethnicity",
-                "Codes for race or ethnicity of the cardholder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RACE_ETHNICITY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RACE_ETHNICITY),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.EMERGENCY,
@@ -658,8 +660,8 @@ object DrivingLicense {
                     )
                 ),
                 "DHS_compliance",
-                "Compliance type",
-                "DHS required field that indicates compliance",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_COMPLIANCE_TYPE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_COMPLIANCE_TYPE),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.STARS,
@@ -673,8 +675,8 @@ object DrivingLicense {
                     )
                 ),
                 "DHS_temporary_lawful_status",
-                "Limited duration document indicator",
-                "DHS required field that denotes whether the credential holder has temporary lawful status. 1: Temporary lawful status",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_LIMITED_DURATION_DOCUMENT_INDICATOR),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_LIMITED_DURATION_DOCUMENT_INDICATOR),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.STARS,
@@ -689,8 +691,8 @@ object DrivingLicense {
                     )
                 ),
                 "EDL_credential",
-                "EDL indicator",
-                "Present if the credential is an EDL",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_EDL_INDICATOR),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_EDL_INDICATOR),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.DIRECTIONS_CAR,
@@ -699,8 +701,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "resident_county",
-                "Resident county",
-                "The 3-digit county code of the county where the mDL holder lives",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_RESIDENT_COUNTY),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_RESIDENT_COUNTY),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.PLACE,
@@ -709,8 +711,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "hazmat_endorsement_expiration_date",
-                "HAZMAT endorsement expiration date",
-                "Date on which the hazardous material endorsement granted by the document is no longer valid.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_HAZMAT_ENDORSEMENT_EXPIRATION_DATE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_HAZMAT_ENDORSEMENT_EXPIRATION_DATE),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.CALENDAR_CLOCK,
@@ -719,8 +721,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.IntegerOptions(Options.SEX_ISO_IEC_5218),
                 "sex",
-                "Sex",
-                "mDL holder’s sex",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_SEX),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_SEX),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.EMERGENCY,
@@ -732,8 +734,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "biometric_template_face",
-                "Biometric template face",
-                "Facial biometric information of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_BIOMETRIC_TEMPLATE_FACE),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_BIOMETRIC_TEMPLATE_FACE),
                 false,
                 MDL_NAMESPACE,
                 Icon.FACE,
@@ -742,8 +744,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "biometric_template_finger",
-                "Biometric template fingerprint",
-                "Fingerprint of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_BIOMETRIC_TEMPLATE_FINGERPRINT),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_BIOMETRIC_TEMPLATE_FINGERPRINT),
                 false,
                 MDL_NAMESPACE,
                 Icon.FINGERPRINT,
@@ -752,8 +754,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "biometric_template_signature_sign",
-                "Biometric template signature/sign",
-                "Signature/sign of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_BIOMETRIC_TEMPLATE_SIGNATURE_SIGN),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_BIOMETRIC_TEMPLATE_SIGNATURE_SIGN),
                 false,
                 MDL_NAMESPACE,
                 Icon.SIGNATURE,
@@ -762,8 +764,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "biometric_template_iris",
-                "Biometric template iris",
-                "Iris of the mDL holder",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_BIOMETRIC_TEMPLATE_IRIS),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_BIOMETRIC_TEMPLATE_IRIS),
                 false,
                 MDL_NAMESPACE,
                 Icon.EYE_TRACKING,
@@ -772,8 +774,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "audit_information",
-                "Audit information",
-                "A string of letters and/or numbers that identifies when, where, and by whom the credential was initially provisioned.",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_AUDIT_INFORMATION),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_AUDIT_INFORMATION),
                 false,
                 AAMVA_NAMESPACE,
                 Icon.STARS,
@@ -782,8 +784,8 @@ object DrivingLicense {
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "aamva_version",
-                "AAMVA version number",
-                "A number identifying the version of the AAMVA mDL data element set",
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_ATTRIBUTE_AAMVA_VERSION_NUMBER),
+                getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_DESCRIPTION_AAMVA_VERSION_NUMBER),
                 true,
                 AAMVA_NAMESPACE,
                 Icon.NUMBERS,
@@ -791,7 +793,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "us-transportation",
-                displayName = "US transportation",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_US_TRANSPORTATION),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "sex" to false,
@@ -811,7 +813,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName ="Age over 18",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_18),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -820,7 +822,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21",
-                displayName ="Age over 21",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_21),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -829,7 +831,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName ="Age over 18 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_18_ZKP),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -839,7 +841,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21_zkp",
-                displayName ="Age over 21 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_21_ZKP),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -849,7 +851,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_18_and_portrait",
-                displayName ="Age over 18 + portrait",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_18_AND_PORTRAIT),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -859,7 +861,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "age_over_21_and_portrait",
-                displayName ="Age over 21 + portrait",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_AGE_OVER_21_AND_PORTRAIT),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -869,7 +871,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_MANDATORY_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to false,
@@ -888,7 +890,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "full",
-                displayName ="All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(),
                     AAMVA_NAMESPACE to mapOf()
@@ -896,7 +898,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "name-and-address-partially-stored",
-                displayName = "Name and address (partially stored)",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_NAME_AND_ADDRESS_PARTIALLY_STORED),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to true,
@@ -916,7 +918,7 @@ object DrivingLicense {
             )
             .addSampleRequest(
                 id = "name-and-address-all-stored",
-                displayName = "Name and address (all stored)",
+                displayName = getLocalizedString(GeneratedStringKeys.DRIVING_LICENSE_REQUEST_NAME_AND_ADDRESS_ALL_STORED),
                 mdocDataElements = mapOf(
                     MDL_NAMESPACE to mapOf(
                         "family_name" to true,

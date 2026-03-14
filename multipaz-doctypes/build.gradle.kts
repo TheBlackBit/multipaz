@@ -1,11 +1,14 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.multipaz.lokalize.util.OutputFormat
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
     id("maven-publish")
     id("org.jetbrains.dokka") version "2.1.0"
+    id("org.multipaz.lokalize.convention")
 }
 
 val projectVersionCode: Int by rootProject.extra
@@ -18,7 +21,10 @@ kotlin {
 
     compilerOptions {
         optIn.add("kotlin.time.ExperimentalTime")
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
+
+    androidTarget()
 
     jvm()
 
@@ -57,6 +63,9 @@ kotlin {
         }
     }
 
+    // Apply default hierarchy template to automatically create webMain source set
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -87,6 +96,12 @@ kotlin {
         }
 
         if (!disableWebTargets) {
+            val webMain by getting {
+                dependencies {
+                    implementation(libs.kotlinx.browser)
+                }
+            }
+
             val jsTest by getting {
                 dependencies {
                     implementation(libs.kotlin.wrappers.web)
@@ -97,6 +112,29 @@ kotlin {
 }
 
 group = "org.multipaz"
+
+android {
+    namespace = "org.multipaz.doctypes"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    defaultConfig {
+        minSdk = 26
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        getByName("main") {
+            assets {
+                srcDirs("src/commonMain/resources")
+            }
+        }
+    }
+}
+
 version = projectVersionName
 
 publishing {
@@ -128,6 +166,24 @@ publishing {
                 connection.set("scm:git:git://github.com/openwallet-foundation/multipaz.git")
                 developerConnection.set("scm:git:ssh://github.com/openwallet-foundation/multipaz.git")
                 url.set("https://github.com/openwallet-foundation/multipaz")
+            }
+        }
+    }
+}
+
+lokalize {
+    outputFormat.set(OutputFormat.JSON)
+    resourcesDir.set("src/commonMain/resources")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink>().configureEach {
+    if (binary is org.jetbrains.kotlin.gradle.plugin.mpp.Framework) {
+        doLast {
+            val frameworkDir =
+                (binary as org.jetbrains.kotlin.gradle.plugin.mpp.Framework).outputFile
+            copy {
+                from("${project.projectDir}/src/commonMain/resources")
+                into(frameworkDir)
             }
         }
     }

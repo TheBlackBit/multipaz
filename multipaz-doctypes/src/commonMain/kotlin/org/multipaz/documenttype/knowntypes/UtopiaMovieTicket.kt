@@ -7,6 +7,8 @@ import org.multipaz.documenttype.Icon
 import kotlinx.serialization.json.JsonPrimitive
 import org.multipaz.cbor.toDataItemDateTimeString
 import org.multipaz.documenttype.StringOption
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 import kotlin.time.Instant
 
 /**
@@ -18,38 +20,40 @@ object UtopiaMovieTicket {
     /**
      * Build the Movie Ticket Document Type.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Movie ticket")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_MOVIE_TICKET))
             .addJsonDocumentType(type = MOVIE_TICKET_VCT, keyBound = false)
             .addJsonAttribute(
                 DocumentAttributeType.String,
                 "ticket_id",
-                "Ticket number",
-                "Ticket identification/reference number issued at the purchase time.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_TICKET_NUMBER),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_TICKET_NUMBER),
                 Icon.NUMBERS,
                 JsonPrimitive(SampleData.TICKET_NUMBER)
             )
             .addJsonAttribute(
                 DocumentAttributeType.String,
                 "cinema",
-                "Cinema theater",
-                "Cinema theater name, and/or address/location of the admission.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_CINEMA_THEATER),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_CINEMA_THEATER),
                 Icon.PLACE,
                 JsonPrimitive(SampleData.CINEMA)
             )
             .addJsonAttribute(
                 DocumentAttributeType.String,
                 "movie",
-                "Movie title",
-                "Movie name, title, and any other show identification information.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_MOVIE_TITLE),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_MOVIE_TITLE),
                 Icon.TODAY,
                 JsonPrimitive(SampleData.MOVIE)
             )
             .addJsonAttribute(
                 type = DocumentAttributeType.DateTime,
                 identifier = "show_date_time",
-                displayName = "Date and time of the show",
-                description = "Date and time when the movie starts",
+                displayName = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_DATE_AND_TIME_OF_SHOW),
+                description = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_DATE_AND_TIME_OF_SHOW),
                 icon = Icon.TODAY,
                 sampleValue = JsonPrimitive(SampleData.MOVIE_DATE_TIME)
             )
@@ -65,57 +69,57 @@ object UtopiaMovieTicket {
                     )
                 ),
                 "movie_rating",
-                "Age rating code",
-                "Movie rating code for age restrictions.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_AGE_RATING_CODE),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_AGE_RATING_CODE),
                 Icon.TODAY,
                 JsonPrimitive(SampleData.MOVIE_RATING)
             )
             .addJsonAttribute(
                 DocumentAttributeType.String,
                 "theater_id",
-                "Theater",
-                "Name or number of the theater in a multi-theater cinema building.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_THEATER),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_THEATER),
                 Icon.TODAY,
                 JsonPrimitive(SampleData.THEATRE_NAME)
             )
             .addJsonAttribute(
                 DocumentAttributeType.String,
                 "seat_id",
-                "Seat",
-                "Seat number or code (e.g. row/seat).",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_SEAT),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_SEAT),
                 Icon.NUMBERS,
                 JsonPrimitive(SampleData.THEATRE_SEAT)
             )
             .addJsonAttribute(
                 DocumentAttributeType.Boolean,
                 "parking_option",
-                "Parking",
-                "Flag if car parking is prepaid with the ticket purchase.",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_PARKING),
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_PARKING),
                 Icon.DIRECTIONS_CAR,
                 JsonPrimitive(SampleData.CINEMA_PARKING)
             )
             .addJsonAttribute(
                 DocumentAttributeType.Picture,
                 "poster",
-                "Movie poster",
-                description = "Movie Poster",
+                getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_ATTRIBUTE_MOVIE_POSTER),
+                description = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_DESCRIPTION_MOVIE_POSTER),
                 Icon.IMAGE
             )
             .addSampleRequest(
                 id = "is_parking_prepaid",
-                displayName = "Prepaid parking",
+                displayName = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_REQUEST_PREPAID_PARKING),
                 jsonClaims = listOf("parking_option")
             )
             .addSampleRequest(
                 id = "ticket_id",
-                displayName = "Ticket number",
+                displayName = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_REQUEST_TICKET_NUMBER),
                 jsonClaims = listOf(
                     "ticket_id",
                 )
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.MOVIE_TICKET_REQUEST_ALL_DATA_ELEMENTS),
                 jsonClaims = listOf()
             )
             .build()

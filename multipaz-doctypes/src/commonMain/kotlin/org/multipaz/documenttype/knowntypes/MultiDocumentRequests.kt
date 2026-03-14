@@ -1,11 +1,16 @@
 package org.multipaz.documenttype.knowntypes
 
 import org.multipaz.documenttype.MultiDocumentCannedRequest
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
+/**
+ * Well-known canned requests that combine multiple document types into a single DCQL request.
+ */
 val wellKnownMultipleDocumentRequests = listOf(
     MultiDocumentCannedRequest(
         id = "mDL-and-PhotoID",
-        displayName = "mDL AND PhotoID",
+        displayName = LocalizedStrings.getString(GeneratedStringKeys.MULTI_REQUEST_MDL_AND_PHOTOID),
         dcqlString = """
             {
               "credentials": [
@@ -40,7 +45,7 @@ val wellKnownMultipleDocumentRequests = listOf(
     ),
     MultiDocumentCannedRequest(
         id = "mDL-or-PhotoID",
-        displayName = "mDL OR PhotoID",
+        displayName = LocalizedStrings.getString(GeneratedStringKeys.MULTI_REQUEST_MDL_OR_PHOTOID),
         dcqlString = """
             {
               "credentials": [

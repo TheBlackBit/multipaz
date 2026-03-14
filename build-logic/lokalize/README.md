@@ -6,10 +6,12 @@ Gradle plugin for Android/Kotlin Multiplatform internationalization that enforce
 
 - **Translation Validation**: Ensures all target locales have complete translations
 - **AI-Powered Translation**: Automatically generates missing translations using LLMs (OpenAI, Google Gemini, Anthropic)
-- **Smart Resource Handling**: Supports strings, plurals, and string-arrays
+- **Smart Resource Handling**: Supports strings, plurals, and string-arrays in both XML and JSON formats
 - **Build Integration**: Fails builds on missing translations (configurable)
 - **Plural Support**: Properly translates all plural quantity variants (one, other, few, many)
 - **Worker Isolation**: Uses Gradle Worker API for safe classpath isolation
+- **Code Generation**: Generates Kotlin constants from JSON resources for compile-time safe access
+- **Convention Plugin**: Pre-configured settings for consistent usage across modules
 
 ## Installation
 
@@ -23,16 +25,28 @@ plugins {
 }
 ```
 
+Or use the convention plugin for pre-configured defaults:
+
+```kotlin
+plugins {
+    id("org.multipaz.lokalize.convention")
+}
+```
+
 ### Step 2: Configure the plugin
 
 ```kotlin
 import org.multipaz.lokalize.util.LLMProvider
 import org.multipaz.lokalize.util.LLmModel
+import org.multipaz.lokalize.util.OutputFormat
 
 lokalize {
     defaultLocale = "en"
     targetLocales = listOf("es", "fr", "de")
     failOnMissing = true
+    
+    // Resource format: XML (Android strings.xml) or JSON
+    outputFormat.set(OutputFormat.JSON)
     
     // Optional: Configure AI translation
     llmApiKey.set("your-api-key") // Or use environment variable
@@ -40,7 +54,7 @@ lokalize {
     llModel.set(LLmModel.GEMINI2_0_FLASH)
     
     // Optional: Custom resources directory
-    resourcesDir.set("src/commonMain/composeResources")
+    resourcesDir.set("src/commonMain/resources")
 }
 ```
 
@@ -71,6 +85,7 @@ Validates that all target locales have complete translations.
 - Compares target locale files against the base (default) locale
 - Reports missing strings, plurals, and arrays
 - Fails the build if `failOnMissing = true` and translations are incomplete
+- Supports both XML and JSON resource formats
 
 ### `lokalizeFix`
 
@@ -84,6 +99,36 @@ Generates missing translations using AI.
 - Sends them to the configured LLM for translation
 - Updates the target locale files with translated content
 - Fails if the API returns errors (does not silently use fallback text)
+- Supports both XML and JSON resource formats
+
+### `generateMultipazStrings` (JSON format only)
+
+Generates Kotlin code from JSON string resources for compile-time safe access.
+
+```bash
+./gradlew :module:generateMultipazStrings
+```
+
+- Only available when `outputFormat.set(OutputFormat.JSON)`
+- Scans all `values*/strings.json` files
+- Generates Kotlin files with embedded string maps
+- Creates a central access object with `getString()`, `getMapForLocale()`, and `containsKey()` methods
+- Useful for platforms where file access is unreliable (e.g., iOS)
+
+**Generated API:**
+```kotlin
+// Get string for a specific language
+val text = GeneratedTranslations.getString("my_key", "es")
+
+// Get entire map for a locale
+val map = GeneratedTranslations.getMapForLocale("de")
+
+// Check if key exists
+val exists = GeneratedTranslations.containsKey("my_key", "fr")
+
+// List all available languages
+val languages = GeneratedTranslations.allLanguages
+```
 
 ## Configuration Options
 
@@ -92,10 +137,53 @@ Generates missing translations using AI.
 | `defaultLocale` | `String` | `"en"` | Base/source locale |
 | `targetLocales` | `List<String>` | `[]` | Locales to validate/translate |
 | `failOnMissing` | `Boolean` | `true` | Fail build on missing translations |
+| `outputFormat` | `OutputFormat` | `XML` | Resource format (XML or JSON) |
 | `llmApiKey` | `Property<String>` | Environment lookup | API key for translation |
 | `llmProvider` | `LLMProvider` | `GOOGLE` | LLM provider to use |
 | `llModel` | `LLmModel` | `GEMINI2_0_FLASH` | Specific model |
 | `resourcesDir` | `Property<String>` | `"src/commonMain/composeResources"` | Resources base path |
+
+### Output Formats
+
+#### XML Format (Default)
+
+Standard Android `strings.xml` format:
+
+```xml
+<!-- values/strings.xml -->
+<resources>
+    <string name="app_name">My App</string>
+    <string name="welcome_message">Welcome, %1$s!</string>
+    
+    <plurals name="items_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+    </string-array>
+</resources>
+```
+
+#### JSON Format
+
+Flat JSON with key-value pairs:
+
+```json
+{
+  "app_name": "My App",
+  "welcome_message": "Welcome, %1$s!",
+  "items_count_one": "%d item",
+  "items_count_other": "%d items"
+}
+```
+
+JSON format is recommended when:
+- You need compile-time access to strings via code generation
+- Working with Kotlin Multiplatform projects
+- Using the `generateMultipazStrings` task
 
 ## Supported LLM Providers
 
@@ -126,41 +214,63 @@ Available models:
 
 ### Simple Strings
 
+**XML:**
 ```xml
-<!-- values/strings.xml -->
 <string name="app_name">My App</string>
 <string name="welcome_message">Welcome, %1$s!</string>
 ```
 
+**JSON:**
+```json
+{
+  "app_name": "My App",
+  "welcome_message": "Welcome, %1$s!"
+}
+```
+
 ### Plurals
 
-All quantity variants are properly translated:
-
+**XML:**
 ```xml
-<!-- values/strings.xml -->
 <plurals name="items_count">
     <item quantity="one">%d item</item>
     <item quantity="other">%d items</item>
 </plurals>
 ```
 
+**JSON:**
+```json
+{
+  "items_count_one": "%d item",
+  "items_count_other": "%d items"
+}
+```
+
 The plugin will translate each quantity variant (one, other, few, many) separately based on the target locale's plural rules.
 
 ### String Arrays
 
+**XML:**
 ```xml
-<!-- values/strings.xml -->
 <string-array name="months">
     <item>January</item>
     <item>February</item>
 </string-array>
 ```
 
+**JSON:**
+```json
+{
+  "months_0": "January",
+  "months_1": "February"
+}
+```
+
 ## How It Works
 
 ### Translation Flow
 
-1. **Scan**: Reads base locale strings.xml and extracts all entries
+1. **Scan**: Reads base locale resources (XML or JSON) and extracts all entries
 2. **Compare**: Checks each target locale for missing or incomplete entries
 3. **Batch**: Groups missing entries for efficient API usage
 4. **Translate**: Sends to LLM with context-aware prompts
@@ -200,11 +310,21 @@ If you see `429 Too Many Requests`:
 ### Missing Translations Not Detected
 
 Ensure your resource directory structure follows standard conventions:
+
+**XML format:**
 ```
 src/commonMain/composeResources/
   values/strings.xml          (base/default)
   values-es/strings.xml       (Spanish)
   values-fr/strings.xml       (French)
+```
+
+**JSON format:**
+```
+src/commonMain/resources/
+  values/strings.json         (base/default)
+  values-es/strings.json      (Spanish)
+  values-fr/strings.json      (French)
 ```
 
 ### Build Fails with Classpath Issues
@@ -216,9 +336,16 @@ The plugin uses Gradle Worker API with classpath isolation. If you see Koog/Kotl
 ./gradlew :module:lokalizeFix
 ```
 
+### Code Generation Not Working
+
+If `generateMultipazStrings` is skipped:
+- Verify `outputFormat.set(OutputFormat.JSON)` is configured
+- Check that JSON files exist in `resourcesDir`
+- Ensure directory names start with "values"
+
 ## Best Practices
 
-1. **Commit base locale first**: Always ensure `values/strings.xml` is complete before running `lokalizeFix`
+1. **Commit base locale first**: Always ensure base strings are complete before running `lokalizeFix`
 
 2. **Review AI translations**: While AI is accurate, review translations for:
    - Brand-specific terminology
@@ -237,40 +364,69 @@ The plugin uses Gradle Worker API with classpath isolation. If you see Koog/Kotl
 
 5. **Batch translations**: For cost efficiency, accumulate several missing strings before running `lokalizeFix`
 
-## Development Workflow (multipaz-compose)
+6. **Choose format wisely**:
+   - Use **XML** for Android-only projects with standard resource handling
+   - Use **JSON** for Kotlin Multiplatform projects needing code generation
 
-When adding strings to `multipaz-compose`:
+## Development Workflow
 
-1. **Add to base locale**: Edit `values/strings.xml`
-2. **Check**: `./gradlew :multipaz-compose:lokalizeCheck`
-3. **Translate**: `./gradlew :multipaz-compose:lokalizeFix` (requires API key)
+### Using the Convention Plugin (Recommended)
 
-**Recommended**: Use environment variable (never commit keys):
+The `org.multipaz.lokalize.convention` plugin provides pre-configured settings:
+
+```kotlin
+plugins {
+    id("org.multipaz.lokalize.convention")
+}
+
+// Only override if needed
+lokalize {
+    outputFormat.set(OutputFormat.JSON)
+    resourcesDir.set("src/commonMain/resources")
+}
+```
+
+### Manual Configuration
+
+When using the base plugin directly:
+
+```kotlin
+plugins {
+    id("org.multipaz.lokalize")
+}
+
+lokalize {
+    defaultLocale = "en"
+    targetLocales = listOf("es", "fr", "de", "ja")
+    outputFormat.set(OutputFormat.JSON)
+    resourcesDir.set("src/commonMain/resources")
+}
+```
+
+### Example: multipaz-compose (XML format)
+
 ```bash
+# Check translations
+./gradlew :multipaz-compose:lokalizeCheck
+
+# Generate missing translations (requires API key)
 export LOKALIZE_API_KEY="your-key"
 ./gradlew :multipaz-compose:lokalizeFix
 ```
 
-**Alternative**: Configure in `build.gradle.kts` (⚠️ **DO NOT COMMIT API KEYS**):
-```kotlin
-lokalize {
-    llmApiKey.set("your-api-key")
-}
+### Example: multipaz-doctypes (JSON format)
+
+```bash
+# Check translations
+./gradlew :multipaz-doctypes:lokalizeCheck
+
+# Generate missing translations
+export LOKALIZE_API_KEY="your-key"
+./gradlew :multipaz-doctypes:lokalizeFix
+
+# Generate Kotlin code from JSON resources
+./gradlew :multipaz-doctypes:generateMultipazStrings
 ```
-
-## CI/CD Integration
-lokalize.provider=GOOGLE
-lokalize.model=GEMINI2_0_FLASH
-```
-
-### Step 4: Review and commit
-Review the generated translations in the `values-*/strings.xml` files, then commit both the base and translated strings.
-
-### Important Notes
-- **Always run `lokalizeCheck` first** - it validates without making changes
-- **`lokalizeFix` requires an API key** - it calls LLM APIs (Google, OpenAI, or Anthropic)
-- **Without API key**: The check will pass/fail based on translation completeness, but fix won't translate
-- **Review AI translations** - AI is good but may need human review for brand terminology
 
 ## CI/CD Integration
 
@@ -281,6 +437,9 @@ Review the generated translations in the `values-*/strings.xml` files, then comm
   run: ./gradlew :module:lokalizeCheck
   env:
     LOKALIZE_API_KEY: ${{ secrets.LOKALIZE_API_KEY }}
+
+- name: Generate Code (JSON format)
+  run: ./gradlew :module:generateMultipazStrings
 ```
 
 ### GitLab CI
@@ -297,13 +456,16 @@ translation-check:
 
 The plugin uses a layered architecture:
 
-- **ResourceScanner**: Parses Android XML resources
+- **ResourceScanner**: Parses XML and JSON resources using pluggable strategies
+- **ResourceScannerStrategy**: Interface for format-specific scanning (XML/JSON)
 - **TranslationComparator**: Finds missing/incomplete translations
 - **BatchTranslator**: Groups translations for efficient API usage
 - **TranslationWorkAction**: Runs in isolated Gradle Worker process
 - **ResourceWriter**: Merges translations preserving existing content
+- **ResourceWriterStrategy**: Interface for format-specific writing (XML/JSON)
+- **GenerateStringsTask**: Generates Kotlin code from JSON resources
 
-Worker isolation ensures Koog's Kotlin 2.2.x doesn't conflict with Gradle's embedded Kotlin 2.0.x.
+Worker isolation ensures classpath isolation between the plugin and project dependencies.
 
 ## License
 

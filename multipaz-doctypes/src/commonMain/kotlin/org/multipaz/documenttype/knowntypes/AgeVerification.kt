@@ -4,6 +4,8 @@ import org.multipaz.cbor.toDataItem
 import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.DocumentType
 import org.multipaz.documenttype.Icon
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 /**
  * Object containing the metadata of the Age Verification document type.
@@ -16,8 +18,10 @@ object AgeVerification {
     /**
      * Build the Age Verification Document Type.
      */
-    fun getDocumentType(): DocumentType =
-        with(DocumentType.Builder("Age verification")) {
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return with(DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_AGE_VERIFICATION))) {
             addMdocDocumentType(AV_DOCTYPE)
 
             // Attribute age_over_NN.
@@ -25,11 +29,21 @@ object AgeVerification {
             // MSO size limit of ~ 2200 bytes. With these 13 claims, the MSO is 764 bytes which is more manageable.
             val ageThresholdsToProvision = listOf(13, 15, 16, 18, 21, 23, 25, 27, 28, 40, 60, 65, 67)
             for (age in IntRange(1, 99)) {
+                val ageString = age.toString()
+                val placeholders = mapOf("age" to ageString)
                 addMdocAttribute(
                     type = DocumentAttributeType.Boolean,
                     identifier = "age_over_${if (age < 10) "0$age" else "$age"}",
-                    displayName = "Older than $age years",
-                    description = "Indication whether the document holder is as old or older than $age",
+                    displayName = LocalizedStrings.getString(
+                        GeneratedStringKeys.AGE_VERIFICATION_ATTRIBUTE_OLDER_THAN_YEARS,
+                        locale,
+                        placeholders
+                    ),
+                    description = LocalizedStrings.getString(
+                        GeneratedStringKeys.AGE_VERIFICATION_DESCRIPTION_OLDER_THAN_YEARS,
+                        locale,
+                        placeholders
+                    ),
                     mandatory = (age == 18),
                     mdocNamespace = AV_NAMESPACE,
                     icon = Icon.TODAY,
@@ -44,7 +58,7 @@ object AgeVerification {
             // Sample requests.
             addSampleRequest(
                 id = "age_over_18",
-                displayName = "Age over 18",
+                displayName = getLocalizedString(GeneratedStringKeys.AGE_VERIFICATION_REQUEST_AGE_OVER_18),
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -53,7 +67,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName = "Age over 18 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.AGE_VERIFICATION_REQUEST_AGE_OVER_18_ZKP),
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -63,7 +77,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_21",
-                displayName = "Age over 21",
+                displayName = getLocalizedString(GeneratedStringKeys.AGE_VERIFICATION_REQUEST_AGE_OVER_21),
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -72,7 +86,7 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "age_over_21_zkp",
-                displayName = "Age over 21 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.AGE_VERIFICATION_REQUEST_AGE_OVER_21_ZKP),
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf(
                         "age_over_21" to false,
@@ -82,11 +96,12 @@ object AgeVerification {
             )
             addSampleRequest(
                 id = "full",
-                displayName = "All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.AGE_VERIFICATION_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     AV_NAMESPACE to mapOf()
                 )
             )
             build()
         }
+    }
 }

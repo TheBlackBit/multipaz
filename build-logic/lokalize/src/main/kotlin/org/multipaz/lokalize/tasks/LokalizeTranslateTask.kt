@@ -5,25 +5,23 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.FileTree
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.PathSensitive
-import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.workers.WorkerExecutor
-import org.multipaz.lokalize.util.LLMProvider
-import org.multipaz.lokalize.util.LLmModel
-import org.multipaz.lokalize.util.LokalizeExtension
 import org.multipaz.lokalize.engine.ResourceScanner
-import org.multipaz.lokalize.engine.ResourceWriter
+import org.multipaz.lokalize.engine.ResourceWriterStrategy
+import org.multipaz.lokalize.engine.ResourceWriterStrategyFactory
 import org.multipaz.lokalize.engine.TranslationComparator
 import org.multipaz.lokalize.model.LocaleBundle
 import org.multipaz.lokalize.model.ResourceEntry
+import org.multipaz.lokalize.util.LLMProvider
+import org.multipaz.lokalize.util.LLmModel
+import org.multipaz.lokalize.util.LokalizeExtension
+import org.multipaz.lokalize.util.OutputFormat
 import org.multipaz.lokalize.util.toProvider
 import org.multipaz.lokalize.worker.TranslationWorkAction
 import java.io.File
@@ -64,6 +62,9 @@ abstract class LokalizeTranslateTask @Inject constructor(
     @get:Internal
     abstract val baseStringsFile: Property<File>
 
+    @get:Input
+    abstract val outputFormat: Property<OutputFormat>
+
     init {
         // Never cache this task - it modifies source files and makes external API calls
         outputs.upToDateWhen { false }
@@ -103,16 +104,36 @@ abstract class LokalizeTranslateTask @Inject constructor(
 
         val baseLocale = defaultLocale.get()
         val resDir = resourcesDir.get()
-        val baseDir = File(project.projectDir, "$resDir/values")
-        val baseFile = File(baseDir, "strings.xml")
+        val format = outputFormat.getOrElse(OutputFormat.XML)
+
+        val (baseDir, baseFileName, targetFilePrefix, targetFileExtension) = when (format) {
+            OutputFormat.XML -> {
+                listOf(
+                    File(project.projectDir, "$resDir/values"),
+                    "strings.xml",
+                    "values-",
+                    "/strings.xml"
+                )
+            }
+            OutputFormat.JSON -> {
+
+                listOf(
+                    File(project.projectDir, "$resDir/values"),
+                    "strings.json",
+                    "values-",
+                    "/strings.json"
+                )
+            }
+        }
+        val baseFile = File(baseDir as File, baseFileName as String)
 
         if (!baseFile.exists()) {
-            error("Base strings.xml not found at: ${baseFile.absolutePath}")
+            error("Base file not found at: ${baseFile.absolutePath}")
         }
 
         val scanner = ResourceScanner()
         val comparator = TranslationComparator()
-        val writer = ResourceWriter()
+        val writer = ResourceWriterStrategyFactory.create(format)
 
         val baseBundle = scanner.scan(baseFile)
         logger.info("Found ${baseBundle.totalEntries()} entries in base locale '$baseLocale'")
@@ -123,6 +144,8 @@ abstract class LokalizeTranslateTask @Inject constructor(
                 baseBundle = baseBundle,
                 baseLocale = baseLocale,
                 resDir = resDir,
+                targetFilePrefix = targetFilePrefix as String,
+                targetFileExtension = targetFileExtension as String,
                 scanner = scanner,
                 comparator = comparator,
                 writer = writer,
@@ -139,15 +162,17 @@ abstract class LokalizeTranslateTask @Inject constructor(
         baseBundle: LocaleBundle,
         baseLocale: String,
         resDir: String,
+        targetFilePrefix: String,
+        targetFileExtension: String,
         scanner: ResourceScanner,
         comparator: TranslationComparator,
-        writer: ResourceWriter,
+        writer: ResourceWriterStrategy,
         apiKey: String,
         provider: LLMProvider,
         model: LLmModel,
         workQueue: org.gradle.workers.WorkQueue
     ) {
-        val targetFile = File(project.projectDir, "$resDir/values-$targetLocale/strings.xml")
+        val targetFile = File(project.projectDir, "$resDir/$targetFilePrefix$targetLocale$targetFileExtension")
         val targetBundle = if (targetFile.exists()) {
             scanner.scan(targetFile)
         } else {
@@ -163,25 +188,21 @@ abstract class LokalizeTranslateTask @Inject constructor(
 
         logger.lifecycle("Found ${comparison.totalMissing} missing entries for '$targetLocale'")
 
-        // Build bundle of missing entries
         val missingStrings = mutableMapOf<String, ResourceEntry.StringEntry>()
         val missingPlurals = mutableMapOf<String, ResourceEntry.PluralEntry>()
         val missingArrays = mutableMapOf<String, ResourceEntry.StringArrayEntry>()
 
-        // Prepare string translation work items
         val stringWorkItems = comparison.missingStrings.map { key ->
             key to baseBundle.strings[key]!!.value
         }
 
-        // Prepare plural translation work items (flatten all quantity variants)
-        val pluralWorkItems = mutableListOf<Pair<String, String>>() // key to full plural identifier
-        val pluralQuantityMap = mutableMapOf<String, Pair<String, String>>() // fullId -> (pluralKey, quantity)
+        val pluralWorkItems = mutableListOf<Pair<String, String>>()
+        val pluralQuantityMap = mutableMapOf<String, Pair<String, String>>()
 
         comparison.missingPlurals.forEach { pluralKey ->
             val basePlural = baseBundle.plurals[pluralKey]!!
             val requiredQuantities = comparator.requiredQuantities(targetLocale)
 
-            // Only translate quantities that the target locale actually requires
             requiredQuantities.forEach { quantity ->
                 // Use the base value if available, otherwise fall back to 'other'
                 val value = basePlural.items[quantity]

@@ -18,6 +18,8 @@ package org.multipaz.documenttype.knowntypes
 
 import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.DocumentType
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 /**
  * Object containing the metadata of the Vaccination
@@ -30,150 +32,152 @@ object VaccinationDocument {
     /**
      * Build the Vaccination Document Type.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Vaccination document")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_VACCINATION_DOCUMENT))
             .addMdocDocumentType("org.micov.1")
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "1D47_vaccinated",
-                "Vaccination against yellow fever",
-                "Attestation that the holder has been fully vaccinated against Yellow Fever",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_YELLOW_FEVER_VACCINATED),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_YELLOW_FEVER_VACCINATED),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Boolean,
                 "RA01_vaccinated",
-                "Vaccination against COVID-19",
-                "Attestation that the holder has been fully vaccinated against COVID-19",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_COVID19_VACCINATED),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_COVID19_VACCINATED),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "RA01_test",
-                "Test event for COVID-19",
-                "Attestation that the holder has obtained a negative test for COVID-19",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_COVID19_TEST),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_COVID19_TEST),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "safeEntry_Leisure",
-                "Safe entry indication",
-                "Attest that the holder fulfils certain set requirements for safe entry in a leisure context (without disclosing if it is based on vaccination, recovery, or negative test)",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_SAFE_ENTRY_LEISURE),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_SAFE_ENTRY_LEISURE),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "fac",
-                "Facial image",
-                "Facial Image of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_FACIAL_IMAGE),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_FACIAL_IMAGE),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "fni",
-                "Family name initial",
-                "Initial letter of the Family Name of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_FAMILY_NAME_INITIAL),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_FAMILY_NAME_INITIAL),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "gni",
-                "Given name initial",
-                "Initial letter of the Given Name of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_GIVEN_NAME_INITIAL),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_GIVEN_NAME_INITIAL),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "by",
-                "Birth year",
-                "Birth Year of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_BIRTH_YEAR),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_BIRTH_YEAR),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "bm",
-                "Birth month",
-                "Birth Month of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_BIRTH_MONTH),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_BIRTH_MONTH),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Number,
                 "bd",
-                "Birth day",
-                "Birth Day of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_BIRTH_DAY),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_BIRTH_DAY),
                 false,
                 MICOV_ATT_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "fn",
-                "Family name",
-                "Family Name of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_FAMILY_NAME),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_FAMILY_NAME),
                 true,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "gn",
-                "Given name",
-                "Given Name of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_GIVEN_NAME),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_GIVEN_NAME),
                 true,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "dob",
-                "Date of birth",
-                "Date of Birth of the holder",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_DATE_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_DATE_OF_BIRTH),
                 true,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.IntegerOptions(Options.SEX_ISO_IEC_5218),
                 "sex",
-                "Sex",
-                "Sex",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_SEX),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_SEX),
                 false,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "v_RA01_1",
-                "RA01 first vaccination",
-                "COVID-19 – first vaccination data",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_COVID19_FIRST_VACCINATION),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_COVID19_FIRST_VACCINATION),
                 false,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "v_RA01_2",
-                "RA01 second vaccination",
-                "COVID-19 – second vaccination data",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_COVID19_SECOND_VACCINATION),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_COVID19_SECOND_VACCINATION),
                 false,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "pid_PPN",
-                "ID with passport number",
-                "Unique set of elements identifying the holder by passport number",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_ID_WITH_PASSPORT_NUMBER),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_ID_WITH_PASSPORT_NUMBER),
                 false,
                 MICOV_VTR_NAMESPACE
             )
             .addMdocAttribute(
                 DocumentAttributeType.ComplexType,
                 "pid_DL",
-                "ID with driver’s license number",
-                "Unique set of elements identifying the holder by driver’s license number",
+                getLocalizedString(GeneratedStringKeys.VACCINATION_ATTRIBUTE_ID_WITH_DRIVERS_LICENSE_NUMBER),
+                getLocalizedString(GeneratedStringKeys.VACCINATION_DESCRIPTION_ID_WITH_DRIVERS_LICENSE_NUMBER),
                 false,
                 MICOV_VTR_NAMESPACE
             )

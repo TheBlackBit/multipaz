@@ -14,6 +14,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.multipaz.lokalize.util.LokalizeExtension
+import org.multipaz.lokalize.util.OutputFormat
 import org.multipaz.lokalize.engine.ResourceScanner
 import org.multipaz.lokalize.engine.TranslationComparator
 import java.io.File
@@ -46,6 +47,9 @@ abstract class LokalizeCheckTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val baseStringsFile: RegularFileProperty
 
+    @get:Input
+    abstract val outputFormat: Property<OutputFormat>
+
     @TaskAction
     fun run() = runBlocking {
         val scanner = ResourceScanner()
@@ -53,7 +57,7 @@ abstract class LokalizeCheckTask : DefaultTask() {
 
         val baseFile = baseStringsFile.get().asFile
         if (!baseFile.exists()) {
-            throw GradleException("Base strings.xml not found at: ${baseFile.absolutePath}")
+            throw GradleException("Base strings file not found at: ${baseFile.absolutePath}")
         }
 
         val baseBundle = scanner.scan(baseFile)
@@ -63,11 +67,15 @@ abstract class LokalizeCheckTask : DefaultTask() {
         logger.info("  - Arrays: ${baseBundle.arrays.size}")
 
         val resDir = resourcesDir.get()
+        val format = outputFormat.getOrElse(OutputFormat.XML)
         var totalMissingCount = 0
         val allMissingByLocale = mutableMapOf<String, TranslationComparator.ComparisonResult>()
 
         targetLocales.get().forEach { locale ->
-            val targetFile = File(project.projectDir, "$resDir/values-$locale/strings.xml")
+            val targetFile = when (format) {
+                OutputFormat.XML -> File(project.projectDir, "$resDir/values-$locale/strings.xml")
+                OutputFormat.JSON -> File(project.projectDir, "$resDir/values-$locale/strings.json")
+            }
             val targetBundle = if (targetFile.exists()) {
                 scanner.scan(targetFile)
             } else {
@@ -110,7 +118,8 @@ abstract class LokalizeCheckTask : DefaultTask() {
                     }
 
                     comparison.missingPlurals.forEach { key ->
-                        val quantities = baseBundle.plurals[key]?.items?.keys?.sorted() ?: emptyList()
+                        val quantities =
+                            baseBundle.plurals[key]?.items?.keys?.sorted() ?: emptyList()
                         appendLine("  • $key (plural, needs: ${quantities.joinToString()})")
                     }
 

@@ -7,6 +7,8 @@ import org.multipaz.documenttype.DocumentType
 import org.multipaz.documenttype.Icon
 import org.multipaz.util.fromBase64Url
 import kotlinx.datetime.LocalDate
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 object Loyalty {
     const val LOYALTY_DOCTYPE = "org.multipaz.loyalty.1"
@@ -15,16 +17,18 @@ object Loyalty {
     /**
      * Build the Loyalty ID Document Type.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Loyalty card")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_LOYALTY_CARD))
             .addMdocDocumentType(LOYALTY_DOCTYPE)
             // Core holder data relevant for a loyalty card
             //
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "family_name",
-                "Family name",
-                "Last name, surname, or primary identifier, of the document holder",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_FAMILY_NAME),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_FAMILY_NAME),
                 true,
                 LOYALTY_NAMESPACE,
                 Icon.PERSON,
@@ -33,8 +37,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "given_name",
-                "Given names",
-                "First name(s), other name(s), or secondary identifier, of the document holder",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_GIVEN_NAMES),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_GIVEN_NAMES),
                 true,
                 LOYALTY_NAMESPACE,
                 Icon.PERSON,
@@ -43,8 +47,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.Picture,
                 "portrait",
-                "Photo of holder",
-                "A reproduction of the document holder’s portrait.",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_PHOTO_OF_HOLDER),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_PHOTO_OF_HOLDER),
                 true,
                 LOYALTY_NAMESPACE,
                 Icon.ACCOUNT_BOX,
@@ -55,8 +59,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "membership_number",
-                "Membership ID",
-                "Person identifier of the Loyalty ID holder.",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_MEMBERSHIP_ID),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_MEMBERSHIP_ID),
                 false,
                 LOYALTY_NAMESPACE,
                 Icon.NUMBERS,
@@ -65,8 +69,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.String,
                 "tier",
-                "Tier",
-                "Membership tier (basic, silver, gold, platinum, elite)",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_TIER),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_TIER),
                 false,
                 LOYALTY_NAMESPACE,
                 Icon.STARS,
@@ -75,8 +79,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "issue_date",
-                "Date of issue",
-                "Date when document was issued",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_DATE_OF_ISSUE),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_DATE_OF_ISSUE),
                 true,
                 LOYALTY_NAMESPACE,
                 Icon.CALENDAR_CLOCK,
@@ -85,8 +89,8 @@ object Loyalty {
             .addMdocAttribute(
                 DocumentAttributeType.Date,
                 "expiry_date",
-                "Date of expiry",
-                "Date when document expires",
+                getLocalizedString(GeneratedStringKeys.LOYALTY_ATTRIBUTE_DATE_OF_EXPIRY),
+                getLocalizedString(GeneratedStringKeys.LOYALTY_DESCRIPTION_DATE_OF_EXPIRY),
                 true,
                 LOYALTY_NAMESPACE,
                 Icon.CALENDAR_CLOCK,
@@ -96,7 +100,7 @@ object Loyalty {
             //
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.LOYALTY_REQUEST_MANDATORY_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     LOYALTY_NAMESPACE to mapOf(
                         "family_name" to false,
@@ -111,7 +115,7 @@ object Loyalty {
             )
             .addSampleRequest(
                 id = "full",
-                displayName ="All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.LOYALTY_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     LOYALTY_NAMESPACE to mapOf()
                 )

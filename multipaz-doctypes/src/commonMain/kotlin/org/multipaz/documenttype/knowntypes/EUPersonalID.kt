@@ -27,6 +27,8 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import org.multipaz.cbor.buildCborArray
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 /**
  * Object containing the metadata of the EU Personal ID Document Type.
@@ -41,15 +43,17 @@ object EUPersonalID {
     /**
      * Build the EU Personal ID Document Type.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Personal ID")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_EU_PERSONAL_ID))
             .addMdocDocumentType(EUPID_DOCTYPE)
             .addJsonDocumentType(type = EUPID_VCT, keyBound = true)
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "family_name",
-                displayName = "Family name",
-                description = "Current last name(s), surname(s), or primary identifier of the PID holder",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_FAMILY_NAME),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_FAMILY_NAME),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PERSON,
@@ -59,8 +63,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "given_name",
-                displayName = "Given names",
-                description = "Current first name(s), other name(s), or secondary identifier of the PID holder",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_GIVEN_NAMES),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_GIVEN_NAMES),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PERSON,
@@ -71,8 +75,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Date,
                 mdocIdentifier = "birth_date",
                 jsonIdentifier = "birthdate",
-                displayName = "Date of birth",
-                description = "Day, month, and year on which the PID holder was born. If unknown, approximate date of birth.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_DATE_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_DATE_OF_BIRTH),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.TODAY,
@@ -82,8 +86,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.Number,
                 identifier = "age_in_years",
-                displayName = "Age in years",
-                description = "The age of the PID holder in years",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_AGE_IN_YEARS),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_AGE_IN_YEARS),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.TODAY,
@@ -93,8 +97,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.Number,
                 identifier = "age_birth_year",
-                displayName = "Year of birth",
-                description = "The year when the PID holder was born",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_YEAR_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_YEAR_OF_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.TODAY,
@@ -104,8 +108,8 @@ object EUPersonalID {
             .addJsonAttribute(
                 type = DocumentAttributeType.ComplexType,
                 identifier = "age_equal_or_over",
-                displayName = "Older than age attestations",
-                description = "Older Than Age Attestations",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_OLDER_THAN_AGE_ATTESTATIONS),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_OLDER_THAN_AGE_ATTESTATIONS),
                 icon = Icon.TODAY,
                 sampleValue = buildJsonObject {
                     put("18", JsonPrimitive(SampleData.AGE_OVER_18))
@@ -116,8 +120,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Boolean,
                 mdocIdentifier = "age_over_18",
                 jsonIdentifier = "age_equal_or_over.18",
-                displayName = "Older than 18",
-                description = "Age over 18?",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_OLDER_THAN_18),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_OLDER_THAN_18),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.TODAY,
@@ -128,8 +132,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Boolean,
                 mdocIdentifier = "age_over_21",
                 jsonIdentifier = "age_equal_or_over.21",
-                displayName = "Older than 21",
-                description = "Age over 21?",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_OLDER_THAN_21),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_OLDER_THAN_21),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.TODAY,
@@ -140,8 +144,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "family_name_birth",
                 jsonIdentifier = "birth_family_name",
-                displayName = "Family name at birth",
-                description = "Last name(s), surname(s), or primary identifier of the PID holder at birth",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_FAMILY_NAME_AT_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_FAMILY_NAME_AT_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PERSON,
@@ -152,8 +156,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "given_name_birth",
                 jsonIdentifier = "birth_given_name",
-                displayName = "First name at birth",
-                description = "First name(s), other name(s), or secondary identifier of the PID holder at birth",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_FIRST_NAME_AT_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_FIRST_NAME_AT_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PERSON,
@@ -163,8 +167,8 @@ object EUPersonalID {
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "birth_place",
-                displayName = "Place of birth",
-                description = "Country and municipality or state/province where the PID holder was born",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_PLACE_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_PLACE_OF_BIRTH),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -173,8 +177,8 @@ object EUPersonalID {
             .addJsonAttribute(
                 type = DocumentAttributeType.ComplexType,
                 identifier = "place_of_birth",
-                displayName = "Place of birth",
-                description = "Country and municipality or state/province where the PID holder was born",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_PLACE_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_PLACE_OF_BIRTH),
                 icon = Icon.PLACE,
                 sampleValue = buildJsonObject {
                     put("country", JsonPrimitive(SampleData.BIRTH_COUNTRY))
@@ -186,8 +190,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 mdocIdentifier = "birth_country",
                 jsonIdentifier = "place_of_birth.country",
-                displayName = "Country of birth",
-                description = "The country where the PID User was born, as an Alpha-2 country code as specified in ISO 3166-1",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_COUNTRY_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_COUNTRY_OF_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -198,8 +202,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "birth_state",
                 jsonIdentifier = "place_of_birth.region",
-                displayName = "State of birth",
-                description = "The state, province, district, or local area where the PID User was born",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_STATE_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_STATE_OF_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -210,8 +214,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "birth_city",
                 jsonIdentifier = "place_of_birth.locality",
-                displayName = "City of birth",
-                description = "The municipality, city, town, or village where the PID User was born",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_CITY_OF_BIRTH),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_CITY_OF_BIRTH),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -221,8 +225,8 @@ object EUPersonalID {
             .addJsonAttribute(
                 type = DocumentAttributeType.ComplexType,
                 identifier = "address",
-                displayName = "Address",
-                description = "Address",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_ADDRESS),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_ADDRESS),
                 icon = Icon.PLACE,
                 sampleValue = buildJsonObject {
                     put("formatted", JsonPrimitive(SampleData.RESIDENT_ADDRESS))
@@ -238,8 +242,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_address",
                 jsonIdentifier = "address.formatted",
-                displayName = "Resident address",
-                description = "The full address of the place where the PID holder currently resides and/or may be contacted (street/house number, municipality etc.)",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_ADDRESS),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_ADDRESS),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -250,8 +254,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 mdocIdentifier = "resident_country",
                 jsonIdentifier = "address.country",
-                displayName = "Resident country",
-                description = "The country where the PID User currently resides, as an Alpha-2 country code as specified in ISO 3166-1",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_COUNTRY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_COUNTRY),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -262,8 +266,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_state",
                 jsonIdentifier = "address.region",
-                displayName = "Resident state",
-                description = "The state, province, district, or local area where the PID User currently resides.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_STATE),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_STATE),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -274,8 +278,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_city",
                 jsonIdentifier = "address.locality",
-                displayName = "Resident city",
-                description = "The city where the PID holder currently resides",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_CITY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_CITY),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -286,8 +290,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_postal_code",
                 jsonIdentifier = "address.postal_code",
-                displayName = "Resident postal code",
-                description = "The postal code of the place where the PID holder currently resides",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_POSTAL_CODE),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_POSTAL_CODE),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -298,8 +302,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_street",
                 jsonIdentifier = "address.street_address",
-                displayName = "Resident street",
-                description = "The name of the street where the PID User currently resides.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_STREET),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_STREET),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -310,8 +314,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "resident_house_number",
                 jsonIdentifier = "address.house_number",
-                displayName = "Resident house number",
-                description = "The house number where the PID User currently resides, including any affix or suffix",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_RESIDENT_HOUSE_NUMBER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_RESIDENT_HOUSE_NUMBER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -321,8 +325,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.IntegerOptions(Options.SEX_ISO_IEC_5218),
                 identifier = "sex",
-                displayName = "Sex",
-                description = "PID holder’s sex",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_SEX),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_SEX),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.EMERGENCY,
@@ -333,8 +337,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.ComplexType,
                 mdocIdentifier = "nationality",
                 jsonIdentifier = "nationalities",
-                displayName = "Nationality",
-                description = "Alpha-2 country code as specified in ISO 3166-1, representing the nationality of the PID User.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_NATIONALITY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_NATIONALITY),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.LANGUAGE,
@@ -351,8 +355,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Date,
                 mdocIdentifier = "issuance_date",
                 jsonIdentifier = "date_of_issuance",
-                displayName = "Date of issue",
-                description = "Date (and possibly time) when the PID was issued.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_DATE_OF_ISSUE),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_DATE_OF_ISSUE),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.DATE_RANGE,
@@ -363,8 +367,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Date,
                 mdocIdentifier = "expiry_date",
                 jsonIdentifier = "date_of_expiry",
-                displayName = "Date of expiry",
-                description = "Date (and possibly time) when the PID will expire.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_DATE_OF_EXPIRY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_DATE_OF_EXPIRY),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.CALENDAR_CLOCK,
@@ -374,10 +378,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "issuing_authority",
-                displayName = "Issuing authority",
-                description = "Name of the administrative authority that has issued this PID instance, or the " +
-                        "ISO 3166 Alpha-2 country code of the respective Member State if there is" +
-                        "no separate authority authorized to issue PIDs.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_ISSUING_AUTHORITY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_ISSUING_AUTHORITY),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.ACCOUNT_BALANCE,
@@ -387,8 +389,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "document_number",
-                displayName = "Document number",
-                description = "A number for the PID, assigned by the PID Provider.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_DOCUMENT_NUMBER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_DOCUMENT_NUMBER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.NUMBERS,
@@ -398,8 +400,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "personal_administrative_number",
-                displayName = "Personal administrative number",
-                description = "A number assigned by the PID Provider for audit control or other purposes.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_PERSONAL_ADMINISTRATIVE_NUMBER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_PERSONAL_ADMINISTRATIVE_NUMBER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.NUMBERS,
@@ -409,10 +411,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.String,
                 identifier = "issuing_jurisdiction",
-                displayName = "Issuing jurisdiction",
-                description = "Country subdivision code of the jurisdiction that issued the PID, as defined in " +
-                        "ISO 3166-2:2020, Clause 8. The first part of the code SHALL be the same " +
-                        "as the value for issuing_country.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_ISSUING_JURISDICTION),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_ISSUING_JURISDICTION),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.ACCOUNT_BALANCE,
@@ -422,9 +422,8 @@ object EUPersonalID {
             .addAttribute(
                 type = DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 identifier = "issuing_country",
-                displayName = "Issuing country",
-                description = "Alpha-2 country code, as defined in ISO 3166-1, of the issuing authority’s " +
-                        "country or territory",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_ISSUING_COUNTRY),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_ISSUING_COUNTRY),
                 mandatory = true,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.ACCOUNT_BALANCE,
@@ -435,8 +434,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.Picture,
                 mdocIdentifier = "portrait",
                 jsonIdentifier = "picture",
-                displayName = "Photo of holder",
-                description = "A reproduction of the PID holder’s portrait.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_PHOTO_OF_HOLDER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_PHOTO_OF_HOLDER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.ACCOUNT_BOX,
@@ -447,8 +446,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "email_address",
                 jsonIdentifier = "email",
-                displayName = "Email address of holder",
-                description = "Electronic mail address of the user to whom the person identification data relates, in conformance with [RFC 5322].",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_EMAIL_ADDRESS_OF_HOLDER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_EMAIL_ADDRESS_OF_HOLDER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -459,8 +458,8 @@ object EUPersonalID {
                 type = DocumentAttributeType.String,
                 mdocIdentifier = "mobile_phone_number",
                 jsonIdentifier = "phone_number",
-                displayName = "Mobile phone of holder",
-                description = "Mobile telephone number of the User to whom the person identification data relates, starting with the '+' symbol as the international code prefix and the country code, followed by numbers only.",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_ATTRIBUTE_MOBILE_PHONE_OF_HOLDER),
+                description = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_DESCRIPTION_MOBILE_PHONE_OF_HOLDER),
                 mandatory = false,
                 mdocNamespace = EUPID_NAMESPACE,
                 icon = Icon.PLACE,
@@ -469,7 +468,7 @@ object EUPersonalID {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName = "Age over 18",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_REQUEST_AGE_OVER_18),
                 mdocDataElements = mapOf(
                     EUPID_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -479,7 +478,7 @@ object EUPersonalID {
             )
             .addSampleRequest(
                 id = "age_over_18_zkp",
-                displayName = "Age over 18 (ZKP)",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_REQUEST_AGE_OVER_18_ZKP),
                 mdocDataElements = mapOf(
                     EUPID_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -490,7 +489,7 @@ object EUPersonalID {
             )
             .addSampleRequest(
                 id = "age_over_18_and_portrait",
-                displayName = "Age over 18 + portrait",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_REQUEST_AGE_OVER_18_AND_PORTRAIT),
                 mdocDataElements = mapOf(
                     EUPID_NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -501,7 +500,7 @@ object EUPersonalID {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_REQUEST_MANDATORY_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     EUPID_NAMESPACE to mapOf(
                         "family_name" to false,
@@ -527,7 +526,7 @@ object EUPersonalID {
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.EU_PERSONAL_ID_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     EUPID_NAMESPACE to mapOf()
                 ),

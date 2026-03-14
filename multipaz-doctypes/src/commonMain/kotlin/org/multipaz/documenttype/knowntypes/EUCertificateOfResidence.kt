@@ -6,6 +6,8 @@ import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.DocumentType
 import org.multipaz.documenttype.Icon
 import kotlinx.datetime.LocalDate
+import org.multipaz.doctypes.localization.LocalizedStrings
+import org.multipaz.doctypes.localization.GeneratedStringKeys
 
 /**
  * Object containing the metadata of the EU Certificate of Residency (COR) document.
@@ -21,15 +23,17 @@ object EUCertificateOfResidence {
     /**
      * Build the EU Certificate of Residency Document Type.
      */
-    fun getDocumentType(): DocumentType {
-        return DocumentType.Builder("Certificate of residency")
+    fun getDocumentType(locale: String = LocalizedStrings.getCurrentLocale()): DocumentType {
+        fun getLocalizedString(key: String) = LocalizedStrings.getString(key, locale)
+
+        return DocumentType.Builder(getLocalizedString(GeneratedStringKeys.DOCUMENT_DISPLAY_NAME_CERTIFICATE_OF_RESIDENCY))
             .addMdocDocumentType(DOCTYPE)
             .addJsonDocumentType(type = VCT, keyBound = true)
             .addAttribute(
                 DocumentAttributeType.String,
                 "family_name",
-                "Family name",
-                "Current last name(s), surname(s), or primary identifier of the COR holder",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_FAMILY_NAME),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_FAMILY_NAME),
                 true,
                 NAMESPACE,
                 Icon.PERSON,
@@ -38,8 +42,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "given_name",
-                "Given names",
-                "Current first name(s), other name(s), or secondary identifier of the COR holder",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_GIVEN_NAMES),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_GIVEN_NAMES),
                 true,
                 NAMESPACE,
                 Icon.PERSON,
@@ -48,8 +52,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Date,
                 "birth_date",
-                "Date of birth",
-                "Day, month, and year on which the COR holder was born. If unknown, approximate date of birth.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_DATE_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_DATE_OF_BIRTH),
                 true,
                 NAMESPACE,
                 Icon.TODAY,
@@ -58,8 +62,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_18",
-                "Older than 18",
-                "Age over 18?",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_OLDER_THAN_18),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_OLDER_THAN_18),
                 false,
                 NAMESPACE,
                 Icon.TODAY,
@@ -68,8 +72,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Boolean,
                 "age_over_21",
-                "Older than 21",
-                "Age over 21?",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_OLDER_THAN_21),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_OLDER_THAN_21),
                 false,
                 NAMESPACE,
                 Icon.TODAY,
@@ -78,8 +82,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Date,
                 "arrival_date",
-                "Date of arrival",
-                "Day, month, and year on which the COR holder arrived to the EU.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_DATE_OF_ARRIVAL),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_DATE_OF_ARRIVAL),
                 false,
                 NAMESPACE,
                 Icon.DATE_RANGE,
@@ -88,8 +92,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_address",
-                "Resident address",
-                "The full address of the place where the COR holder currently resides and/or may be contacted (street/house number, municipality etc.)",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_ADDRESS),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_ADDRESS),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -98,8 +102,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "resident_country",
-                "Resident country",
-                "The country where the user currently resides, as an Alpha-2 country code as specified in ISO 3166-1",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_COUNTRY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_COUNTRY),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -108,8 +112,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_state",
-                "Resident state",
-                "The state, province, district, or local area where the user currently resides.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_STATE),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_STATE),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -118,8 +122,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_city",
-                "Resident city",
-                "The city where the COR holder currently resides",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_CITY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_CITY),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -128,8 +132,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_postal_code",
-                "Resident postal code",
-                "The postal code of the place where the COR holder currently resides",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_POSTAL_CODE),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_POSTAL_CODE),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -138,8 +142,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_street",
-                "Resident street",
-                "The name of the street where the user currently resides.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_STREET),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_STREET),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -148,8 +152,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "resident_house_number",
-                "Resident house number",
-                "The house number where the user currently resides, including any affix or suffix",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_RESIDENT_HOUSE_NUMBER),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_RESIDENT_HOUSE_NUMBER),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -158,8 +162,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "birth_place",
-                "Place of birth",
-                "The place where the COR holder was born.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_PLACE_OF_BIRTH),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_PLACE_OF_BIRTH),
                 false,
                 NAMESPACE,
                 Icon.PLACE,
@@ -168,8 +172,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.IntegerOptions(Options.SEX_ISO_IEC_5218),
                 "gender",
-                "Gender",
-                "COR holder’s gender",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_GENDER),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_GENDER),
                 false,
                 NAMESPACE,
                 Icon.EMERGENCY,
@@ -178,8 +182,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "nationality",
-                "Nationality",
-                "Alpha-2 country code as specified in ISO 3166-1, representing the nationality of the user.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_NATIONALITY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_NATIONALITY),
                 true,
                 NAMESPACE,
                 Icon.LANGUAGE,
@@ -188,8 +192,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Date,
                 "issuance_date",
-                "Date of issue",
-                "Date (and possibly time) when the COR was issued.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_DATE_OF_ISSUE),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_DATE_OF_ISSUE),
                 true,
                 NAMESPACE,
                 Icon.DATE_RANGE,
@@ -198,8 +202,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.Date,
                 "expiry_date",
-                "Date of expiry",
-                "Date (and possibly time) when the COR will expire.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_DATE_OF_EXPIRY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_DATE_OF_EXPIRY),
                 true,
                 NAMESPACE,
                 Icon.CALENDAR_CLOCK,
@@ -208,10 +212,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "issuing_authority",
-                "Issuing authority",
-                "Name of the administrative authority that has issued this COR instance, or the " +
-                        "ISO 3166 Alpha-2 country code of the respective Member State if there is" +
-                        "no separate authority authorized to issue CORs.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_ISSUING_AUTHORITY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_ISSUING_AUTHORITY),
                 true,
                 NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -220,8 +222,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "document_number",
-                "Document number",
-                "A number for the COR, assigned by the COR Provider.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_DOCUMENT_NUMBER),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_DOCUMENT_NUMBER),
                 false,
                 NAMESPACE,
                 Icon.NUMBERS,
@@ -230,8 +232,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "administrative_number",
-                "Administrative number",
-                "A number assigned by the COR Provider for audit control or other purposes.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_ADMINISTRATIVE_NUMBER),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_ADMINISTRATIVE_NUMBER),
                 false,
                 NAMESPACE,
                 Icon.NUMBERS,
@@ -240,10 +242,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.String,
                 "issuing_jurisdiction",
-                "Issuing jurisdiction",
-                "Country subdivision code of the jurisdiction that issued the COR, as defined in " +
-                        "ISO 3166-2:2020, Clause 8. The first part of the code SHALL be the same " +
-                        "as the value for issuing_country.",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_ISSUING_JURISDICTION),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_ISSUING_JURISDICTION),
                 false,
                 NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -252,9 +252,8 @@ object EUCertificateOfResidence {
             .addAttribute(
                 DocumentAttributeType.StringOptions(Options.COUNTRY_ISO_3166_1_ALPHA_2),
                 "issuing_country",
-                "Issuing country",
-                "Alpha-2 country code, as defined in ISO 3166-1, of the issuing authority’s " +
-                        "country or territory",
+                getLocalizedString(GeneratedStringKeys.COR_ATTRIBUTE_ISSUING_COUNTRY),
+                getLocalizedString(GeneratedStringKeys.COR_DESCRIPTION_ISSUING_COUNTRY),
                 true,
                 NAMESPACE,
                 Icon.ACCOUNT_BALANCE,
@@ -262,7 +261,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "age_over_18",
-                displayName = "Age over 18",
+                displayName = getLocalizedString(GeneratedStringKeys.COR_REQUEST_AGE_OVER_18),
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf(
                         "age_over_18" to false,
@@ -272,7 +271,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "mandatory",
-                displayName = "Mandatory data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.COR_REQUEST_MANDATORY_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf(
                         "family_name" to false,
@@ -298,7 +297,7 @@ object EUCertificateOfResidence {
             )
             .addSampleRequest(
                 id = "full",
-                displayName = "All data elements",
+                displayName = getLocalizedString(GeneratedStringKeys.COR_REQUEST_ALL_DATA_ELEMENTS),
                 mdocDataElements = mapOf(
                     NAMESPACE to mapOf()
                 ),
