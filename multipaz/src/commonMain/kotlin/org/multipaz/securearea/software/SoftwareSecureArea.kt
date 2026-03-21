@@ -308,11 +308,9 @@ class SoftwareSecureArea private constructor(private val storageTable: StorageTa
             } catch (_: PromptModelNotAvailableException) {
                 throw KeyLockedException("Key is locked and PromptModel is not available to unlock interactively")
             }
-            val humanReadable = promptModel.toHumanReadable(unlockReason, constraints)
             val passphrase = try {
                 promptModel.requestPassphrase(
-                    title = humanReadable.title,
-                    subtitle = humanReadable.subtitle,
+                    reason = unlockReason,
                     passphraseConstraints = constraints,
                     passphraseEvaluator = { enteredPassphrase: String ->
                         try {

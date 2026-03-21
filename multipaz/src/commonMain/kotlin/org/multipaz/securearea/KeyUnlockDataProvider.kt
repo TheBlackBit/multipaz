@@ -20,7 +20,8 @@ import org.multipaz.prompt.Reason
  *
  * If [KeyUnlockDataProvider] is not found, [SecureArea] can use its own default implementation
  * that requires [PromptModel] in the current coroutine context. Use [PromptModel.toHumanReadable]
- * to customize text that is used in the prompts.
+ * or the `toHumanReadable` parameter on `PromptDialogs` to customize text that is used in the
+ * prompts.
  */
 interface KeyUnlockDataProvider : CoroutineContext.Element {
     object Key: CoroutineContext.Key<KeyUnlockDataProvider>

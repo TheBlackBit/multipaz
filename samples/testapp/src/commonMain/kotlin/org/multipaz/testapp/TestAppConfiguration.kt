@@ -3,7 +3,6 @@ package org.multipaz.testapp
 import io.ktor.client.engine.HttpClientEngineFactory
 import org.jetbrains.compose.resources.DrawableResource
 import org.multipaz.presentment.PresentmentSource
-import org.multipaz.prompt.PromptModel
 import org.multipaz.storage.Storage
 
 enum class TestAppPlatform(val displayName: String) {
@@ -17,8 +16,6 @@ expect object TestAppConfiguration {
     val appName: String
 
     val appIcon: DrawableResource
-
-    val promptModel: PromptModel
 
     val platform: TestAppPlatform
 

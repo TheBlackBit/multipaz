@@ -23,12 +23,7 @@ fun PromptModel.getConsentPromptDialogModel() = getDialogModel(ConsentPromptDial
  *
  * To dismiss the prompt programmatically, cancel the job the coroutine was launched in.
  *
- * To obtain [title] and [subtitle] back-end code generally should create a [Reason] object and
- * use [PromptModel.toHumanReadable] to convert it to human-readable form. This gives
- * application code a chance to customize user-facing messages.
- *
- * @param title the title for the passphrase prompt.
- * @param subtitle the subtitle for the passphrase prompt.
+ * @param reason a [Reason] describing why passphrase authentication is needed.
  * @param passphraseConstraints the [PassphraseConstraints] for the passphrase.
  * @param passphraseEvaluator an optional function to evaluate the passphrase and give the user feedback.
  * @return the passphrase entered by the user.
@@ -45,15 +40,13 @@ fun PromptModel.getConsentPromptDialogModel() = getDialogModel(ConsentPromptDial
     PromptUiNotAvailableException::class
 )
 suspend fun PromptModel.requestPassphrase(
-    title: String,
-    subtitle: String,
+    reason: Reason,
     passphraseConstraints: PassphraseConstraints,
     passphraseEvaluator: (suspend (enteredPassphrase: String) -> PassphraseEvaluation)?
 ): String {
     return getDialogModel(PassphrasePromptDialogModel.DialogType).displayPrompt(
         PassphraseRequest(
-            title,
-            subtitle,
+            reason,
             passphraseConstraints,
             passphraseEvaluator
         )

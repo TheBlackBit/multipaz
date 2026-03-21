@@ -49,8 +49,7 @@ class PromptModelTest {
     fun noPromptUI() = runTest {
         val exception = try {
             promptModel.requestPassphrase(
-                title = "Title",
-                subtitle = "Subtitle",
+                reason = Reason.HumanReadable("Title", "Subtitle", false),
                 passphraseConstraints = PassphraseConstraints.NONE,
                 passphraseEvaluator = null
             )
@@ -67,8 +66,7 @@ class PromptModelTest {
         // Bind UI
         collectDialogState { "Unused" }
         promptModel.requestPassphrase(
-            title = "Unused",
-            subtitle = "Unused",
+            reason = Reason.HumanReadable("Unused", "Unused", false),
             passphraseConstraints = PassphraseConstraints.NONE,
             passphraseEvaluator = null
         )
@@ -79,8 +77,7 @@ class PromptModelTest {
 
         assertFailsWith<PromptUiNotAvailableException> {
             promptModel.requestPassphrase(
-                title = "Title",
-                subtitle = "Subtitle",
+                reason = Reason.HumanReadable("Title", "Subtitle", false),
                 passphraseConstraints = PassphraseConstraints.NONE,
                 passphraseEvaluator = null
             )
@@ -92,16 +89,15 @@ class PromptModelTest {
     fun simplePromptLocalScope() = runTest {
         val dialogState = collectDialogState { "Foo" }
         val passphrase = promptModel.requestPassphrase(
-            title = "Title",
-            subtitle = "Subtitle",
+            reason = Reason.HumanReadable("Title", "Subtitle", false),
             passphraseConstraints = PassphraseConstraints.NONE,
             passphraseEvaluator = null
         )
         assertEquals("Foo", passphrase)
 
         val promptState = dialogState[0] as PromptDialogModel.DialogShownState
-        assertEquals("Title", promptState.parameters.title)
-        assertEquals("Subtitle", promptState.parameters.subtitle)
+        assertEquals("Title", (promptState.parameters.reason as Reason.HumanReadable).title)
+        assertEquals("Subtitle", (promptState.parameters.reason as Reason.HumanReadable).subtitle)
         assertEquals(PassphraseConstraints.NONE, promptState.parameters.passphraseConstraints)
         assertNull(promptState.parameters.passphraseEvaluator)
         assertTrue(dialogState[1] is PromptDialogModel.NoDialogState)
@@ -112,8 +108,7 @@ class PromptModelTest {
         val dialogState = collectDialogState { "Bar" }
         val promptJob = promptModel.promptModelScope.launch {
             val passphrase = PromptModel.get().requestPassphrase(
-                title = "Title Top",
-                subtitle = "Subtitle Top",
+                reason = Reason.HumanReadable("Title Top", "Subtitle Top", false),
                 passphraseConstraints = PassphraseConstraints.NONE,
                 passphraseEvaluator = null
             )
@@ -122,8 +117,8 @@ class PromptModelTest {
         promptJob.join()
 
         val promptState = dialogState[0] as PromptDialogModel.DialogShownState
-        assertEquals("Title Top", promptState.parameters.title)
-        assertEquals("Subtitle Top", promptState.parameters.subtitle)
+        assertEquals("Title Top", (promptState.parameters.reason as Reason.HumanReadable).title)
+        assertEquals("Subtitle Top", (promptState.parameters.reason as Reason.HumanReadable).subtitle)
         assertEquals(PassphraseConstraints.NONE, promptState.parameters.passphraseConstraints)
         assertNull(promptState.parameters.passphraseEvaluator)
         assertTrue(dialogState[1] is PromptDialogModel.NoDialogState)
@@ -135,8 +130,7 @@ class PromptModelTest {
         val dialogState = collectDialogState { IGNORE }
         val promptJob = launch(UnconfinedTestDispatcher(testScheduler) + promptModel) {
             PromptModel.get().requestPassphrase(
-                title = "Title",
-                subtitle = "Subtitle",
+                reason = Reason.HumanReadable("Title", "Subtitle", false),
                 passphraseConstraints = PassphraseConstraints.NONE,
                 passphraseEvaluator = null
             )
@@ -156,8 +150,7 @@ class PromptModelTest {
         val exception = async(UnconfinedTestDispatcher(testScheduler) + promptModel) {
             try {
                 PromptModel.get().requestPassphrase(
-                    title = "Title",
-                    subtitle = "Subtitle",
+                    reason = Reason.HumanReadable("Title", "Subtitle", false),
                     passphraseConstraints = PassphraseConstraints.NONE,
                     passphraseEvaluator = null
                 )
@@ -190,8 +183,7 @@ class PromptModelTest {
         val firstRequest = promptModel.promptModelScope.async {
             try {
                 PromptModel.get().requestPassphrase(
-                    title = "Title First",
-                    subtitle = "Subtitle First",
+                    reason = Reason.HumanReadable("Title First", "Subtitle First", false),
                     passphraseConstraints = PassphraseConstraints.NONE,
                     passphraseEvaluator = null
                 )
@@ -202,12 +194,11 @@ class PromptModelTest {
         }
         // Wait until the dialog is "up"
         val request = req.receive()
-        assertEquals("Title First", request.title)
+        assertEquals("Title First", (request.reason as Reason.HumanReadable).title)
         // From a different coroutine, call the PromptModel again
         val secondRequest = promptModel.promptModelScope.launch {
             PromptModel.get().requestPassphrase(
-                title = "Title Second",
-                subtitle = "Subtitle Second",
+                reason = Reason.HumanReadable("Title Second", "Subtitle Second", false),
                 passphraseConstraints = PassphraseConstraints.NONE,
                 passphraseEvaluator = null
             )

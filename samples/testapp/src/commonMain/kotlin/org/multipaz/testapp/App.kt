@@ -899,7 +899,7 @@ class App private constructor (val promptModel: PromptModel) {
         private var app: App? = null
         fun getInstance(): App {
             if (app == null) {
-                app = App(TestAppConfiguration.promptModel)
+                app = App(Platform.promptModel)
             }
             return app!!
         }

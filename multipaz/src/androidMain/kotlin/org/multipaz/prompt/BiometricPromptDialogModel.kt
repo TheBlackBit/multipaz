@@ -19,15 +19,14 @@ class BiometricPromptDialogModel:
      * Parameters for the biometric prompt.
      *
      * @property cryptoObject optional [CryptoObject] to be associated with the authentication.
-     * @property title the title for the authentication prompt.
-     * @property subtitle the subtitle for the authentication prompt.
+     * @property reason semantic context for the authentication request, converted to user-visible
+     *    prompt content by the configured reason-to-text converter.
      * @property userAuthenticationTypes the set of allowed user authentication types, must contain at least one element.
      * @property requireConfirmation set to `true` to require explicit user confirmation after presenting passive biometric.
      */
     data class BiometricPromptState(
         val cryptoObject: CryptoObject?,
-        val title: String,
-        val subtitle: String,
+        val reason: Reason,
         val userAuthenticationTypes: Set<UserAuthenticationType>,
         val requireConfirmation: Boolean
     )

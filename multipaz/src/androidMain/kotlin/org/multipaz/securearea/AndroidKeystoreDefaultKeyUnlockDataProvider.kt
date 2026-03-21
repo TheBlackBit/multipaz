@@ -1,6 +1,5 @@
 package org.multipaz.securearea
 
-import kotlinx.coroutines.currentCoroutineContext
 import org.multipaz.prompt.AndroidPromptModel
 import org.multipaz.prompt.PromptModelNotAvailableException
 import org.multipaz.prompt.Reason
@@ -23,8 +22,7 @@ object AndroidKeystoreDefaultKeyUnlockDataProvider: KeyUnlockDataProvider {
         val humanReadable = promptModel.toHumanReadable(unlockReason, null)
         if (!promptModel.showBiometricPrompt(
                 cryptoObject = unlockData.getCryptoObjectForSigning(),
-                title = humanReadable.title,
-                subtitle = humanReadable.subtitle,
+                reason = unlockReason,
                 userAuthenticationTypes = keyInfo.userAuthenticationTypes,
                 requireConfirmation = humanReadable.requireConfirmation
             )

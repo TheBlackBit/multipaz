@@ -12,13 +12,13 @@ import org.multipaz.presentment.CredentialPresentmentSelection
 import org.multipaz.presentment.PresentmentModel
 import org.multipaz.presentment.PresentmentCanceledException
 import org.multipaz.presentment.PresentmentSource
+import org.multipaz.prompt.AndroidPromptModel
 import org.multipaz.prompt.promptModelRequestConsent
 import org.multipaz.prompt.showBiometricPrompt
+import org.multipaz.prompt.Reason
 import org.multipaz.request.Requester
-import org.multipaz.securearea.UserAuthenticationType
+import org.multipaz.securearea.UserAuthenticationType as PromptUserAuthenticationType
 import org.multipaz.trustmanagement.TrustMetadata
-
-private const val TAG = "ConsentPromptScreen"
 
 actual suspend fun launchAndroidPresentmentActivity(
     source: PresentmentSource,
@@ -61,11 +61,17 @@ actual suspend fun launchAndroidPresentmentActivity(
                 )
             }
             if (paData.requireAuth) {
-                if (!PresentmentActivity.promptModel.showBiometricPrompt(
+                if (!(PresentmentActivity.promptModel as AndroidPromptModel).showBiometricPrompt(
                     cryptoObject = null,
-                    title = "Verify it's you",
-                    subtitle = "Authenticate to present credentials",
-                    userAuthenticationTypes = setOf(UserAuthenticationType.BIOMETRIC, UserAuthenticationType.LSKF),
+                    reason = Reason.HumanReadable(
+                        title = "Verify it's you",
+                        subtitle = "Authenticate to present credentials",
+                        requireConfirmation = paData.authRequireConfirmation
+                    ),
+                    userAuthenticationTypes = setOf(
+                        PromptUserAuthenticationType.BIOMETRIC,
+                        PromptUserAuthenticationType.LSKF
+                    ),
                     requireConfirmation = paData.authRequireConfirmation
                 )) {
                     throw PresentmentCanceledException("Presentment cancelled because user dismissed biometric prompt")
@@ -77,11 +83,7 @@ actual suspend fun launchAndroidPresentmentActivity(
             PresentmentActivity.presentmentModel.setCompleted(null)
         } catch (e: Exception) {
             if (e is CancellationException) throw e
-            if (e is CancellationException) {
-                PresentmentActivity.presentmentModel.setCompleted(PresentmentCanceledException("Presentment was cancelled"))
-            } else {
-                PresentmentActivity.presentmentModel.setCompleted(e)
-            }
+            PresentmentActivity.presentmentModel.setCompleted(e)
         }
     }
 

@@ -3,8 +3,13 @@ package org.multipaz.compose.prompt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import org.multipaz.prompt.PromptDialogModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,10 +18,26 @@ import org.multipaz.compose.passphrase.PassphrasePromptBottomSheet
 import org.multipaz.prompt.PassphraseEvaluation
 import org.multipaz.prompt.PassphrasePromptDialogModel
 import org.multipaz.prompt.PromptDismissedException
+import org.multipaz.prompt.Reason
+import org.multipaz.securearea.PassphraseConstraints
 
+/**
+ * A composable dialog that prompts the user to enter a passphrase.
+ *
+ * This dialog is driven by a [PromptDialogModel] and displays a bottom sheet
+ * when a passphrase request is active. It supports optional passphrase evaluation
+ * and converts the raw [Reason] into human-readable title/subtitle strings.
+ *
+ * @param model The dialog model managing the passphrase request state and result channel.
+ * @param toHumanReadable A suspend function that converts a [Reason] and optional
+ *   [PassphraseConstraints] into a [Reason.HumanReadable] for display in the UI.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PassphrasePromptDialog(model: PromptDialogModel<PassphrasePromptDialogModel.PassphraseRequest, String>) {
+fun PassphrasePromptDialog(
+    model: PromptDialogModel<PassphrasePromptDialogModel.PassphraseRequest, String>,
+    toHumanReadable: suspend (Reason, PassphraseConstraints?) -> Reason.HumanReadable
+) {
     val dialogState = model.dialogState.collectAsState(PromptDialogModel.NoDialogState())
     val coroutineScope = rememberCoroutineScope()
     val showKeyboard = MutableStateFlow<Boolean>(false)
@@ -28,12 +49,26 @@ fun PassphrasePromptDialog(model: PromptDialogModel<PassphrasePromptDialogModel.
         }
     )
     val dialogStateValue = dialogState.value
-    if (dialogStateValue is PromptDialogModel.DialogShownState) {
+    var humanReadable by remember { mutableStateOf<Reason.HumanReadable?>(null) }
+    LaunchedEffect(dialogStateValue) {
+        humanReadable = if (dialogStateValue is PromptDialogModel.DialogShownState) {
+            val parameters = dialogStateValue.parameters
+            try {
+                toHumanReadable(parameters.reason, parameters.passphraseConstraints)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    if (dialogStateValue is PromptDialogModel.DialogShownState && humanReadable != null) {
         val dialogParameters = dialogStateValue.parameters
         PassphrasePromptBottomSheet(
             sheetState = sheetState,
-            title = dialogParameters.title,
-            subtitle = dialogParameters.subtitle,
+            title = humanReadable?.title.orEmpty(),
+            subtitle = humanReadable?.subtitle.orEmpty(),
             passphraseConstraints = dialogParameters.passphraseConstraints,
             showKeyboard = showKeyboard.asStateFlow(),
             onPassphraseEntered = { enteredPassphrase ->

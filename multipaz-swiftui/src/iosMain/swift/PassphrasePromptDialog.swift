@@ -7,11 +7,17 @@ private struct PassphrasePromptDialogData: Identifiable, Equatable {
 
 struct PassphrasePromptDialog: View {
     let model: PassphrasePromptDialogModel
+    let toHumanReadable: @MainActor (Reason, PassphraseConstraints?) async -> ReasonHumanReadable
 
     @State private var data: PassphrasePromptDialogData? = nil
+    @State private var humanReadableReason: ReasonHumanReadable? = nil
     
-    init(model: PassphrasePromptDialogModel) {
+    init(
+        model: PassphrasePromptDialogModel,
+        toHumanReadable: @escaping @MainActor (Reason, PassphraseConstraints?) async -> ReasonHumanReadable
+    ) {
         self.model = model
+        self.toHumanReadable = toHumanReadable
     }
     
     var body: some View {
@@ -31,6 +37,16 @@ struct PassphrasePromptDialog: View {
                 oldValue?.state.resultChannel.close(cause: PromptDismissedException())
             }
         }
+        .task(id: data?.id) {
+            if let data {
+                humanReadableReason = await toHumanReadable(
+                    data.state.parameters!.reason,
+                    data.state.parameters!.passphraseConstraints
+                )
+            } else {
+                humanReadableReason = nil
+            }
+        }
         .sheet(item: $data) { data in
             SmartSheet(maxHeight: .infinity) {
                 HStack {
@@ -46,10 +62,11 @@ struct PassphrasePromptDialog: View {
                     }
                 }
             } content: {
-                PassphraseInputView(
-                    title: data.state.parameters!.title,
-                    subtitle: data.state.parameters!.subtitle,
-                    constraints: data.state.parameters!.passphraseConstraints,
+                if let humanReadableReason {
+                    PassphraseInputView(
+                        title: humanReadableReason.title,
+                        subtitle: humanReadableReason.subtitle,
+                        constraints: data.state.parameters!.passphraseConstraints,
                     passphraseEvaluator: { enteredPassphrase in
                         let evaluation = try! await data.state.parameters?.passphraseEvaluator?.invoke(p1: enteredPassphrase)
                         let kfType = if data.state.parameters!.passphraseConstraints.requireNumerical {
@@ -82,7 +99,8 @@ struct PassphrasePromptDialog: View {
                             self.data = nil
                         }
                     }
-                )
+                    )
+                }
             } footer: { isAtBottom, scrollDown in
             }
             .presentationDragIndicator(.hidden)

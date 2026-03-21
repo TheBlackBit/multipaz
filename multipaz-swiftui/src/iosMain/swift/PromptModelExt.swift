@@ -1,19 +1,39 @@
 
+public enum PromptModelError: Error {
+    case unexpectedType(expected: String, actual: Any.Type)
+}
+
 extension PromptModel {
     public func requestPassphrase(
-        title: String,
-        subtitle: String,
+        reason: Reason,
         passphraseConstraints: PassphraseConstraints,
         passphraseEvaluatorFn: @escaping @Sendable (
-            _ enteredPassphrase: String,
+            _ enteredPassphrase: String
         ) async -> PassphraseEvaluation?
     ) async throws -> String {
         return try await self.requestPassphrase(
-            title: title,
-            subtitle: subtitle,
+            reason: reason,
             passphraseConstraints: passphraseConstraints,
             passphraseEvaluator: PassphraseEvalulatorHandler(f: passphraseEvaluatorFn)
         )
+    }
+
+    @MainActor
+    public func convertToHumanReadable(
+        reason: Reason,
+        passphraseConstraints: PassphraseConstraints?
+    ) async throws -> ReasonHumanReadable {
+        let result = try await self.toHumanReadable.invoke(
+            p1: reason,
+            p2: passphraseConstraints
+        )
+        guard let humanReadable = result as? ReasonHumanReadable else {
+            throw PromptModelError.unexpectedType(
+                expected: "ReasonHumanReadable",
+                actual: type(of: result)
+            )
+        }
+        return humanReadable
     }
 }
 

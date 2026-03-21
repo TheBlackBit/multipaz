@@ -981,11 +981,9 @@ open class CloudSecureArea protected constructor(
                 throw KeyLockedException("Key is locked and PromptModel is not available to unlock interactively")
             }
             val passphraseConstraints = secureArea.getPassphraseConstraints()
-            val humanReadable = promptModel.toHumanReadable(unlockReason, passphraseConstraints)
             unlockData.passphrase = try {
                 promptModel.requestPassphrase(
-                    title = humanReadable.title,
-                    subtitle = humanReadable.subtitle,
+                    reason = unlockReason,
                     passphraseConstraints = passphraseConstraints,
                     passphraseEvaluator = { enteredPassphrase: String ->
                         when (val result = secureArea.checkPassphrase(enteredPassphrase)) {

@@ -19,8 +19,11 @@ struct PassphrasePromptScreen: View {
                 let promptModel = try await PromptModel.Companion.shared.get()
                 print("PromptModel.get() from Swift: \(promptModel)")
                 let passphrase = try await promptModel.requestPassphrase(
-                    title: "Verify knowledge factor",
-                    subtitle: "Enter your \(kfType) to continue. It's '\(expectedPassphrase)' but also try entering something else to see an error message",
+                    reason: ReasonHumanReadable(
+                        title: "Verify knowledge factor",
+                        subtitle: "Enter your \(kfType) to continue. It's '\(expectedPassphrase)' but also try entering something else to see an error message",
+                        requireConfirmation: false
+                    ),
                     passphraseConstraints: constraint,
                     passphraseEvaluatorFn: { enteredPassphrase in
                         print("numTries=\(await numTries) and passphrase: \(enteredPassphrase)")

@@ -17,14 +17,13 @@ class PassphrasePromptDialogModel():
 
     /**
      * Data for the UI to display and run passphrase dialog.
-     * @property title the title for the passphrase prompt.
-     * @property subtitle the subtitle for the passphrase prompt.
+     * @property reason the reason for the prompt, to be converted to human-readable `title` and
+     *   `subtitle` text for UI.
      * @property passphraseConstraints the [PassphraseConstraints] for the passphrase.
      * @property passphraseEvaluator an optional function to evaluate the passphrase and give the user feedback.
      */
     class PassphraseRequest(
-        val title: String,
-        val subtitle: String,
+        val reason: Reason,
         val passphraseConstraints: PassphraseConstraints,
         val passphraseEvaluator: (suspend (enteredPassphrase: String) -> PassphraseEvaluation)?
     )

@@ -11,7 +11,8 @@ import org.multipaz.securearea.PassphraseConstraints
  *
  * A reason can be taken into account when implementing
  * [org.multipaz.securearea.KeyUnlockDataProvider] or when using a user prompt to obtain
- * authorization in [PromptModel.toHumanReadable].
+ * authorization via a configured reason-to-text converter (for example, the
+ * `toHumanReadable` parameter on `PromptDialogs`).
  *
  * This is an interface and thus the set of possible values is not restricted. Applications are
  * encouraged to create application-specific implementation of this interface for use in the
@@ -26,7 +27,7 @@ interface Reason {
      *  [org.multipaz.securearea.SecureArea] keys that are not expected to be locked (and would
      *  outright cause an exception if the key is locked).
      */
-    object Unspecified: Reason
+    object Unspecified : Reason
 
     /**
      * Human-readable explanation for the operation.
@@ -34,9 +35,9 @@ interface Reason {
      * Note: [title] and [subtitle] are presented to the user and thus **must** be localized.
      *
      * Multipaz library itself never uses values of this type for back-end operations. However,
-     * when [PromptModel] is used for key unlock prompts, every other [Reason] value is
-     * ultimately converted to a [Reason.HumanReadable]. See [PromptModel.toHumanReadable]
-     * property (which can be used to customize unlock prompts).
+     * when prompt-based key unlock is used, every other [Reason] value is ultimately converted
+     * to a [Reason.HumanReadable] by the configured reason-to-text converter (such as the
+     * `toHumanReadable` parameter on `PromptDialogs`).
      *
      * @property title the title to show in the authentication prompt.
      * @property subtitle the subtitle to show in the authentication prompt.
@@ -47,7 +48,7 @@ interface Reason {
         val title: String,
         val subtitle: String,
         val requireConfirmation: Boolean
-    ): Reason
+    ) : Reason
 }
 
 /**
