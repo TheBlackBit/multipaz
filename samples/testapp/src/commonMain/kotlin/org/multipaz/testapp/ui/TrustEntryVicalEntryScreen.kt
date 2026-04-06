@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.multipaz.compose.trustmanagement.TrustEntryVicalEntryViewer
 import org.multipaz.compose.trustmanagement.TrustManagerModel
+import org.multipaz.trustmanagement.TrustEntryBasedTrustManager
 
 @Composable
 fun TrustEntryVicalEntryScreen(

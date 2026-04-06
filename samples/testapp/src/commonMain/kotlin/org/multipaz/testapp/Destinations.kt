@@ -158,3 +158,12 @@ data class EventViewerDestination(
 @Serializable
 data object ShareSheetDestination: Destination()
 
+
+@Serializable
+data object GenerateMpzPassDestination: Destination()
+
+@Serializable
+data object FloatingItemListDestination: Destination()
+
+@Serializable
+data object DeviceCheckDestination: Destination()

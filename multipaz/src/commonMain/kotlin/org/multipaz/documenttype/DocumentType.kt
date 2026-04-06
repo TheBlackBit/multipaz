@@ -17,9 +17,12 @@
 package org.multipaz.documenttype
 
 import kotlinx.io.bytestring.ByteString
+import kotlinx.io.bytestring.encodeToByteString
 import kotlin.time.Instant
 import org.multipaz.cbor.DataItem
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.multipaz.cbor.Bstr
 import org.multipaz.cbor.Cbor
 import org.multipaz.cbor.RawCbor
@@ -35,8 +38,14 @@ import org.multipaz.document.Document
 import org.multipaz.mdoc.credential.MdocCredential
 import org.multipaz.mdoc.issuersigned.buildIssuerNamespaces
 import org.multipaz.mdoc.mso.MobileSecurityObject
+import org.multipaz.sdjwt.SdJwt
+import org.multipaz.sdjwt.credential.KeyBoundSdJwtVcCredential
+import org.multipaz.sdjwt.credential.KeylessSdJwtVcCredential
 import org.multipaz.securearea.CreateKeySettings
 import org.multipaz.securearea.SecureArea
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
 import kotlin.random.Random
 
 /**
@@ -263,6 +272,7 @@ class DocumentType private constructor(
          * @param jsonClaims the claim names for JSON-based credentials in the request. If the list is empty, all
          *   defined claims will be included. Each claim name must use `.` to separate path components, e.g.
          *   `age_equal_or_over.18`.
+         * @param cannedTransactionData transaction data list for the request
          */
         fun addSampleRequest(
             id: String,
@@ -270,6 +280,7 @@ class DocumentType private constructor(
             mdocDataElements: Map<String, Map<String, Boolean>>? = null,
             mdocUseZkp: Boolean = false,
             jsonClaims: List<String>? = null,
+            cannedTransactionData: List<CannedTransactionData> = listOf()
         ) = apply {
             val mdocRequest = if (mdocDataElements == null) {
                 null
@@ -321,7 +332,8 @@ class DocumentType private constructor(
                     id = id,
                     displayName = displayName,
                     mdocRequest = mdocRequest,
-                    jsonRequest = jsonRequest
+                    jsonRequest = jsonRequest,
+                    transactionData = cannedTransactionData
                 ))
         }
 
@@ -441,5 +453,125 @@ class DocumentType private constructor(
         // Now that we have issuer-provided authentication data we ccan ertify the authentication key.
         mdocCredential.certify(ByteString(issuerProvidedAuthenticationData))
         return mdocCredential
+    }
+
+    /**
+     * Adds a [KeylessSdJwtVcCredential] to a [Document] with sample data for the document type.
+     *
+     * @param document the [Document] to add the credential to.
+     * @param dsKey the key to sign the MSO with and its certificate chain.
+     * @param signedAt the time the MSO was signed.
+     * @param validFrom the time at which the credential is valid from.
+     * @param validUntil the time at which the credential is valid until.
+     * @param domain the domain to use for the credential.
+     * @return the [MdocCredential] that was added to [document].
+     */
+    suspend fun createKeylessSdJwtVcCredentialWithSampleData(
+        document: Document,
+        dsKey: AsymmetricKey.X509Certified,
+        signedAt: Instant,
+        validFrom: Instant,
+        validUntil: Instant,
+        domain: String = "sdjwt",
+        randomProvider: Random = Random,
+    ): KeylessSdJwtVcCredential {
+        require(jsonDocumentType != null)
+
+        val identityAttributes = buildJsonObject {
+            for ((claimName, attribute) in jsonDocumentType.claims) {
+                // Skip sub-claims.
+                if (claimName.contains('.')) {
+                    continue
+                }
+                attribute.sampleValueJson?.let {
+                    put(claimName, it)
+                }
+            }
+        }
+        val credential = KeylessSdJwtVcCredential.create(
+            document = document,
+            asReplacementForIdentifier = null,
+            domain = domain,
+            vct = jsonDocumentType.vct,
+        )
+
+        val sdJwt = SdJwt.create(
+            issuerKey = dsKey,
+            kbKey = null,
+            claims = identityAttributes,
+            nonSdClaims = buildJsonObject {
+                put("iss", "https://example-issuer.com")
+                put("vct", credential.vct)
+                put("iat", signedAt.epochSeconds)
+                put("nbf", validFrom.epochSeconds)
+                put("exp", validUntil.epochSeconds)
+            },
+            random = randomProvider
+        )
+        credential.certify(sdJwt.compactSerialization.encodeToByteString())
+        return credential
+    }
+
+    /**
+     * Adds a [KeyBoundSdJwtVcCredential] to a [Document] with sample data for the document type.
+     *
+     * @param document the [Document] to add the credential to.
+     * @param secureArea the [SecureArea] to use for `DeviceKey`.
+     * @param createKeySettings the [CreateKeySettings] to use.
+     * @param dsKey the key to sign the MSO with and its certificate chain.
+     * @param signedAt the time the MSO was signed.
+     * @param validFrom the time at which the credential is valid from.
+     * @param validUntil the time at which the credential is valid until.
+     * @param domain the domain to use for the credential.
+     * @return the [MdocCredential] that was added to [document].
+     */
+    suspend fun createKeyBoundSdJwtVcCredentialWithSampleData(
+        document: Document,
+        secureArea: SecureArea,
+        createKeySettings: CreateKeySettings,
+        dsKey: AsymmetricKey.X509Certified,
+        signedAt: Instant,
+        validFrom: Instant,
+        validUntil: Instant,
+        domain: String = "sdjwt",
+        randomProvider: Random = Random,
+    ): KeyBoundSdJwtVcCredential {
+        require(jsonDocumentType != null)
+
+        val identityAttributes = buildJsonObject {
+            for ((claimName, attribute) in jsonDocumentType.claims) {
+                // Skip sub-claims.
+                if (claimName.contains('.')) {
+                    continue
+                }
+                attribute.sampleValueJson?.let {
+                    put(claimName, it)
+                }
+            }
+        }
+        val credential = KeyBoundSdJwtVcCredential.create(
+            document = document,
+            asReplacementForIdentifier = null,
+            domain = domain,
+            secureArea = secureArea,
+            vct = jsonDocumentType.vct,
+            createKeySettings = createKeySettings
+        )
+
+        val sdJwt = SdJwt.create(
+            issuerKey = dsKey,
+            kbKey = credential.getAttestation().publicKey,
+            claims = identityAttributes,
+            nonSdClaims = buildJsonObject {
+                put("iss", "https://example-issuer.com")
+                put("vct", credential.vct)
+                put("iat", signedAt.epochSeconds)
+                put("nbf", validFrom.epochSeconds)
+                put("exp", validUntil.epochSeconds)
+            },
+            random = randomProvider
+        )
+        credential.certify(sdJwt.compactSerialization.encodeToByteString())
+        return credential
     }
 }

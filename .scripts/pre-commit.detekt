@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Running Detekt doc coverage check"
+./gradlew detektMetadataCommonMain

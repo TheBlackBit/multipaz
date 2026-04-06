@@ -1,11 +1,14 @@
 package org.multipaz.presentment
 
 import org.multipaz.cbor.DataItem
+import org.multipaz.cbor.toDataItem
+import org.multipaz.crypto.Algorithm
 import org.multipaz.crypto.EcCurve
 import org.multipaz.crypto.EcPublicKey
 import org.multipaz.document.Document
-import org.multipaz.eventlog.PresentmentEventData
+import org.multipaz.eventlogger.EventPresentmentData
 import org.multipaz.mdoc.credential.MdocCredential
+import org.multipaz.mdoc.devicesigned.DeviceNamespaces
 import org.multipaz.mdoc.devicesigned.buildDeviceNamespaces
 import org.multipaz.mdoc.request.DeviceRequest
 import org.multipaz.mdoc.response.DeviceResponse
@@ -18,6 +21,9 @@ import org.multipaz.mdoc.zkp.ZkSystemSpec
 import org.multipaz.request.MdocRequestedClaim
 import org.multipaz.request.Requester
 import org.multipaz.util.Logger
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.iterator
 import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "mdocPresentment"
@@ -38,7 +44,7 @@ private const val TAG = "mdocPresentment"
  * @param onWaitingForUserInput called when waiting for input from the user (consent or authentication)
  * @param onDocumentsInFocus called with the documents currently selected for the user, including when
  *   first shown. If the user selects a different set of documents in the prompt, this will be called again.
- * @return a [MdocResponse] containing [DeviceResponse] and [PresentmentEventData].
+ * @return a [MdocResponse] containing [DeviceResponse] and [EventPresentmentData].
  * @throws PresentmentCanceledException if the user canceled in a consent prompt.
  * @throws PresentmentCannotSatisfyRequestException if it's not possible to satisfy the request.
  */
@@ -63,7 +69,7 @@ suspend fun mdocPresentment(
     onDocumentsInFocus: (documents: List<Document>) -> Unit
 ): MdocResponse {
     val credentialsPresented = mutableSetOf<MdocCredential>()
-    lateinit var eventData: PresentmentEventData
+    lateinit var eventData: EventPresentmentData
 
     val deviceResponse = buildDeviceResponse(
         sessionTranscript = sessionTranscript,
@@ -73,7 +79,7 @@ suspend fun mdocPresentment(
         val presentmentData = try {
             deviceRequest.execute(
                 presentmentSource = source,
-                keyAgreementPossible = keyAgreementPossible
+                keyAgreementPossible = keyAgreementPossible,
             )
         } catch (e: Iso18015ResponseException) {
             throw PresentmentCannotSatisfyRequestException("Error satisfying the request", e)
@@ -137,7 +143,7 @@ suspend fun mdocPresentment(
                 eReaderKey = eReaderKey,
                 credential = match.credential as MdocCredential,
                 requestedClaims = match.claims.keys.toList() as List<MdocRequestedClaim>,
-                deviceNamespaces = buildDeviceNamespaces {},
+                deviceNamespaces = computeTransactionResponse(match),
                 errors = mapOf()
             )
             if (zkSystemMatch != null) {
@@ -154,7 +160,7 @@ suspend fun mdocPresentment(
             credentialsPresented.add(match.credential)
         }
 
-        eventData = PresentmentEventData.fromPresentmentSelection(
+        eventData = EventPresentmentData.fromPresentmentSelection(
             selection = selection,
             requester = requester,
             trustMetadata = trustMetadata
@@ -164,4 +170,36 @@ suspend fun mdocPresentment(
         deviceResponse = deviceResponse,
         eventData = eventData
     )
+}
+
+internal suspend fun computeTransactionResponse(
+    match: CredentialPresentmentSetOptionMemberMatch
+): DeviceNamespaces {
+    val transactionResponseMap = match.transactionData.associate { transaction ->
+        Pair(transaction.type.mdocResponseNamespace, buildMap {
+            val alg = transaction.getHashAlgorithm()
+            alg?.let {
+                put("transaction_data_hash_alg", it.coseAlgorithmIdentifier!!.toDataItem())
+            }
+            put("transaction_data_hash",
+                transaction.getHash(alg ?: Algorithm.SHA256).toByteArray().toDataItem())
+            transaction.type.applyCbor(
+                transactionData = transaction,
+                credential = match.credential
+            )?.let { extra ->
+                for ((key, value) in extra) {
+                    put(key, value)
+                }
+            }
+        })
+    }
+    return buildDeviceNamespaces {
+        for ((namespace, values) in transactionResponseMap) {
+            addNamespace(namespace) {
+                for ((key, value) in values) {
+                    addDataElement(key, value)
+                }
+            }
+        }
+    }
 }

@@ -5,8 +5,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlinx.io.bytestring.ByteString
 import org.multipaz.cbor.Cbor
 import org.multipaz.cbor.DataItem
@@ -18,6 +16,8 @@ import org.multipaz.storage.Storage
 import org.multipaz.storage.StorageTable
 import org.multipaz.storage.StorageTableSpec
 import org.multipaz.util.toHex
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 private data class LocalTrustEntry(
     val id: String,
@@ -58,14 +58,14 @@ private data class LocalTrustEntry(
  * update their state whenever trust entries are added, modified, or deleted.
  *
  * @param storage the [Storage] interface used for persistent storage.
- * @param identifier an identifier for the [TrustManagerInterface].
+ * @param identifier an identifier for the [TrustManagerInterface] instance.
  * @param partitionId an identifier used to namespace data if multiple [TrustManager] instances share the same [storage].
  */
 class TrustManager(
     private val storage: Storage,
     override val identifier: String = "default",
     private val partitionId: String = "default_$identifier"
-): TrustManagerInterface {
+): TrustEntryBasedTrustManager {
     private lateinit var storageTable: StorageTable
 
     /**
@@ -79,11 +79,7 @@ class TrustManager(
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    /**
-     * A reactive stream of events emitted whenever the underlying trust data changes.
-     * Observers can collect this flow to know when to refresh their cached UI states.
-     */
-    val eventFlow
+    override val eventFlow
         get() = _eventFlow.asSharedFlow()
 
     // Lock to protect in-memory collections from concurrent modifications
@@ -168,13 +164,7 @@ class TrustManager(
         }
     }
 
-    /**
-     * Retrieves all high-level [TrustEntry] items currently managed, sorted
-     * chronologically by the time they were added.
-     *
-     * @return A list of [TrustEntry] objects (e.g., [TrustEntryX509Cert], [TrustEntryVical]).
-     */
-    suspend fun getEntries(): List<TrustEntry> {
+    override suspend fun getEntries(): List<TrustEntry> {
         ensureInitialized()
         return stateLock.withLock {
             localEntries.sortedBy { it.timeAdded }.map { it.entry }

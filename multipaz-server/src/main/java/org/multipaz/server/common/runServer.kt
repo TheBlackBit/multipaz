@@ -55,6 +55,7 @@ fun runServer(
     args: Array<String>,
     needAdminPassword: Boolean = false,
     checkConfiguration: (ServerConfiguration) -> Unit = {},
+    environmentInitializer: suspend ServerEnvironmentInitializer.() -> Unit = {},
     applicationConfigurationAction: Application.(env: Deferred<ServerEnvironment>) -> Unit
 ) {
     val configuration = ServerConfiguration(args)
@@ -65,6 +66,8 @@ fun runServer(
             Logger.i("Main", "SQL driver: ${Driver()}")
         } else if (jdbc.startsWith("jdbc:postgresql:")) {
             Logger.i("Main", "SQL driver: ${org.postgresql.Driver()}")
+        } else if (jdbc.startsWith("jdbc:sqlite:")) {
+            Logger.i("Main", "SQL driver: ${org.sqlite.JDBC()}")
         }
     }
     if (needAdminPassword) {
@@ -74,7 +77,7 @@ fun runServer(
             }
     }
     val host = configuration.serverHost ?: "0.0.0.0"
-    val serverEnvironment = ServerEnvironment.create(configuration)
+    val serverEnvironment = ServerEnvironment.create(configuration, environmentInitializer)
     launchBackgroundJob(serverEnvironment)
     embeddedServer(
         factory = Netty,

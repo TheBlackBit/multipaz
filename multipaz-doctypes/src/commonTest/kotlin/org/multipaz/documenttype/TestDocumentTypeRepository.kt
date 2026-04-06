@@ -16,6 +16,7 @@ import org.multipaz.cbor.buildCborArray
 import org.multipaz.cbor.buildCborMap
 import org.multipaz.documenttype.knowntypes.DigitalPaymentCredential
 import org.multipaz.documenttype.knowntypes.EUPersonalID
+import org.multipaz.documenttype.knowntypes.Aadhaar
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -62,6 +63,33 @@ class TestDocumentTypeRepository {
             DocumentAttributeType.ComplexType,
             documentTypes[0].mdocDocumentType?.namespaces?.get("org.iso.18013.5.1.aamva")?.dataElements?.get("domestic_driving_privileges")?.attribute?.type
         )
+    }
+
+    @Test
+    fun testAadhaarDocumentType() {
+        val documentType = Aadhaar.getDocumentType()
+        val mdoc = documentType.mdocDocumentType
+        assertNotNull(mdoc)
+
+        assertEquals("Aadhaar", documentType.displayName)
+        assertEquals(Aadhaar.AADHAAR_DOCTYPE, mdoc.docType)
+        assertTrue(mdoc.namespaces.containsKey(Aadhaar.AADHAAR_NAMESPACE))
+
+        val aadhaarNamespace = mdoc.namespaces[Aadhaar.AADHAAR_NAMESPACE]
+        assertNotNull(aadhaarNamespace)
+
+        listOf(
+            "resident_name",
+            "enrolment_number",
+            "mobile",
+            "email",
+            "dob",
+        ).forEach { dataElementName ->
+            assertTrue(
+                aadhaarNamespace.dataElements.containsKey(dataElementName),
+                "Expected data element '$dataElementName' in aadhaar namespace"
+            )
+        }
     }
 
     @Test

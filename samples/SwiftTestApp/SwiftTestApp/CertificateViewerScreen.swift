@@ -1,6 +1,5 @@
 import SwiftUI
 import Multipaz
-import MultipazSwift
 
 struct CertificateViewerScreen: View {
     let certificates: [X509Cert]
@@ -13,7 +12,6 @@ struct CertificateViewerScreen: View {
             certificates: certificates,
             currentPage: $currentPage
         )
-        .background(Color(uiColor: .secondarySystemFill))
     }
 }
 

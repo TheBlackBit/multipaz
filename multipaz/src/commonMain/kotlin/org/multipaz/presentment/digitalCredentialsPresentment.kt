@@ -17,8 +17,8 @@ import org.multipaz.crypto.Hpke
 import org.multipaz.crypto.JsonWebSignature
 import org.multipaz.crypto.X509CertChain
 import org.multipaz.document.Document
-import org.multipaz.eventlog.PresentmentEventDigitalCredentialsMdocApi
-import org.multipaz.eventlog.PresentmentEventDigitalCredentialsOpenID4VP
+import org.multipaz.eventlogger.EventPresentmentDigitalCredentialsMdocApi
+import org.multipaz.eventlogger.EventPresentmentDigitalCredentialsOpenID4VP
 import org.multipaz.mdoc.request.DeviceRequest
 import org.multipaz.openid.OpenID4VP
 import org.multipaz.prompt.PromptDismissedException
@@ -141,7 +141,7 @@ suspend fun digitalCredentialsPresentment(
             )
         }
         else -> {
-            throw Error("Protocol ${protocol} is not supported")
+            throw Error("Protocol $protocol is not supported")
         }
     }
 }
@@ -159,7 +159,7 @@ private suspend fun digitalCredentialsOpenID4VPProtocol(
     val version = when (protocol) {
         "openid4vp" -> OpenID4VP.Version.DRAFT_24
         "openid4vp-v1-unsigned", "openid4vp-v1-signed" -> OpenID4VP.Version.DRAFT_29
-        else -> throw IllegalStateException("Unexpected protocol ${protocol}")
+        else -> throw IllegalStateException("Unexpected protocol $protocol")
     }
     var requesterCertChain: X509CertChain? = null
     val preReq = data
@@ -187,9 +187,9 @@ private suspend fun digitalCredentialsOpenID4VPProtocol(
         onDocumentsInFocus = onDocumentsInFocus
     )
 
-    source.eventLog?.addEvent(
-        PresentmentEventDigitalCredentialsOpenID4VP(
-            data = responseObject.eventData,
+    source.eventLogger?.addEventAsync(
+        EventPresentmentDigitalCredentialsOpenID4VP(
+            presentmentData = responseObject.eventData,
             appId = appId,
             origin = origin,
             protocol = protocol,
@@ -221,11 +221,11 @@ private suspend fun digitalCredentialsMdocApiProtocol(
 
     val encryptionInfo = Cbor.decode(encryptionInfoBase64.fromBase64Url())
     Logger.iCbor(TAG, "encryptionInfo", encryptionInfo)
-    if (encryptionInfo.asArray.get(0).asTstr != "dcapi") {
+    if (encryptionInfo.asArray[0].asTstr != "dcapi") {
         throw IllegalArgumentException("Malformed EncryptionInfo")
     }
-    val recipientPublicKey = encryptionInfo.asArray.get(1).asMap.get(Tstr
-        ("recipientPublicKey"))!!.asCoseKey.ecPublicKey
+    val recipientPublicKey = encryptionInfo.asArray[1].asMap[Tstr("recipientPublicKey")]!!
+        .asCoseKey.ecPublicKey
 
     val dcapiInfo = buildCborArray {
         add(encryptionInfoBase64)
@@ -282,9 +282,9 @@ private suspend fun digitalCredentialsMdocApiProtocol(
         put("response", encryptedResponse.toBase64Url())
     }
 
-    source.eventLog?.addEvent(
-        PresentmentEventDigitalCredentialsMdocApi(
-            data = responseObject.eventData,
+    source.eventLogger?.addEventAsync(
+        EventPresentmentDigitalCredentialsMdocApi(
+            presentmentData = responseObject.eventData,
             appId = appId,
             origin = origin,
             protocol = protocol,

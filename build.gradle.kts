@@ -35,8 +35,8 @@ val projectVersionCode: Int by extra {
 // For a tagged release, projectVersionNext should be blank and the next commit
 // following the release should bump it to the next version number.
 //
-val projectVersionLast = "0.97.0"
-val projectVersionNext = "0.98.0"
+val projectVersionLast = "0.98.0"
+val projectVersionNext = "0.99.0"
 
 private fun runCommand(args: List<String>): String {
     val stdout = ByteArrayOutputStream()
@@ -169,4 +169,12 @@ dependencies {
     dokka(project(":multipaz-longfellow"))
     dokka(project(":multipaz-cbor-rpc"))
     dokka(project(":multipaz-android-legacy"))
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.dokka") {
+        dependencies {
+            "dokkaPlugin"("org.multipaz:dokka-known-subclasses-plugin:1.0.0")
+        }
+    }
 }

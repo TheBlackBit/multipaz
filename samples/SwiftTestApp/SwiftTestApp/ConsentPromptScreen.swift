@@ -1,6 +1,5 @@
 import SwiftUI
 import Multipaz
-import MultipazSwift
 
 private enum RequestType: String, CaseIterable {
     case mdlUsTransportation = "mDL: US transportation"
@@ -539,6 +538,7 @@ private func calcConsentData(
         ),
         readerKey: readerKey.publicKey,
         subject: X500Name.companion.fromName(name: "CN=Test Reader Key"),
+        dnsName: nil,
         serial: ASN1Integer.companion.fromRandom(numBits: 128, random: KotlinRandom.companion),
         validFrom: validFrom.toKotlinInstant().truncateToWholeSeconds(),
         validUntil: validUntil.toKotlinInstant().truncateToWholeSeconds(),
@@ -581,12 +581,16 @@ private func calcConsentData(
                 onDocumentsInFocus: { documents in onDocumentsInFocus(documents) }
             )
         },
-        domainMdocSignature: "mdoc",
-        domainKeyBoundSdJwt: "sdjwt"
+        domainsMdocSignature: ["mdoc"],
+        domainsKeyBoundSdJwt: ["sdjwt"]
     )
 
     let query = try! DcqlQuery.companion.fromJsonString(dcql: dcqlString)
-    let presentmentData = try! await query.execute(presentmentSource: source, keyAgreementPossible: [])
+    let presentmentData = try! await query.execute(
+        presentmentSource: source,
+        keyAgreementPossible: [],
+        transactionDataMap: [:]
+    )
     
     return ConsentData(
         requester: requester,

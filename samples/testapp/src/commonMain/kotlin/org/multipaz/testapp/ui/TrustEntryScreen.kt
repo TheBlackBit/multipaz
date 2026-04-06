@@ -20,6 +20,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,16 +34,17 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.multipaz.compose.trustmanagement.TrustEntryViewer
 import org.multipaz.compose.trustmanagement.TrustManagerModel
 import org.multipaz.crypto.X509CertChain
+import org.multipaz.trustmanagement.TrustEntryBasedTrustManager
 import org.multipaz.trustmanagement.TrustEntryRical
 import org.multipaz.trustmanagement.TrustEntryVical
 import org.multipaz.trustmanagement.TrustEntryX509Cert
+import org.multipaz.trustmanagement.TrustManager
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TrustEntryScreen(
     trustManagerModel: TrustManagerModel,
     trustEntryId: String,
-    canEditOrDelete: Boolean,
     justImported: Boolean,
     imageLoader: ImageLoader,
     onViewSignerCertificateChain: (certificateChain: X509CertChain) -> Unit,
@@ -56,7 +58,7 @@ fun TrustEntryScreen(
     val scrollState = rememberScrollState()
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
 
-    val info = trustManagerModel.trustManagerInfos.value.find {
+    val info = trustManagerModel.trustManagerInfos.collectAsState().value?.find {
         it.entry.identifier == trustEntryId
     } ?: return
 
@@ -75,7 +77,7 @@ fun TrustEntryScreen(
                     onClick = {
                         coroutineScope.launch {
                             showDeleteConfirmationDialog = false
-                            trustManagerModel.trustManager.deleteEntry(info.entry)
+                            (trustManagerModel.trustManager as? TrustManager)?.deleteEntry(info.entry)
                             onBack()
                         }
                     }
@@ -128,7 +130,7 @@ fun TrustEntryScreen(
                     }
                 },
                 actions = {
-                    if (canEditOrDelete) {
+                    if (trustManagerModel.trustManager is TrustManager) {
                         IconButton(
                             onClick = { onEdit() }
                         ) {

@@ -18,6 +18,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import org.multipaz.compose.trustmanagement.TrustManagerModel
 import org.multipaz.trustmanagement.TrustEntryRical
 import org.multipaz.trustmanagement.TrustEntryVical
 import org.multipaz.trustmanagement.TrustEntryX509Cert
+import org.multipaz.trustmanagement.TrustManager
 import org.multipaz.trustmanagement.TrustMetadata
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,9 +49,10 @@ fun TrustEntryEditScreen(
     val scrollState = rememberScrollState()
     var showConfirmationBeforeExiting by remember { mutableStateOf(false) }
 
-    val info = trustManagerModel.trustManagerInfos.value.find {
+    val info = trustManagerModel.trustManagerInfos.collectAsState().value?.find {
         it.entry.identifier == trustEntryId
     } ?: return
+
     val newMetadata = remember { mutableStateOf<TrustMetadata>(info.entry.metadata) }
 
     if (showConfirmationBeforeExiting) {
@@ -117,7 +120,7 @@ fun TrustEntryEditScreen(
                         enabled = (newMetadata.value != info.entry.metadata),
                         onClick = {
                             coroutineScope.launch {
-                                trustManagerModel.trustManager.updateMetadata(
+                                (trustManagerModel.trustManager as TrustManager).updateMetadata(
                                     entry = info.entry,
                                     metadata = newMetadata.value
                                 )

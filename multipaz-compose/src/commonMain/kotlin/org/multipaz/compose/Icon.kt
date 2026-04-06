@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Emergency
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Flag
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.MilitaryTech
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.PanoramaWideAngle
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.filled.Today
@@ -85,6 +87,10 @@ fun Icon.getDefaultImageVector(): ImageVector {
         Icon.FLAG -> Icons.Default.Flag
         Icon.APARTMENT -> Icons.Default.Apartment
         Icon.LANGUAGE_JAPANESE_KANA -> Icons.Default.Language  // TODO: LanguageJapaneseKana is not available
+        Icon.GLOBE -> Icons.Default.Flag
+        Icon.PHONE -> Icons.Default.Phone
+        Icon.BADGE -> Icons.Default.AccountBox
+        Icon.EMAIL -> Icons.Default.Email
     }
 }
 
@@ -119,5 +125,9 @@ fun Icon.getOutlinedImageVector(): ImageVector {
         Icon.FLAG -> Icons.Outlined.Flag
         Icon.APARTMENT -> Icons.Outlined.Apartment
         Icon.LANGUAGE_JAPANESE_KANA -> Icons.Outlined.Language  // TODO: LanguageJapaneseKana is not available
+        Icon.GLOBE -> Icons.Default.Flag
+        Icon.PHONE -> Icons.Default.Phone
+        Icon.BADGE -> Icons.Default.AccountBox
+        Icon.EMAIL -> Icons.Default.Email
     }
 }

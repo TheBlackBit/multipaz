@@ -42,6 +42,8 @@ service () {
   shift
   local instance="$1"
   shift
+  local mainclass="$1"
+  shift
   local port="$1"
   shift
   local extra="$EXTRA_PARAMS"
@@ -55,15 +57,16 @@ service () {
     extra="$extra -param enrollment_server_url=${BASE_URL}/records"
   fi
   echo "Starting $service service ($instance) at port $port..."
-  java -jar "/app/jars/$service.jar" \
+  java -cp "/app/jars/$service.jar:/app/libs/*" "$mainclass" \
     -param server_port=$port \
     -param base_url=${BASE_URL}/$instance \
     -param ca_trust_servers="[\"$host\"]" \
     -param server_trace_file="/app/logs/$instance-trace.log" \
-    -param database_connection="jdbc:hsqldb:file:/app/data/$instance" \
+    -param database_connection="jdbc:sqlite:/app/data/$instance.db" \
+    -config "/etc/multipaz/$instance.conf" \
     $extra \
     $* \
-    > "/app/logs/$instance-log.log" 2>&1 &
+    > "/app/logs/$instance.log" 2>&1 &
   pids="$pids $!"
   echo "  PID: $!"
 }
@@ -77,12 +80,34 @@ if [ "$MODE" = "proxy" ]; then
     pids="$pids ${NGINX_PID}"
 fi
 
+# Check if DB exists before launching services (DB may be mounted from outside)
+if [ -r /app/data/records.db ]
+then
+   INIT=0
+else
+   INIT=1
+fi
+
 # records server must be started first, as it processes enrollments
-service records records 8004 -param admin_password=$ADMIN_PASS
-service openid4vci openid4vci 8007 -param admin_password=$ADMIN_PASS
-service csa csa 8005
-service verifier verifier 8006
-service backend backend 8008
+service records records org.multipaz.records.server.Main 8004 -param admin_password=$ADMIN_PASS
+service openid4vci openid4vci org.multipaz.openid4vci.server.Main 8007 -param admin_password=$ADMIN_PASS
+service csa csa org.multipaz.csa.server.Main 8005
+service verifier verifier org.multipaz.verifier.server.Main 8006
+service backend backend org.multipaz.backend.server.Main 8008
+
+if [ "$INIT" = "0" ]
+then
+echo "System of Records database exists, not loading initial data"
+else
+echo "Loading initial data into the System of Records..."
+(
+  echo '{'
+  echo '"password": "'$ADMIN_PASS'",'
+  echo '"identities":'
+  cat /app/init/records.json
+  echo '}'
+) | curl --retry-connrefused --retry 5 -H "Content-Type: application/json" -d @- http://localhost:8004/identity/load
+fi
 
 echo ""
 echo "All services started."

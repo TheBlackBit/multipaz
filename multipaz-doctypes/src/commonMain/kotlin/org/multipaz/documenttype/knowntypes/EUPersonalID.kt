@@ -29,6 +29,7 @@ import kotlinx.serialization.json.buildJsonObject
 import org.multipaz.cbor.buildCborArray
 import org.multipaz.doctypes.localization.LocalizedStrings
 import org.multipaz.doctypes.localization.GeneratedStringKeys
+import org.multipaz.transactiontype.knowntypes.PingTransaction
 
 /**
  * Object containing the metadata of the EU Personal ID Document Type.
@@ -531,6 +532,23 @@ object EUPersonalID {
                     EUPID_NAMESPACE to mapOf()
                 ),
                 jsonClaims = listOf()
+            )
+            .addSampleRequest(
+                id = "withTransaction",
+                displayName = "With Transaction Data",
+                mdocDataElements = mapOf(
+                    EUPID_NAMESPACE to mapOf(
+                        "family_name" to false,
+                        "given_name" to false,
+                        "birth_date" to false,
+                    )
+                ),
+                jsonClaims = listOf(
+                    "family_name",
+                    "given_name",
+                    "birthdate",
+                ),
+                cannedTransactionData = listOf(PingTransaction.sampleData)
             )
             .build()
     }

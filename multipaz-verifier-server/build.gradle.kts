@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":multipaz-doctypes"))
     implementation(project(":multipaz-longfellow"))
     implementation(project(":multipaz-server"))
+    implementation(project(":multipaz-verifier"))
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)

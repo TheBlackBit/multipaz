@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -21,12 +24,13 @@ import org.multipaz.multipaz_compose.generated.resources.trust_entry_rical_entry
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_rical_is_trust_anchor
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_rical_is_trust_anchor_false
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_rical_is_trust_anchor_true
+import org.multipaz.trustmanagement.TrustEntryBasedTrustManager
 
 /**
  * A Composable that displays the details of a specific individual certificate
  * embedded within a larger RICAL trust entry.
  *
- * @param trustManagerModel The presentation model holding the root RICAL trust entry.
+ * @param trustManagerModel A [TrustManagerModel].
  * @param ricalTrustEntryId The identifier of the parent RICAL trust entry.
  * @param certNum The index position of the specific certificate within the RICAL's certificate list.
  */
@@ -36,10 +40,11 @@ fun TrustEntryRicalEntryViewer(
     ricalTrustEntryId: String,
     certNum: Int
 ) {
-    val trustEntryInfo = trustManagerModel.trustManagerInfos.value.find {
+    val info = trustManagerModel.trustManagerInfos.collectAsState().value?.find {
         it.entry.identifier == ricalTrustEntryId
-    }!!
-    val rical = trustEntryInfo.signedRical!!.rical
+    } ?: return
+
+    val rical = info.signedRical!!.rical
     val ricalCertInfo = rical.certificateInfos[certNum]
 
     Column(

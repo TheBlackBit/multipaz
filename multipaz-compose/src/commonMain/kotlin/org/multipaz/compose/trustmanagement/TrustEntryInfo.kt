@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import org.multipaz.mdoc.rical.SignedRical
 import org.multipaz.mdoc.vical.SignedVical
 import org.multipaz.trustmanagement.TrustEntry
+import org.multipaz.trustmanagement.TrustEntryBasedTrustManager
 import org.multipaz.trustmanagement.TrustManager
 
 /**
@@ -21,7 +22,7 @@ import org.multipaz.trustmanagement.TrustManager
  */
 data class TrustEntryInfo(
     val entry: TrustEntry,
-    val manager: TrustManager,
+    val manager: TrustEntryBasedTrustManager,
     val signedVical: SignedVical?,
     val signedRical: SignedRical?
 ) {

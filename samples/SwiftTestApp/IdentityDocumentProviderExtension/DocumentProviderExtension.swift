@@ -10,7 +10,7 @@ import IdentityDocumentServices
 import IdentityDocumentServicesUI
 import SwiftUI
 @preconcurrency import Multipaz
-import MultipazSwift
+import Multipaz
 
 func getPresentmentSource() async -> PresentmentSource {
     let storage = IosStorage(
@@ -20,8 +20,10 @@ func getPresentmentSource() async -> PresentmentSource {
         excludeFromBackup: true
     )
     let secureArea = try! await Platform.shared.getSecureArea(storage: storage)
+    let softwareSecureArea = try! await SoftwareSecureArea.companion.create(storage: storage)
     let secureAreaRepository = SecureAreaRepository.Builder()
         .add(secureArea: secureArea)
+        .add(secureArea: softwareSecureArea)
         .build()
     let documentTypeRepository = DocumentTypeRepository()
     documentTypeRepository.addDocumentType(documentType: DrivingLicense.shared.getDocumentType())
@@ -36,11 +38,10 @@ func getPresentmentSource() async -> PresentmentSource {
     let readerTrustManager = TrustManager(storage: storage, identifier: "default", partitionId: "default_default")
     
     let zkSystemRepository = ZkSystemRepository()
-    // TODO: the RAM limit for IdentityDocumentProvider is 120 MB and Longfellow uses
-    //   just under 500MB. So we need to disable it for now. One possible work-around
-    //   is for Apple to increase the limit, another is to move the proof generation
-    //   to another process and do IPC.
-    /*
+    // Note: the RAM limit for IdentityDocumentProvider is 120 MB as of iOS 26 and
+    //   Longfellow v0.9 uses around ~200MB. So until Apple increases the RAM limit
+    //   for this extension ZKP will likely not work.
+    //
     let longfellow = LongfellowZkSystem()
     let circuitFilenames = [
         "6_1_4096_2945_137e5a75ce72735a37c8a72da1a8a0a5df8d13365c2ae3d2c2bd6a0e7197c7c6",
@@ -60,7 +61,6 @@ func getPresentmentSource() async -> PresentmentSource {
         )
     }
     zkSystemRepository.add(zkSystem: longfellow)
-     */
     return SimplePresentmentSource.companion.create(
         documentStore: documentStore,
         documentTypeRepository: documentTypeRepository,
@@ -87,7 +87,7 @@ func getPresentmentSource() async -> PresentmentSource {
             )
         },
         preferSignatureToKeyAgreement: false,
-        domainMdocSignature: "mdoc"
+        domainsMdocSignature: ["mdoc"]
     )
 }
 

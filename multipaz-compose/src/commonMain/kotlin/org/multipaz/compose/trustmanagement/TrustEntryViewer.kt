@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -61,11 +63,10 @@ import org.multipaz.multipaz_compose.generated.resources.trust_entry_warning_ric
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_warning_vical_just_imported
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_warning_x509_just_imported
 import org.multipaz.multipaz_compose.generated.resources.trust_entry_yes
+import org.multipaz.trustmanagement.TrustEntryBasedTrustManager
 import org.multipaz.trustmanagement.TrustEntryRical
 import org.multipaz.trustmanagement.TrustEntryVical
 import org.multipaz.trustmanagement.TrustEntryX509Cert
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * A Composable that displays the full details of a specific trust entry.
@@ -74,7 +75,7 @@ import kotlin.collections.component2
  * (Single X.509 Certificate, VICAL list, or RICAL list). It also provides informational
  * banners for newly imported entries reminding the user to verify the provider.
  *
- * @param trustManagerModel The presentation model holding the trust entries.
+ * @param trustManagerModel A [TrustManagerModel].
  * @param trustEntryId The unique identifier of the trust entry to display.
  * @param justImported True if the entry was recently added, triggering an informational banner.
  * @param imageLoader a [ImageLoader].
@@ -93,9 +94,9 @@ fun TrustEntryViewer(
     onViewVicalEntry: (vicalCertNum: Int) -> Unit,
     onViewRicalEntry: (ricalCertNum: Int) -> Unit,
 ) {
-    val entryInfo = trustManagerModel.trustManagerInfos.value.find {
+    val entryInfo = trustManagerModel.trustManagerInfos.collectAsState().value?.find {
         it.entry.identifier == trustEntryId
-    }!!
+    } ?: return
 
     Column() {
         if (justImported) {

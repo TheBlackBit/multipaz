@@ -1,6 +1,4 @@
 import SwiftUI
-import Multipaz
-import MultipazSwift
 
 struct PassphrasePromptScreen: View {
     @Environment(ViewModel.self) private var viewModel
@@ -39,7 +37,6 @@ struct PassphrasePromptScreen: View {
                             let numRemain = await 3 - self.numTries
                             self.numTries = await self.numTries + 1
                             return PassphraseEvaluation.TryAgainAttemptsRemain(remainingAttempts: Int32(numRemain))
-                            
                         }
                     })
                 print("Knowledge factor entered: \(passphrase)")

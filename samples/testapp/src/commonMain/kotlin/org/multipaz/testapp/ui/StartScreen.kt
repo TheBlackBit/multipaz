@@ -55,7 +55,10 @@ fun StartScreen(
     onClickDocumentListScreen: () -> Unit = {},
     onClickQuickAccessWallet: () -> Unit = {},
     onClickEventLog: () -> Unit = {},
-    onClickShareSheet: () -> Unit = {}
+    onClickShareSheet: () -> Unit = {},
+    onClickGenerateMpzPass: () -> Unit = {},
+    onClickFloatingItemList: () -> Unit = {},
+    onClickDeviceCheck: () -> Unit = {},
 ) {
     val blePermissionState = rememberBluetoothPermissionState()
     val coroutineScope = rememberCoroutineScope()
@@ -292,6 +295,24 @@ fun StartScreen(
                 item {
                     TextButton(onClick = onClickShareSheet) {
                         Text("Share sheet")
+                    }
+                }
+
+                item {
+                    TextButton(onClick = onClickGenerateMpzPass) {
+                        Text("MpzPass generation")
+                    }
+                }
+
+                item {
+                    TextButton(onClick = onClickFloatingItemList) {
+                        Text("FloatingItemList examples")
+                    }
+                }
+
+                item {
+                    TextButton(onClick = onClickDeviceCheck) {
+                        Text("DeviceCheck")
                     }
                 }
             }

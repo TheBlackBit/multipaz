@@ -41,7 +41,8 @@ class ProvisioningSupport {
                     httpClientEngine: Darwin(),
                     url: "\(backendServerUrl)/rpc",
                     secureArea: secureArea,
-                    storage: storage
+                    storage: storage,
+                    secret: nil
                 )
                 backend = OpenID4VCIBackendStub(
                     endpoint: "openid4vci_backend",
