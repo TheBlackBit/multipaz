@@ -21,7 +21,7 @@ import org.multipaz.rpc.cache
  */
 fun Routing.serveResources() {
     get("/") { fetchResource(call, "index.html") }
-    get("/{path...}") { fetchResource(call, call.parameters["path"]!!) }
+    get("/{path...}") { fetchResource(call, call.parameters.getAll("path")!!.joinToString("/")) }
 }
 
 /**
