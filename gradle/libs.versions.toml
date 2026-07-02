@@ -59,7 +59,7 @@ detekt = "1.23.8"
 kotlin-wrappers = "2025.12.1"
 kotlin-wrappers-rx = "2025.12.1-19.2.0"
 kotlin-wrappers-em = "2025.12.1-11.14.0"
-koog = "0.5.1"
+koog = "0.8.0"
 junit-jupiter = "5.10.0"
 jetbrains-navigationevent = "1.0.1"
 

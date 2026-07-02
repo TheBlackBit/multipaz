@@ -2,6 +2,7 @@ package org.multipaz.lokalize
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.TaskProvider
 import org.multipaz.lokalize.tasks.GenerateStringsTask
 import org.multipaz.lokalize.tasks.LokalizeCheckTask
@@ -9,6 +10,7 @@ import org.multipaz.lokalize.tasks.LokalizeTranslateTask
 import org.multipaz.lokalize.util.LLMProvider
 import org.multipaz.lokalize.util.LLmModel
 import org.multipaz.lokalize.util.LokalizeExtension
+import java.io.File
 
 /**
  * Lokalize Gradle Plugin for internationalization enforcement and AI-assisted translation.
@@ -25,7 +27,7 @@ import org.multipaz.lokalize.util.LokalizeExtension
  *     failOnMissing = true
  *     llmApiKey.set("your-api-key") // or use LOKALIZE_API_KEY env var
  *     llmProvider.set(LLMProvider.GOOGLE)  // or OPENAI, ANTHROPIC
- *     llModel.set(LLmModel.GEMINI2_0_FLASH)  // see LLmModel enum for all options
+ *     llModel.set(LLmModel.GEMINI2_5_FLASH_LITE)  // see LLmModel enum for all options
  *     resourcesDir.set("src/commonMain/composeResources") // optional: custom path
  *     outputFormat.set(OutputFormat.XML) // or JSON for web/desktop projects
  * }
@@ -49,17 +51,30 @@ class LokalizePlugin : Plugin<Project> {
         }
 
         // Add dependencies to the worker configuration
-        // Using correct artifact names from ai.koog (not the libs aliases)
+        // Using correct artifact names from ai.koog (not the libs aliases), but the
+        // version is read from the "libs" version catalog so it can't drift from the
+        // koog version the plugin was actually compiled against (see build.gradle.kts).
+        val libs = target.extensions.getByType(VersionCatalogsExtension::class.java).named("libs")
+        val koogVersion = libs.findVersion("koog").get().requiredVersion
+        val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
+        val coroutinesVersion = libs.findVersion("kotlinx-coroutines").get().requiredVersion
+
+        // The worker process is launched with a plain, fully-explicit classpath (see
+        // LokalizeTranslateTask), so it needs the lokalize plugin's own classes too -
+        // Gradle doesn't add those implicitly the way it would for a WorkAction.
+        val pluginClasspathEntry = File(LokalizePlugin::class.java.protectionDomain.codeSource.location.toURI())
+
         target.dependencies.apply {
-            add("lokalizeWorker", "ai.koog:koog-agents:0.5.1")
-            add("lokalizeWorker", "ai.koog:agents-ext:0.5.1")
-            add("lokalizeWorker", "ai.koog:prompt-executor-openai-client:0.5.1")
-            add("lokalizeWorker", "ai.koog:prompt-executor-google-client:0.5.1")
-            add("lokalizeWorker", "ai.koog:prompt-executor-anthropic-client:0.5.1")
-            add("lokalizeWorker", "ai.koog:prompt-executor-llms-all:0.5.1")
-            add("lokalizeWorker", "ai.koog:prompt-model:0.5.1")
-            add("lokalizeWorker", "org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
-            add("lokalizeWorker", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+            add("lokalizeWorker", target.files(pluginClasspathEntry))
+            add("lokalizeWorker", "ai.koog:koog-agents:$koogVersion")
+            add("lokalizeWorker", "ai.koog:agents-ext:$koogVersion")
+            add("lokalizeWorker", "ai.koog:prompt-executor-openai-client:$koogVersion")
+            add("lokalizeWorker", "ai.koog:prompt-executor-google-client:$koogVersion")
+            add("lokalizeWorker", "ai.koog:prompt-executor-anthropic-client:$koogVersion")
+            add("lokalizeWorker", "ai.koog:prompt-executor-llms-all:$koogVersion")
+            add("lokalizeWorker", "ai.koog:prompt-model:$koogVersion")
+            add("lokalizeWorker", "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+            add("lokalizeWorker", "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
         }
 
         ext.llmApiKey.convention(target.providers.environmentVariable("LOKALIZE_API_KEY")
@@ -69,7 +84,7 @@ class LokalizePlugin : Plugin<Project> {
             .orElse(target.providers.environmentVariable("ANTHROPIC_API_KEY")))
 
         ext.llmProvider.convention(LLMProvider.GOOGLE)
-        ext.llModel.convention(LLmModel.GEMINI2_0_FLASH)
+        ext.llModel.convention(LLmModel.GEMINI2_5_FLASH_LITE)
         ext.resourcesDir.convention("src/commonMain/composeResources")
         ext.outputFormat.convention(org.multipaz.lokalize.util.OutputFormat.XML)
         ext.generatedTranslationsPackageName.convention("org.multipaz.doctypes.generated")
