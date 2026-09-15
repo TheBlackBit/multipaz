@@ -766,9 +766,23 @@ object OpenID4VP {
                 docRequestId
             )
             if (responseClaims.isNotEmpty()) {
-                transactionResponse[data.type.kbJwtResponseClaimName] = buildJsonObject {
+                if (data.type.nestSdJwtResponseClaims) {
+                    transactionResponse[data.type.kbJwtResponseClaimName] = buildJsonObject {
+                        for ((name, value) in responseClaims) {
+                            put(name, value)
+                        }
+                    }
+                } else {
+                    // Verbatim, and arrays accumulate across items rather than overwriting: a
+                    // request may carry several items of the same type, and a plain put kept only
+                    // the last — so the user was shown several authorizations and signed one.
                     for ((name, value) in responseClaims) {
-                        put(name, value)
+                        val existing = transactionResponse[name]
+                        transactionResponse[name] = if (existing is JsonArray && value is JsonArray) {
+                            JsonArray(existing + value)
+                        } else {
+                            value
+                        }
                     }
                 }
             }
@@ -835,7 +849,8 @@ object OpenID4VP {
                 } else {
                     clientId
                 },
-                creationTime = Clock.System.now()
+                creationTime = Clock.System.now(),
+                type = match.transactionData.firstNotNullOfOrNull { it.type.sdJwtKbType } ?: "kb+jwt",
             ) {
                 if (!match.transactionData.isEmpty()) {
                     for ((key, response) in transactionResponse) {

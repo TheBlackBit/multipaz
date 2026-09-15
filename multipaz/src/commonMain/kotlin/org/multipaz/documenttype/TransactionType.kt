@@ -2,7 +2,11 @@ package org.multipaz.documenttype
 
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.decodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.JsonPrimitive
 import org.multipaz.cbor.Bstr
 import org.multipaz.cbor.Cbor
@@ -84,6 +88,12 @@ const val ISO_18013_TRANSACTION_DATA_NAMESPACE = "org.iso.transactiondata"
  *  all [TransactionType] objects must have distinct values.
  * @param openId4VpMdocResponseNamespace namespace to use in `deviceSigned` namespace map in
  *  OpenID4VP response; defaults to [identifier].
+ * @param nestSdJwtResponseClaims whether the claims returned by [generateSdJwtResponseClaims] are
+ *  nested in a JSON object under [kbJwtResponseClaimName] (the default). Set to `false` when a
+ *  specification fixes the shape and position of its own KB-JWT claims; they are then merged in
+ *  verbatim, preserving arrays that the nesting would wrap in an object.
+ * @param sdJwtKbType the `typ` header the Key Binding JWT must carry when this transaction type is
+ *  present, or `null` (the default) for the ordinary `kb+jwt`.
  */
 abstract class TransactionType<PayloadT: Any>(
     val displayName: String,
@@ -91,6 +101,8 @@ abstract class TransactionType<PayloadT: Any>(
     val kbJwtResponseClaimName: String = identifier,
     val iso18013RequestInfoIdentifier: String = identifier,
     val openId4VpMdocResponseNamespace: String = identifier,
+    val nestSdJwtResponseClaims: Boolean = true,
+    val sdJwtKbType: String? = null,
 ) {
     /**
      * Returns the DeviceSigned namespace to use for the given presentment protocol.
@@ -152,6 +164,14 @@ abstract class TransactionType<PayloadT: Any>(
             payload = parseOpenId4VpRequest(jsonString),
             protocol = TransactionProtocol.OPENID4VP,
             rawBytes = serialized,
+            // The digest algorithms the verifier accepts. Without this every item reported `null`,
+            // so a SHA-384 request was answered in SHA-256.
+            hashAlgorithms = parseJoseHashAlgorithms(
+                (Json.parseToJsonElement(jsonString) as? JsonObject)
+                    ?.get("transaction_data_hashes_alg")
+                    ?.let { it as? JsonArray }
+                    ?.mapNotNull { alg -> (alg as? JsonPrimitive)?.contentOrNull }
+            ),
         )
     }
 
