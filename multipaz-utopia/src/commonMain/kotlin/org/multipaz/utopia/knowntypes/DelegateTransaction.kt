@@ -50,6 +50,9 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
     // and the key binding has its own media type. Nesting would make it unreadable to a verifier.
     nestSdJwtResponseClaims = false,
     sdJwtKbType = "kb+sd-jwt",
+    // Approving a mandate hands an agent money to spend later, unattended. That is an
+    // authorization, not a disclosure, and the sheet says so.
+    grantsStandingAuthorization = true,
 ) {
     /**
      * The KB-JWT claim carrying the digest of the Mandate Content (Delegate SD-JWT §7.1).
@@ -81,8 +84,69 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
      *
      * @property label what the line is — a mandate member or constraint, in words.
      * @property value what it says, formatted for a person (money, dates, lists).
+     * @property shape what the value looks like, which is how a screen decides its prominence.
      */
-    data class SummaryLine(val label: String, val value: String)
+    data class SummaryLine(val label: String, val value: String, val shape: Shape = Shape.TEXT)
+
+    /**
+     * What a value looks like. The renderer walks arbitrary JSON and cannot know which field
+     * names matter, so prominence is decided by shape: a constraint type nobody has seen still
+     * lands in the right place.
+     */
+    enum class Shape {
+        /** An amount and a currency. The limit being granted. */
+        MONEY,
+
+        /** A point in time. */
+        INSTANT,
+
+        /** A long unreadable identifier — a digest, a nonce. */
+        OPAQUE,
+
+        /** Who the permission empowers. Unreadable like an identifier, but it is the "who". */
+        PARTY,
+
+        /** Anything else a person can read. */
+        TEXT,
+    }
+
+    /**
+     * The lines for a whole group of mandates that are signed together.
+     *
+     * Deduplicated on (label, value): a merchant named by both the checkout and the payment
+     * mandate is one fact about the permission, not two, and printing it twice crowds out
+     * something the person has not seen.
+     *
+     * @property money the amounts — the limits being granted.
+     * @property rest what a person can read, in the order it arrived.
+     * @property opaque digests and nonces: kept, but never given a summary row. They change
+     *   nobody's mind, and at full prominence they push the amount off the screen.
+     */
+    data class GroupSummary(
+        val money: List<SummaryLine>,
+        val rest: List<SummaryLine>,
+        val opaque: List<SummaryLine>,
+    ) {
+        /** How many lines the group holds in total. */
+        val size: Int get() = money.size + rest.size + opaque.size
+    }
+
+    /** [summarize] over several mandates at once, deduplicated and with the amounts separated. */
+    fun summarizeGroup(payloads: List<Payload>): GroupSummary {
+        val seen = LinkedHashMap<Pair<String, String>, SummaryLine>()
+        for (payload in payloads) {
+            for (line in summarize(payload)) {
+                val key = line.label to line.value
+                if (!seen.containsKey(key)) seen[key] = line
+            }
+        }
+        val lines = seen.values.toList()
+        return GroupSummary(
+            money = lines.filter { it.shape == Shape.MONEY },
+            rest = lines.filter { it.shape != Shape.MONEY && it.shape != Shape.OPAQUE },
+            opaque = lines.filter { it.shape == Shape.OPAQUE },
+        )
+    }
 
     /**
      * The Mandate Content, rendered for a consent screen. One entry carries one Delegate Payload
@@ -96,11 +160,11 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
             for ((key, value) in payload.delegatePayload) {
                 when {
                     key == "vct" -> {} // the heading, rendered separately
-                    key == "cnf" -> keyExcerpt(value)?.let { add(SummaryLine("Authorized agent key", it)) }
+                    key == "cnf" -> keyExcerpt(value)?.let { add(SummaryLine("Authorized agent key", it, Shape.PARTY)) }
                     key in INSTANT_CLAIMS && value is JsonPrimitive && value.longOrNull != null ->
-                        add(SummaryLine(INSTANT_CLAIMS.getValue(key), formatInstant(value.long)))
+                        add(SummaryLine(INSTANT_CLAIMS.getValue(key), formatInstant(value.long), Shape.INSTANT))
                     value is JsonArray -> value.forEach { element -> add(lineForElement(key, element)) }
-                    else -> add(SummaryLine(prettyLabel(key), renderValue(value)))
+                    else -> renderValue(value).let { add(SummaryLine(prettyLabel(key), it, shapeOf(it))) }
                 }
             }
         }
@@ -108,6 +172,19 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
     /** The mandate type, for the heading above its lines. Blank when the mandate does not say. */
     fun mandateType(mandate: JsonObject): String =
         (mandate["vct"] as? JsonPrimitive)?.contentOrNull.orEmpty()
+
+    /**
+     * A heading for a mandate type, in words.
+     *
+     * A type identifier is a machine name and means nothing to a person. An unrecognised one is
+     * said to be unrecognised rather than guessed at — the raw identifier is still printed, so a
+     * wallet never claims to understand a condition it has not seen.
+     */
+    fun headingFor(mandateType: String): String = when (mandateType) {
+        "mandate.checkout.open.1", "mandate.checkout.1" -> "What can be bought"
+        "mandate.payment.open.1", "mandate.payment.1" -> "How much can be spent"
+        else -> "A condition your wallet doesn't recognise"
+    }
 
     /**
      * The Mandate Content carried by an Array Disclosure — `base64url(JSON([salt, value]))`,
@@ -147,19 +224,32 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
             // A `currency` member means the amounts are ISO 4217 minor units: "13000" is $130.00,
             // and this is the screen where the person has to read the limit correctly.
             val currency = (rest["currency"] as? JsonPrimitive)?.contentOrNull
+            val shown = rest.entries
+                .filter { (k, v) -> !isEmptyCollection(v) && !(k == "currency" && currency != null) }
+            val amounts = shown.associate { (k, v) ->
+                k to currency?.let { c -> (v as? JsonPrimitive)?.longOrNull?.let { formatMinorUnits(it, c) } }
+            }
+            val text = shown
+                .joinToString(", ") { (k, v) -> "$k ${amounts[k] ?: renderValue(v)}" }
+                .ifEmpty { EMPTY_VALUE }
             return SummaryLine(
-                prettyLabel(tag),
-                rest.entries
-                    .filter { (k, v) -> !isEmptyCollection(v) && !(k == "currency" && currency != null) }
-                    .joinToString(", ") { (k, v) ->
-                        val amount = currency?.let { c -> (v as? JsonPrimitive)?.longOrNull?.let { formatMinorUnits(it, c) } }
-                        if (amount != null) "$k $amount" else "$k ${renderValue(v)}"
-                    }
-                    .ifEmpty { EMPTY_VALUE },
+                label = prettyLabel(tag),
+                value = text,
+                shape = if (amounts.values.any { it != null }) Shape.MONEY else shapeOf(text),
             )
         }
-        return SummaryLine(prettyLabel(key), renderValue(element))
+        return renderValue(element).let { SummaryLine(prettyLabel(key), it, shapeOf(it)) }
     }
+
+    /**
+     * A value is opaque when it carries a long run of identifier characters and no spaces to
+     * break it up — a digest, a key, a nonce. Nobody reads one, and at full prominence it pushes
+     * the amount off the screen.
+     */
+    private fun shapeOf(value: String): Shape =
+        if (OPAQUE_RUN.containsMatchIn(value)) Shape.OPAQUE else Shape.TEXT
+
+    private val OPAQUE_RUN = Regex("[A-Za-z0-9_-]{20,}")
 
     /** What an empty list reads as. NOT "any" — an empty allow-list permits nothing. */
     private const val EMPTY_VALUE = "(none)"

@@ -28,6 +28,7 @@
     <string name="credential_presentment_button_cancel">Cancel</string>
     <string name="credential_presentment_button_more">More</string>
     <string name="credential_presentment_button_share">Share</string>
+    <string name="credential_presentment_button_approve">Approve</string>
     <string name="credential_presentment_headline_share_with_unknown_requester">Unknown requester</string>
     <string name="credential_presentment_headline_share_with_unknown_website">Unknown website</string>
 

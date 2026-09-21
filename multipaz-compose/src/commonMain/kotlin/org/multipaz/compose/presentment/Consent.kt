@@ -49,6 +49,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -101,6 +102,7 @@ import org.multipaz.documenttype.knowntypes.PaymentTransaction
 import org.multipaz.multipaz_compose.generated.resources.Res
 import org.multipaz.multipaz_compose.generated.resources.credential_presentment_button_cancel
 import org.multipaz.multipaz_compose.generated.resources.credential_presentment_button_more
+import org.multipaz.multipaz_compose.generated.resources.credential_presentment_button_approve
 import org.multipaz.multipaz_compose.generated.resources.credential_presentment_button_share
 import org.multipaz.multipaz_compose.generated.resources.credential_presentment_select_option
 import org.multipaz.multipaz_compose.generated.resources.credential_presentment_dont_return_any_document
@@ -562,12 +564,24 @@ private fun ConsentPage(
             }
         }
 
+        // A request is an authorization, not a disclosure, when any transaction type it carries
+        // says so. The verb on the confirm button follows from that: approving a standing power
+        // to spend later is not sharing.
+        val isAuthorization = remember(consentData, selections) {
+            runCatching {
+                consentData.toCredentialSelection(selections).matches.any { match ->
+                    match.transactionData.any { it.type.grantsStandingAuthorization }
+                }
+            }.getOrDefault(false)
+        }
+
         ButtonSection(
             onConfirm = {
                 onConfirm(consentData.toCredentialSelection(selections, transactionUserInput))
             },
             onCancel = onCancel,
-            scrollState = scrollState
+            scrollState = scrollState,
+            isAuthorization = isAuthorization
         )
     }
 }
@@ -617,11 +631,6 @@ private fun UseCaseViewer(
                                 onChevronClicked = { onNavigateToPickSolution() }
                             )
                         } else {
-                            CredentialViewer(
-                                credential = credential.match.credential,
-                                showChevron = showChevron && (matchIndex == 0),
-                                onChevronClicked = { onNavigateToPickSolution() }
-                            )
                             val notStoredClaims = credential.match.claims.mapNotNull { (requestedClaim, claim) ->
                                 if (requestedClaim is MdocRequestedClaim && requestedClaim.intentToRetain) {
                                     null
@@ -654,37 +663,64 @@ private fun UseCaseViewer(
                                 encryptionTargetTrustMetadata = credential.encryptionTargetTrustMetadata
                             )
 
-                            if (storedClaims.isEmpty() && notStoredClaims.isEmpty()) {
-                                // No claims to display
-                            } else if (storedClaims.isEmpty()) {
-                                SharedStoredText(text = sharedWithText)
-                                ClaimsGridView(claims = notStoredClaims, useColumns = true)
-                            } else if (notStoredClaims.isEmpty()) {
-                                SharedStoredText(text = sharedWithAndStoredByText)
-                                ClaimsGridView(claims = storedClaims, useColumns = true)
-                            } else {
-                                SharedStoredText(text = sharedWithText)
-                                ClaimsGridView(claims = notStoredClaims, useColumns = true)
-                                SharedStoredText(text = sharedWithAndStoredByText)
-                                ClaimsGridView(claims = storedClaims, useColumns = true)
+
+                            // A request that grants a standing power is an authorization, not a disclosure, so
+                            // it leads with what is being authorized. The components are the same and none is
+                            // removed; two of them swap places.
+                            val isAuthorization =
+                                credential.match.transactionData.any { it.type.grantsStandingAuthorization }
+                            val credentialAndClaims: @Composable () -> Unit = {
+                                CredentialViewer(
+                                    credential = credential.match.credential,
+                                    showChevron = showChevron && (matchIndex == 0),
+                                    onChevronClicked = { onNavigateToPickSolution() }
+                                )
+                                if (storedClaims.isEmpty() && notStoredClaims.isEmpty()) {
+                                    // No claims to display
+                                } else if (storedClaims.isEmpty()) {
+                                    SharedStoredText(text = sharedWithText)
+                                    ClaimsGridView(claims = notStoredClaims, useColumns = true)
+                                } else if (notStoredClaims.isEmpty()) {
+                                    SharedStoredText(text = sharedWithAndStoredByText)
+                                    ClaimsGridView(claims = storedClaims, useColumns = true)
+                                } else {
+                                    SharedStoredText(text = sharedWithText)
+                                    ClaimsGridView(claims = notStoredClaims, useColumns = true)
+                                    SharedStoredText(text = sharedWithAndStoredByText)
+                                    ClaimsGridView(claims = storedClaims, useColumns = true)
+                                }
+
+                            }
+                            val transactionBlocks: @Composable () -> Unit = {
+                                if (credential.match.transactionData.isNotEmpty()) {
+                                    val hasClaims = storedClaims.isNotEmpty() || notStoredClaims.isNotEmpty()
+                                    // Grouped by type, and rendered once per group. A specification may
+                                    // send several items of one type that are signed together — Delegate
+                                    // SD-JWT sends one per mandate — and a renderer that only ever saw
+                                    // one at a time could not describe the decision the buttons offer.
+                                    for ((type, items) in credential.match.transactionData.groupBy { it.type }) {
+                                        DisplayTransactionData(
+                                            transactionData = items,
+                                            hasClaims = hasClaims,
+                                            userInput = transactionUserInput[credential.match]?.get(type.identifier),
+                                            onUserInputChanged = { userInput ->
+                                                onTransactionUserInputChanged.invoke(
+                                                    credential.match,
+                                                    type.identifier,
+                                                    userInput
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
                             }
 
-                            if (credential.match.transactionData.isNotEmpty()) {
-                                val hasClaims = storedClaims.isNotEmpty() || notStoredClaims.isNotEmpty()
-                                for (data in credential.match.transactionData) {
-                                    DisplayTransactionData(
-                                        transactionData = data,
-                                        hasClaims = hasClaims,
-                                        userInput = transactionUserInput[credential.match]?.get(data.type.identifier),
-                                        onUserInputChanged = { userInput ->
-                                            onTransactionUserInputChanged.invoke(
-                                                credential.match,
-                                                data.type.identifier,
-                                                userInput
-                                            )
-                                        }
-                                    )
-                                }
+                            if (isAuthorization) {
+                                transactionBlocks()
+                                credentialAndClaims()
+                            } else {
+                                credentialAndClaims()
+                                transactionBlocks()
                             }
                         }
                     }
@@ -701,6 +737,119 @@ private fun UseCaseViewer(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun DisplayTransactionData(
+    transactionData: List<TransactionData<*>>,
+    hasClaims: Boolean,
+    userInput: TransactionUserInput?,
+    onUserInputChanged: (userInput: TransactionUserInput) -> Unit
+) {
+    // Every item here shares a type. A type whose items are signed together is rendered once,
+    // with the whole group; every other type keeps the one-item-at-a-time rendering it had.
+    when (transactionData.first().type) {
+        DelegateTransaction -> DisplayDelegateTransactionData(
+            transactionData = transactionData,
+            hasClaims = hasClaims,
+        )
+        else -> transactionData.forEach { item ->
+            DisplayTransactionDataItem(
+                transactionData = item,
+                hasClaims = hasClaims,
+                userInput = userInput,
+                onUserInputChanged = onUserInputChanged,
+            )
+        }
+    }
+}
+
+/**
+ * A group of mandates that are signed together, rendered as one permission.
+ *
+ * The amounts lead, because they are the limit the person has to read correctly. The rest is
+ * capped so the decision stays above the fold, and everything beyond the cap is one tap away —
+ * reachable, never dropped, since the signature covers what was shown.
+ */
+@Composable
+private fun DisplayDelegateTransactionData(
+    transactionData: List<TransactionData<*>>,
+    hasClaims: Boolean,
+) {
+    val summary = DelegateTransaction.summarizeGroup(
+        transactionData.map { it.payload as DelegateTransaction.Payload }
+    )
+    var expanded by remember { mutableStateOf(false) }
+    val visible = if (expanded) summary.rest else summary.rest.take(COLLAPSED_ROW_CAP)
+
+    SharedStoredText(
+        text = if (hasClaims) {
+            "This spending permission will also be approved:"
+        } else {
+            "This spending permission will be approved:"
+        }
+    )
+
+    for (line in summary.money) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 4.dp, end = 4.dp),
+        ) {
+            Text(text = line.label, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = line.value,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+
+    for (line in visible) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
+        ) {
+            Text(
+                text = "${line.label}: ${line.value}",
+                fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+
+    if (expanded) {
+        for (line in summary.opaque) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
+            ) {
+                Text(
+                    text = "${line.label}: ${line.value}",
+                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+
+    if (summary.rest.size > COLLAPSED_ROW_CAP || summary.opaque.isNotEmpty()) {
+        TextButton(onClick = { expanded = !expanded }) {
+            // The count is the whole point: a person can check that the summary is not the whole
+            // story, and see exactly how much it is not.
+            Text(
+                text = if (expanded) "Show less" else "Show all ${summary.size} fields",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+/** How many non-amount lines the collapsed block shows before the rest go behind the disclosure. */
+private const val COLLAPSED_ROW_CAP = 4
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun DisplayTransactionDataItem(
     transactionData: TransactionData<*>,
     hasClaims: Boolean,
     userInput: TransactionUserInput?,
@@ -838,53 +987,6 @@ private fun DisplayTransactionData(
                             }
                         )
                     }
-                }
-            }
-        }
-
-        DelegateTransaction -> {
-            val payload = transactionData.payload as DelegateTransaction.Payload
-            // A spending permission an agent will use later, when the person is not here. AP2
-            // requires the Mandate Content to be shown on a Trusted Surface before it is signed,
-            // and this screen is that surface — the page that asked for the signature is served
-            // by the party asking, so it cannot vouch for itself.
-            val headerText = if (hasClaims) {
-                "This spending permission will also be approved:"
-            } else {
-                "This spending permission will be approved:"
-            }
-            SharedStoredText(text = headerText)
-
-            // One transaction data item carries one Delegate Payload (Delegate SD-JWT §5.1.4), so
-            // a request delegating several mandates arrives as several items and this composable
-            // is called once per mandate.
-            val mandateType = DelegateTransaction.mandateType(payload.delegatePayload)
-            if (mandateType.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 4.dp, end = 4.dp),
-                ) {
-                    Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = mandateType,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            for (line in DelegateTransaction.summarize(payload)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.fillMaxWidth().padding(start = 32.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
-                ) {
-                    Text(
-                        text = "${line.label}: ${line.value}",
-                        fontWeight = FontWeight.Normal,
-                        style = MaterialTheme.typography.bodySmall
-                    )
                 }
             }
         }
@@ -1344,7 +1446,9 @@ private fun RelyingPartyTrailer(
 private fun ButtonSection(
     onConfirm: () -> Unit = {},
     onCancel: () -> Unit,
-    scrollState: ScrollState
+    scrollState: ScrollState,
+    /** True when the request grants a standing power rather than disclosing data. */
+    isAuthorization: Boolean = false
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -1388,6 +1492,8 @@ private fun ButtonSection(
                 modifier = Modifier.padding(vertical = 8.dp),
                 text = if (scrollState.canScrollForward) {
                     stringResource(Res.string.credential_presentment_button_more)
+                } else if (isAuthorization) {
+                    stringResource(Res.string.credential_presentment_button_approve)
                 } else {
                     stringResource(Res.string.credential_presentment_button_share)
                 },

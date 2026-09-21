@@ -236,10 +236,76 @@ class DelegateTransactionTest {
         assertTrue(checkout.contains("agent-x"), checkout)
     }
 
+    // Authorization mode — the sheet leads with the limits and says Approve, not Share.
+    @Test
+    fun approvingThisGrantsStandingPower() {
+        assertTrue(DelegateTransaction.grantsStandingAuthorization)
+    }
+
+    // Several mandates signed together are one permission. Before they were grouped, the same
+    // merchant printed once per mandate and the heading repeated with it.
+    @Test
+    fun aGroupOfMandatesDeduplicatesWhatTheyShare() {
+        val group = DelegateTransaction.summarizeGroup(listOf(payload(0), payload(1)))
+        val rendered = (group.money + group.rest).map { "${it.label}: ${it.value}" }
+
+        assertEquals(rendered.size, rendered.distinct().size, rendered.toString())
+        // The agent key is named by both mandates and appears once.
+        assertEquals(1, rendered.count { it.startsWith("Authorized agent key") }, rendered.toString())
+        // …and nothing was lost: both mandates' own constraints are still there.
+        assertTrue(rendered.any { it.contains("oak-whiskey") }, rendered.toString())
+        assertTrue(rendered.any { it.contains("50.00 USD") }, rendered.toString())
+    }
+
+    // The amounts are the limit a person has to read correctly, so the screen can give them room.
+    @Test
+    fun amountsAreSeparatedFromTheRest() {
+        val group = DelegateTransaction.summarizeGroup(listOf(payload(1)))
+        assertEquals(1, group.money.size, group.money.toString())
+        assertTrue(group.money.single().value.contains("50.00 USD"), group.money.toString())
+        assertTrue(group.rest.none { it.shape == DelegateTransaction.Shape.MONEY }, group.rest.toString())
+        assertEquals(group.size, group.money.size + group.rest.size + group.opaque.size)
+    }
+
+    // BYPASS: a 44-character digest changes nobody's mind, and at full prominence it pushes the
+    // amount off the screen. `payment.reference` must classify as opaque and stay expanded-only.
+    @Test
+    fun aDigestIsNotPromoted() {
+        val withRef = Json.parseToJsonElement(
+            """{"vct":"mandate.payment.open.1","constraints":[
+                 {"type":"payment.reference","conditional_transaction_id":"2OM1tHKyC3wyg3ukVtXfEbBsI711JT50IreFRIvzOyY"},
+                 {"type":"payment.budget","currency":"USD","max":5000}]}"""
+        ).jsonObject
+        val group = DelegateTransaction.summarizeGroup(
+            listOf(DelegateTransaction.Payload("dSD-JWT", disclosureOf(withRef), withRef))
+        )
+        assertTrue(group.opaque.any { it.label.contains("reference", ignoreCase = true) }, group.toString())
+        assertTrue(group.rest.none { it.label.contains("reference", ignoreCase = true) }, group.rest.toString())
+        // …while the amount it was competing with is promoted.
+        assertTrue(group.money.single().value.contains("50.00 USD"), group.money.toString())
+    }
+
+    // The agent key is opaque too, but every mandate names the same one — it is the party the
+    // permission binds to, so it keeps a summary row where a one-off digest does not.
+    @Test
+    fun theAgentKeyIsKeptInTheSummary() {
+        val group = DelegateTransaction.summarizeGroup(listOf(payload(0), payload(1)))
+        assertTrue(group.rest.any { it.label == "Authorized agent key" }, group.rest.toString())
+        assertTrue(group.opaque.none { it.label == "Authorized agent key" }, group.opaque.toString())
+    }
+
     @Test
     fun theMandateTypeIsTheHeading() {
         assertEquals("mandate.checkout.open.1", DelegateTransaction.mandateType(mandates[0]))
         assertEquals("", DelegateTransaction.mandateType(Json.parseToJsonElement("{}").jsonObject))
+    }
+
+    // A type identifier is a machine name. An unrecognised one must say so, not be guessed at.
+    @Test
+    fun headingsAreWordsAndUnknownTypesAdmitIt() {
+        assertEquals("What can be bought", DelegateTransaction.headingFor("mandate.checkout.open.1"))
+        assertEquals("How much can be spent", DelegateTransaction.headingFor("mandate.payment.open.1"))
+        assertTrue(DelegateTransaction.headingFor("mandate.something.new.7").contains("doesn't recognise"))
     }
 
     @Test

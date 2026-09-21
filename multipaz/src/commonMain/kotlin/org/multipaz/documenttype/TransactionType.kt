@@ -94,6 +94,10 @@ const val ISO_18013_TRANSACTION_DATA_NAMESPACE = "org.iso.transactiondata"
  *  verbatim, preserving arrays that the nesting would wrap in an object.
  * @param sdJwtKbType the `typ` header the Key Binding JWT must carry when this transaction type is
  *  present, or `null` (the default) for the ordinary `kb+jwt`.
+ * @param grantsStandingAuthorization whether approving this grants a standing power to act later,
+ *  rather than disclosing data held now. A request carrying such a type is an authorization, not a
+ *  disclosure: the consent sheet leads with what is being authorized and its confirm button reads
+ *  "Approve" instead of "Share". Describes the kind of decision, never a protocol.
  */
 abstract class TransactionType<PayloadT: Any>(
     val displayName: String,
@@ -103,6 +107,7 @@ abstract class TransactionType<PayloadT: Any>(
     val openId4VpMdocResponseNamespace: String = identifier,
     val nestSdJwtResponseClaims: Boolean = true,
     val sdJwtKbType: String? = null,
+    val grantsStandingAuthorization: Boolean = false,
 ) {
     /**
      * Returns the DeviceSigned namespace to use for the given presentment protocol.
