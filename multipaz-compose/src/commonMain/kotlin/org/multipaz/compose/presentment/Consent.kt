@@ -43,13 +43,13 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -492,8 +492,20 @@ private fun ConsentPage(
         RequesterDisplayData()
     }
 
+    // A request is an authorization, not a disclosure, when any transaction type it carries
+    // says so. The title and the verb on the confirm button follow from that: approving a
+    // standing power to spend later is not sharing.
+    val isAuthorization = remember(consentData, selections) {
+        runCatching {
+            consentData.toCredentialSelection(selections).matches.any { match ->
+                match.transactionData.any { it.type.grantsStandingAuthorization }
+            }
+        }.getOrDefault(false)
+    }
+
     Column {
         RelyingPartySection(
+            isAuthorization = isAuthorization,
             requester = requester,
             trustedRequesterIdentity = trustedRequesterIdentity,
             requesterDisplayData = requesterDisplayData,
@@ -562,17 +574,6 @@ private fun ConsentPage(
                     }
                 }
             }
-        }
-
-        // A request is an authorization, not a disclosure, when any transaction type it carries
-        // says so. The verb on the confirm button follows from that: approving a standing power
-        // to spend later is not sharing.
-        val isAuthorization = remember(consentData, selections) {
-            runCatching {
-                consentData.toCredentialSelection(selections).matches.any { match ->
-                    match.transactionData.any { it.type.grantsStandingAuthorization }
-                }
-            }.getOrDefault(false)
         }
 
         ButtonSection(
@@ -646,7 +647,17 @@ private fun UseCaseViewer(
                                 }
                             }
 
-                            val sharedWithText = calcSharedWithText(
+                            val isAuthorization =
+                                credential.match.transactionData.any { it.type.grantsStandingAuthorization }
+                            // The requester is already named in the header; an authorization only
+                            // needs to say the claims go along with the permission.
+                            val alsoSharedText = when {
+                                !isAuthorization || credential.encryptionRequested -> null
+                                requester.isWebOrigin -> "Also shared with this site:"
+                                appInfo != null -> "Also shared with this app:"
+                                else -> "Also shared:"
+                            }
+                            val sharedWithText = alsoSharedText ?: calcSharedWithText(
                                 requester = requester,
                                 requesterDisplayData = requesterDisplayData,
                                 appInfo = appInfo,
@@ -664,11 +675,6 @@ private fun UseCaseViewer(
                             )
 
 
-                            // A request that grants a standing power is an authorization, not a disclosure, so
-                            // it leads with what is being authorized. The components are the same and none is
-                            // removed; two of them swap places.
-                            val isAuthorization =
-                                credential.match.transactionData.any { it.type.grantsStandingAuthorization }
                             val credentialAndClaims: @Composable () -> Unit = {
                                 CredentialViewer(
                                     credential = credential.match.credential,
@@ -715,13 +721,10 @@ private fun UseCaseViewer(
                                 }
                             }
 
-                            if (isAuthorization) {
-                                transactionBlocks()
-                                credentialAndClaims()
-                            } else {
-                                credentialAndClaims()
-                                transactionBlocks()
-                            }
+                            // The card leads, so the person first sees which card the permission
+                            // draws on and what it discloses, then what they are authorizing.
+                            credentialAndClaims()
+                            transactionBlocks()
                         }
                     }
                 }
@@ -763,89 +766,131 @@ private fun DisplayTransactionData(
 /**
  * A group of mandates that are signed together, rendered as one permission.
  *
- * The amounts lead, because they are the limit the person has to read correctly. The rest is
- * capped so the decision stays above the fold, and everything beyond the cap is one tap away —
- * reachable, never dropped, since the signature covers what was shown.
+ * The limits lead, worded by kind and set large, because they are what the person has to read
+ * correctly. Known constraints follow as short label/value rows, and every line the signature
+ * covers is one tap away — reachable, never dropped.
  */
 @Composable
 private fun DisplayDelegateTransactionData(
     transactionData: List<TransactionData<*>>,
     hasClaims: Boolean,
 ) {
-    val summary = DelegateTransaction.summarizeGroup(
-        transactionData.map { it.payload as DelegateTransaction.Payload }
-    )
+    val summary = remember(transactionData) {
+        DelegateTransaction.describePermission(
+            transactionData.map { it.payload as DelegateTransaction.Payload }
+        )
+    }
     var expanded by remember { mutableStateOf(false) }
-    val visible = if (expanded) summary.rest else summary.rest.take(COLLAPSED_ROW_CAP)
+    val mutedColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val outline = MaterialTheme.colorScheme.outlineVariant
 
-    SharedStoredText(
-        text = if (hasClaims) {
-            "This spending permission will also be approved:"
-        } else {
-            "This spending permission will be approved:"
-        }
-    )
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = if (hasClaims) 12.dp else 0.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "Spending permission",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "An agent will be able to spend without asking you again, until these limits are reached.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = mutedColor
+        )
 
-    for (line in summary.money) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 4.dp, end = 4.dp),
-        ) {
-            Text(text = line.label, style = MaterialTheme.typography.bodySmall)
-            Text(
-                text = line.value,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-    }
-
-    for (line in visible) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
-        ) {
-            Text(
-                text = "${line.label}: ${line.value}",
-                fontWeight = FontWeight.Normal,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-    }
-
-    if (expanded) {
-        for (line in summary.opaque) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
+        if (summary.limits.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .border(1.dp, outline, RoundedCornerShape(16.dp))
             ) {
+                summary.limits.forEachIndexed { index, limit ->
+                    if (index > 0) HorizontalDivider(color = outline)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+                    ) {
+                        Text(
+                            text = limit.label,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = limit.amount,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = limit.currency,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                    }
+                }
+            }
+        }
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            summary.rows.forEachIndexed { index, line ->
+                if (index > 0) HorizontalDivider(color = outline)
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+                ) {
+                    Text(
+                        text = line.label,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = mutedColor,
+                        modifier = Modifier.width(88.dp)
+                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = line.value,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        line.detail?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = mutedColor,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (expanded) {
+            for (line in summary.details) {
                 Text(
                     text = "${line.label}: ${line.value}",
-                    fontWeight = FontWeight.Normal,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = mutedColor,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
-    }
 
-    if (summary.rest.size > COLLAPSED_ROW_CAP || summary.opaque.isNotEmpty()) {
-        TextButton(onClick = { expanded = !expanded }) {
+        OutlinedButton(
+            onClick = { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             // The count is the whole point: a person can check that the summary is not the whole
             // story, and see exactly how much it is not.
             Text(
-                text = if (expanded) "Show less" else "Show all ${summary.size} fields",
-                style = MaterialTheme.typography.bodySmall,
+                text = if (expanded) "Show less" else "Show all ${summary.details.size} fields",
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
         }
     }
 }
-
-/** How many non-amount lines the collapsed block shows before the rest go behind the disclosure. */
-private const val COLLAPSED_ROW_CAP = 4
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -1567,6 +1612,7 @@ private fun ClaimsView(
 
 @Composable
 private fun RelyingPartySection(
+    isAuthorization: Boolean,
     requester: Requester,
     requesterDisplayData: RequesterDisplayData,
     trustedRequesterIdentity: TrustedRequesterIdentity?,
@@ -1619,6 +1665,16 @@ private fun RelyingPartySection(
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
+        if (isAuthorization) {
+            // This sheet is the decision; the system picker before it only chose the card.
+            Text(
+                text = "Approve this request?",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+        }
         Text(
             modifier = Modifier
                 .clickable(enabled = showRequesterInfoEnabled) {
@@ -1626,8 +1682,9 @@ private fun RelyingPartySection(
                 },
             text = requesterName,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            style = if (isAuthorization) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.titleLarge,
+            fontWeight = if (isAuthorization) FontWeight.Normal else FontWeight.Bold,
+            color = if (isAuthorization) MaterialTheme.colorScheme.onSurfaceVariant else Color.Unspecified,
         )
     }
 }

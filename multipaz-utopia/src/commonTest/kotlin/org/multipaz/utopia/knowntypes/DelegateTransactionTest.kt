@@ -1,6 +1,7 @@
 package org.multipaz.utopia.knowntypes
 
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.TimeZone
 import kotlinx.io.bytestring.encodeToByteString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -347,5 +348,178 @@ class DelegateTransactionTest {
         ).jsonObject
         val lines = DelegateTransaction.summarize(DelegateTransaction.Payload("dSD-JWT", disclosureOf(yen), yen))
         assertTrue(lines.any { it.value.contains("5000 JPY") }, lines.toString())
+    }
+
+    // The permission as a person reads it: limits in words, known constraints as short rows.
+
+    private fun payloadOf(json: String): DelegateTransaction.Payload {
+        val mandate = Json.parseToJsonElement(json).jsonObject
+        return DelegateTransaction.Payload("dSD-JWT", disclosureOf(mandate), mandate)
+    }
+
+    private val agentCnf =
+        """{"jwk":{"kty":"EC","crv":"P-256","x":"wu7CCOUoAAAAAAAAAAAAAAAAac733T-o","y":"y"}}"""
+
+    private val merchant =
+        """{"id":"shop.example.com","name":"utopia","origin":"https://shop.example.com"}"""
+
+    private val checkoutMandate = payloadOf(
+        """{"vct":"mandate.checkout.open.1","exp":1821496085,"cnf":$agentCnf,"constraints":[
+             {"type":"checkout.allowed_merchants","allowed":[$merchant]},
+             {"type":"checkout.line_items","items":[
+               {"id":"aurora-headphones","acceptable_items":[{"id":"aurora-headphones","title":"aurora-headphones"}],"quantity":1}]}]}"""
+    )
+
+    private val paymentMandate = payloadOf(
+        """{"vct":"mandate.payment.open.1","exp":1821496085,"cnf":$agentCnf,"constraints":[
+             {"type":"payment.amount_range","currency":"USD","max":25000},
+             {"type":"payment.budget","currency":"USD","max":40000},
+             {"type":"payment.reference","conditional_transaction_id":"2OM1tHKyC3wyg3ukVtXfEbBsI711JT50IreFRIvzOyY"},
+             {"type":"payment.allowed_payees","allowed":[$merchant]}]}"""
+    )
+
+    private fun describe(vararg payloads: DelegateTransaction.Payload) =
+        DelegateTransaction.describePermission(payloads.toList(), TimeZone.UTC)
+
+    @Test
+    fun theTwoLimitsSayWhichIsPerPurchaseAndWhichIsTheTotal() {
+        val summary = describe(checkoutMandate, paymentMandate)
+        assertEquals(
+            listOf(
+                DelegateTransaction.Limit("Per purchase, up to", "250.00", "USD"),
+                DelegateTransaction.Limit("In total, up to", "400.00", "USD"),
+            ),
+            summary.limits
+        )
+    }
+
+    @Test
+    fun aRangeWithAFloorSaysBetween() {
+        val summary = describe(
+            payloadOf(
+                """{"vct":"mandate.payment.open.1","constraints":[
+                     {"type":"payment.amount_range","currency":"USD","min":1000,"max":25000}]}"""
+            )
+        )
+        assertEquals(listOf(DelegateTransaction.Limit("Per purchase, between", "10.00 – 250.00", "USD")), summary.limits)
+    }
+
+    @Test
+    fun aRangeWithOnlyAFloorSaysAtLeast() {
+        val summary = describe(
+            payloadOf(
+                """{"vct":"mandate.payment.open.1","constraints":[
+                     {"type":"payment.amount_range","currency":"USD","min":1000}]}"""
+            )
+        )
+        assertEquals(listOf(DelegateTransaction.Limit("Per purchase, at least", "10.00", "USD")), summary.limits)
+    }
+
+    @Test
+    fun withoutABudgetThereIsOneLimit() {
+        val summary = describe(payload(1))
+        assertEquals(listOf(DelegateTransaction.Limit("Per purchase, up to", "50.00", "USD")), summary.limits)
+    }
+
+    @Test
+    fun knownConstraintsBecomeShortRows() {
+        val rows = describe(checkoutMandate, paymentMandate).rows.associate { it.label to it.value }
+        assertEquals("aurora-headphones", rows["For"], rows.toString())
+        assertEquals("21 September 2027", rows["Until"], rows.toString())
+        assertEquals("Key only · wu7CCOUo…ac733T-o", rows["Agent"], rows.toString())
+        // The generic labels are replaced, not repeated.
+        assertTrue(rows.keys.none { it.startsWith("Checkout") || it.startsWith("Payment") }, rows.toString())
+    }
+
+    // Named by the checkout and the payment mandate alike, the merchant is one fact.
+    @Test
+    fun theMerchantIsItsNameWithItsDomainUnderneath() {
+        val at = describe(checkoutMandate, paymentMandate).rows.filter { it.label == "At" }
+        assertEquals(listOf(DelegateTransaction.SummaryLine("At", "utopia", detail = "shop.example.com")), at)
+    }
+
+    // The requester is not assumed to be the merchant.
+    @Test
+    fun noMerchantConstraintMeansNoAtRow() {
+        assertTrue(describe(payload(1)).rows.none { it.label == "At" })
+    }
+
+    @Test
+    fun severalMerchantsAreEachNamedWithTheirDomain() {
+        val rows = describe(
+            payloadOf(
+                """{"vct":"mandate.checkout.open.1","constraints":[{"type":"checkout.allowed_merchants","allowed":[
+                     $merchant,{"id":"other.example","name":"Other","website":"https://other.example/shop"}]}]}"""
+            )
+        ).rows
+        assertEquals(
+            DelegateTransaction.SummaryLine("At", "utopia (shop.example.com)\nOther (other.example)"),
+            rows.single()
+        )
+    }
+
+    // A requirement names the items that satisfy it and how many; the id and a title equal to it
+    // are one thing, not three.
+    @Test
+    fun lineItemsReadAsWhatCanBeBought() {
+        val rows = describe(
+            payloadOf(
+                """{"vct":"mandate.checkout.open.1","constraints":[{"type":"checkout.line_items","items":[
+                     {"id":"r1","acceptable_items":[{"id":"latte-s","title":"Latte (small)"},{"id":"latte-l","title":"Latte (large)"}],"quantity":2},
+                     {"id":"r2","acceptable_items":[{"id":"aurora-headphones","title":"aurora-headphones"}],"quantity":1}]}]}"""
+            )
+        ).rows
+        assertEquals(
+            DelegateTransaction.SummaryLine("For", "2 × Latte (small) or Latte (large)\naurora-headphones"),
+            rows.single()
+        )
+    }
+
+    // A shape this wallet does not fully understand is not summarised away.
+    @Test
+    fun aLineItemWithAnUnknownMemberFallsBackToTheGenericRow() {
+        val rows = describe(
+            payloadOf(
+                """{"vct":"mandate.checkout.open.1","constraints":[{"type":"checkout.line_items","items":[
+                     {"id":"r1","acceptable_items":[{"id":"a","title":"A"}],"quantity":1,"max_price":100}]}]}"""
+            )
+        ).rows
+        assertTrue(rows.none { it.label == "For" }, rows.toString())
+        assertEquals("Checkout line items", rows.single().label, rows.toString())
+    }
+
+    @Test
+    fun rowsLeadWithAtThenForThenUntilThenAgent() {
+        val rows = describe(
+            payloadOf(
+                """{"vct":"mandate.checkout.open.1","exp":1821496085,"cnf":$agentCnf,"constraints":[
+                     {"type":"checkout.line_items","items":[
+                       {"id":"a","acceptable_items":[{"id":"a","title":"A"}],"quantity":1}]},
+                     {"type":"checkout.allowed_merchants","allowed":[$merchant]}]}"""
+            )
+        ).rows
+        assertEquals(listOf("At", "For", "Until", "Agent"), rows.map { it.label })
+    }
+
+    // A constraint nobody has seen is still shown, with the generic label it had before.
+    @Test
+    fun anUnknownConstraintStillGetsARow() {
+        val rows = describe(
+            payloadOf(
+                """{"vct":"mandate.checkout.open.1","constraints":[
+                     {"type":"checkout.shipping_region","allowed":["US"]}]}"""
+            )
+        ).rows
+        assertEquals(DelegateTransaction.SummaryLine("Checkout shipping region", "allowed US"), rows.single())
+    }
+
+    // "Show all N fields" must keep counting everything the signature covers.
+    @Test
+    fun detailsHoldEveryLineAndOpaqueOnesOnlyThere() {
+        val summary = describe(checkoutMandate, paymentMandate)
+        val group = DelegateTransaction.summarizeGroup(listOf(checkoutMandate, paymentMandate))
+        assertEquals(group.size, summary.details.size)
+        assertTrue(summary.details.any { it.label.contains("reference", ignoreCase = true) }, summary.details.toString())
+        assertTrue(summary.rows.none { it.label.contains("reference", ignoreCase = true) }, summary.rows.toString())
     }
 }

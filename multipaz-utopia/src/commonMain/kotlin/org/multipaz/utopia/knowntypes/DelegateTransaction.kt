@@ -1,5 +1,7 @@
 package org.multipaz.utopia.knowntypes
 
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -85,8 +87,14 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
      * @property label what the line is — a mandate member or constraint, in words.
      * @property value what it says, formatted for a person (money, dates, lists).
      * @property shape what the value looks like, which is how a screen decides its prominence.
+     * @property detail a secondary line under [value] — the domain under a merchant's name.
      */
-    data class SummaryLine(val label: String, val value: String, val shape: Shape = Shape.TEXT)
+    data class SummaryLine(
+        val label: String,
+        val value: String,
+        val shape: Shape = Shape.TEXT,
+        val detail: String? = null,
+    )
 
     /**
      * What a value looks like. The renderer walks arbitrary JSON and cannot know which field
@@ -131,6 +139,193 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
         val size: Int get() = money.size + rest.size + opaque.size
     }
 
+    /**
+     * A spending limit, worded for a person: [label] says which kind of limit it is ("Per
+     * purchase, up to", "In total, up to"), because two bare "max" amounts are indistinguishable.
+     *
+     * @property amount the figure alone, so a screen can set it larger than [currency].
+     */
+    data class Limit(val label: String, val amount: String, val currency: String)
+
+    /**
+     * A group of mandates as a person reads them.
+     *
+     * @property limits the spending limits, in the order they arrived.
+     * @property rows short label/value rows: At, For, Until and Agent first, then every
+     *   constraint this wallet does not recognise, under the generic label [summarize] gives it.
+     * @property details every line [summarizeGroup] produces, opaque ones included, for the
+     *   disclosure. Its size is the true field count.
+     */
+    data class PermissionSummary(
+        val limits: List<Limit>,
+        val rows: List<SummaryLine>,
+        val details: List<SummaryLine>,
+    )
+
+    /**
+     * The mandates signed together, described in words.
+     *
+     * Known AP2 constraints map to plain-language rows; a constraint is only mapped when every
+     * member it carries is understood, so nothing is summarised away. Anything else keeps the
+     * generic rendering, and [PermissionSummary.details] holds all of it regardless.
+     *
+     * The merchant ("At") comes only from the mandate, never from the requester: the page asking
+     * for the signature is not necessarily the merchant the agent may buy from.
+     *
+     * The expiry is shown in the device's time zone.
+     */
+    fun describePermission(payloads: List<Payload>): PermissionSummary =
+        describePermission(payloads, TimeZone.currentSystemDefault())
+
+    /** [describePermission] in a given [timeZone]; separate so a test can pin the zone. */
+    internal fun describePermission(payloads: List<Payload>, timeZone: TimeZone): PermissionSummary {
+        val limits = LinkedHashSet<Limit>()
+        val merchants = LinkedHashMap<String, Merchant>()
+        val items = LinkedHashSet<String>()
+        val until = LinkedHashSet<String>()
+        val agents = LinkedHashSet<String>()
+        val other = LinkedHashSet<SummaryLine>()
+        for (payload in payloads) {
+            for ((key, value) in payload.delegatePayload) {
+                when {
+                    key == "vct" -> {}
+                    key == "cnf" -> keyExcerpt(value)?.let { agents += "Key only · $it" }
+                    key == "exp" && value is JsonPrimitive && value.longOrNull != null ->
+                        until += formatDate(value.long, timeZone)
+                    value is JsonArray -> value.forEach { element ->
+                        val known = (element as? JsonObject)?.let {
+                            describeConstraint(it, limits, merchants, items)
+                        } ?: false
+                        if (!known) other += lineForElement(key, element)
+                    }
+                    else -> other += linesFor(key, value)
+                }
+            }
+        }
+        val rows = buildList {
+            when (merchants.size) {
+                0 -> {}
+                1 -> merchants.values.single().let { add(SummaryLine("At", it.name, detail = it.domain)) }
+                else -> add(SummaryLine("At", merchants.values.joinToString("\n") { m ->
+                    m.domain?.let { "${m.name} ($it)" } ?: m.name
+                }))
+            }
+            if (items.isNotEmpty()) add(SummaryLine("For", items.joinToString("\n")))
+            if (until.isNotEmpty()) add(SummaryLine("Until", until.joinToString(", "), Shape.INSTANT))
+            if (agents.isNotEmpty()) add(SummaryLine("Agent", agents.joinToString(", "), Shape.PARTY))
+            addAll(other.filter { it.shape != Shape.OPAQUE })
+        }
+        val group = summarizeGroup(payloads)
+        return PermissionSummary(
+            limits = limits.toList(),
+            rows = rows,
+            details = group.money + group.rest + group.opaque,
+        )
+    }
+
+    /**
+     * Folds one constraint into the readable summary when this wallet understands all of it.
+     *
+     * @return false when the constraint is not recognised, or carries a member that is not, and
+     *   must be rendered generically instead.
+     */
+    private fun describeConstraint(
+        constraint: JsonObject,
+        limits: MutableSet<Limit>,
+        merchants: MutableMap<String, Merchant>,
+        items: MutableSet<String>,
+    ): Boolean {
+        val type = (constraint["type"] as? JsonPrimitive)?.contentOrNull ?: return false
+        fun understands(vararg members: String) = constraint.keys.all { it == "type" || it in members }
+        fun minor(member: String) = (constraint[member] as? JsonPrimitive)?.longOrNull
+        return when {
+            type == "payment.amount_range" && understands("currency", "min", "max") -> {
+                val currency = (constraint["currency"] as? JsonPrimitive)?.contentOrNull ?: return false
+                val min = minor("min")
+                val max = minor("max")
+                limits += when {
+                    min != null && max != null -> Limit(
+                        "Per purchase, between",
+                        "${formatMinorAmount(min, currency)} – ${formatMinorAmount(max, currency)}",
+                        currency
+                    )
+                    max != null -> Limit("Per purchase, up to", formatMinorAmount(max, currency), currency)
+                    min != null -> Limit("Per purchase, at least", formatMinorAmount(min, currency), currency)
+                    else -> return false
+                }
+                true
+            }
+            type == "payment.budget" && understands("currency", "max") -> {
+                val currency = (constraint["currency"] as? JsonPrimitive)?.contentOrNull ?: return false
+                val max = minor("max") ?: return false
+                limits += Limit("In total, up to", formatMinorAmount(max, currency), currency)
+                true
+            }
+            type == "checkout.line_items" && understands("items") -> {
+                val requirements = (constraint["items"] as? JsonArray)
+                    ?.map { (it as? JsonObject)?.let(::describeRequirement) ?: return false }
+                    ?: return false
+                if (requirements.isEmpty()) return false
+                items += requirements
+                true
+            }
+            (type.endsWith("merchants") || type.endsWith("payees")) && understands("allowed") -> {
+                val allowed = (constraint["allowed"] as? JsonArray)
+                    ?.map { (it as? JsonObject)?.let(::merchantOf) ?: return false }
+                    ?: return false
+                if (allowed.isEmpty()) return false
+                // The checkout and the payment mandate name the same merchant: one fact, once.
+                allowed.forEach { merchants.getOrPut(it.key) { it } }
+                true
+            }
+            else -> false
+        }
+    }
+
+    /**
+     * An AP2 merchant (`types/merchant.json`), as a person reads it.
+     *
+     * @property key what makes two mentions the same merchant.
+     * @property domain where it trades, shown under [name]; null when it would only repeat it.
+     */
+    private data class Merchant(val key: String, val name: String, val domain: String?)
+
+    private val MERCHANT_MEMBERS = setOf("id", "name", "website", "origin")
+
+    private fun merchantOf(obj: JsonObject): Merchant? {
+        if (!obj.keys.all { it in MERCHANT_MEMBERS }) return null
+        fun member(name: String) = (obj[name] as? JsonPrimitive)?.contentOrNull?.takeIf { it.isNotEmpty() }
+        val id = member("id")
+        val name = member("name") ?: id ?: return null
+        val domain = (member("website") ?: member("origin"))?.let(::hostOf) ?: id
+        return Merchant(key = id ?: name, name = name, domain = domain?.takeIf { it != name })
+    }
+
+    /** `https://shop.example.com/path` → `shop.example.com`. */
+    private fun hostOf(url: String): String =
+        url.substringAfter("://").substringBefore('/').substringBefore('?').substringBefore('#')
+
+    private val REQUIREMENT_MEMBERS = setOf("id", "acceptable_items", "quantity")
+    private val ITEM_MEMBERS = setOf("id", "title")
+
+    /**
+     * One `checkout.line_items` requirement: `quantity` of any one of `acceptable_items`.
+     * Reads "2 × Latte (small) or Latte (large)"; the quantity is left out when it is one.
+     *
+     * @return null when the requirement carries anything this wallet does not understand.
+     */
+    private fun describeRequirement(requirement: JsonObject): String? {
+        if (!requirement.keys.all { it in REQUIREMENT_MEMBERS }) return null
+        val titles = (requirement["acceptable_items"] as? JsonArray)?.map { element ->
+            val item = element as? JsonObject ?: return null
+            if (!item.keys.all { it in ITEM_MEMBERS }) return null
+            ((item["title"] ?: item["id"]) as? JsonPrimitive)?.contentOrNull ?: return null
+        }?.distinct()?.takeIf { it.isNotEmpty() } ?: return null
+        val quantity = requirement["quantity"]?.let { (it as? JsonPrimitive)?.longOrNull ?: return null }
+        val what = titles.joinToString(" or ")
+        return if (quantity != null && quantity != 1L) "$quantity × $what" else what
+    }
+
     /** [summarize] over several mandates at once, deduplicated and with the amounts separated. */
     fun summarizeGroup(payloads: List<Payload>): GroupSummary {
         val seen = LinkedHashMap<Pair<String, String>, SummaryLine>()
@@ -156,18 +351,17 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
      * [parseOpenId4VpRequest] refuses it.
      */
     fun summarize(payload: Payload): List<SummaryLine> =
-        buildList {
-            for ((key, value) in payload.delegatePayload) {
-                when {
-                    key == "vct" -> {} // the heading, rendered separately
-                    key == "cnf" -> keyExcerpt(value)?.let { add(SummaryLine("Authorized agent key", it, Shape.PARTY)) }
-                    key in INSTANT_CLAIMS && value is JsonPrimitive && value.longOrNull != null ->
-                        add(SummaryLine(INSTANT_CLAIMS.getValue(key), formatInstant(value.long), Shape.INSTANT))
-                    value is JsonArray -> value.forEach { element -> add(lineForElement(key, element)) }
-                    else -> renderValue(value).let { add(SummaryLine(prettyLabel(key), it, shapeOf(it))) }
-                }
-            }
-        }
+        payload.delegatePayload.flatMap { (key, value) -> linesFor(key, value) }
+
+    /** The generic lines for one mandate member. */
+    private fun linesFor(key: String, value: JsonElement): List<SummaryLine> = when {
+        key == "vct" -> emptyList() // the heading, rendered separately
+        key == "cnf" -> listOfNotNull(keyExcerpt(value)?.let { SummaryLine("Authorized agent key", it, Shape.PARTY) })
+        key in INSTANT_CLAIMS && value is JsonPrimitive && value.longOrNull != null ->
+            listOf(SummaryLine(INSTANT_CLAIMS.getValue(key), formatInstant(value.long), Shape.INSTANT))
+        value is JsonArray -> value.map { element -> lineForElement(key, element) }
+        else -> renderValue(value).let { listOf(SummaryLine(prettyLabel(key), it, shapeOf(it))) }
+    }
 
     /** The mandate type, for the heading above its lines. Blank when the mandate does not say. */
     fun mandateType(mandate: JsonObject): String =
@@ -258,13 +452,17 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
         (value is JsonArray && value.isEmpty()) || (value is JsonObject && value.isEmpty())
 
     /** Minor units to a readable amount. ISO 4217 exponents that are not 2 are listed. */
-    private fun formatMinorUnits(minor: Long, currency: String): String {
+    private fun formatMinorUnits(minor: Long, currency: String): String =
+        "${formatMinorAmount(minor, currency)} $currency"
+
+    /** [formatMinorUnits] without the currency: `25000` USD is `250.00`. */
+    private fun formatMinorAmount(minor: Long, currency: String): String {
         val exp = MINOR_UNIT_EXPONENTS[currency.uppercase()] ?: 2
-        if (exp == 0) return "$minor $currency"
+        if (exp == 0) return minor.toString()
         val sign = if (minor < 0) "-" else ""
         val digits = kotlin.math.abs(minor).toString().padStart(exp + 1, '0')
         val whole = digits.dropLast(exp)
-        return "$sign$whole.${digits.takeLast(exp)} $currency"
+        return "$sign$whole.${digits.takeLast(exp)}"
     }
 
     private val MINOR_UNIT_EXPONENTS = mapOf(
@@ -299,6 +497,13 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
 
     private fun formatInstant(epochSeconds: Long): String =
         Instant.fromEpochSeconds(epochSeconds).toString().substringBefore('.').replace('T', ' ') + " UTC"
+
+    /** `21 September 2027`: a date a person reads at a glance, in their own time zone. */
+    private fun formatDate(epochSeconds: Long, timeZone: TimeZone): String {
+        val date = Instant.fromEpochSeconds(epochSeconds).toLocalDateTime(timeZone).date
+        val month = date.month.name.lowercase().replaceFirstChar { it.titlecase() }
+        return "${date.day} $month ${date.year}"
+    }
 
     private val json = Json { ignoreUnknownKeys = true }
 

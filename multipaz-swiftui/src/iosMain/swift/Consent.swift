@@ -224,41 +224,6 @@ private struct DisplayTransactionData: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-        } else if transactionData.type.identifier == DelegateTransaction.shared.identifier {
-            if let payload = transactionData.payload as? DelegateTransaction.Payload {
-                // A spending permission an agent will use later, when the person is not here. AP2
-                // requires the Mandate Content to be shown on a Trusted Surface before it is
-                // signed, and this screen is that surface — the page that asked for the signature
-                // is served by the party asking, so it cannot vouch for itself.
-                let headerText = hasClaims ? "This spending permission will also be approved:" : "This spending permission will be approved:"
-                let summaries = DelegateTransaction.shared.summarize(payload: payload)
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(headerText)
-                        .font(.system(size: 14, weight: .bold))
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                    // One transaction data item carries one Delegate Payload (Delegate SD-JWT
-                    // §5.1.4), so a request delegating several mandates arrives as several items
-                    // and this view is rendered once per mandate.
-                    let mandateType = DelegateTransaction.shared.mandateType(mandate: payload.delegatePayload)
-                    if !mandateType.isEmpty {
-                        HStack(spacing: 8) {
-                            Image(systemName: "info.circle")
-                                .imageScale(.small)
-                            Text(mandateType)
-                                .font(.system(size: 14, weight: .bold))
-                        }
-                        .padding(.top, 4)
-                    }
-                    ForEach(Array(summaries.enumerated()), id: \.offset) { _, line in
-                        Text("\(line.label): \(line.value)")
-                            .font(.system(size: 14))
-                            .padding(.leading, 24)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
         } else {
             let headerText = hasClaims ? "This \(transactionData.type.displayName) transaction will also be approved:" : "This \(transactionData.type.displayName) transaction will be approved:"
             VStack(alignment: .leading, spacing: 6) {
@@ -269,6 +234,97 @@ private struct DisplayTransactionData: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+}
+
+/// A group of mandates that are signed together, rendered as one permission.
+///
+/// AP2 requires the Mandate Content to be shown on a Trusted Surface before it is signed, and this
+/// screen is that surface. The limits lead, worded by kind and set large, because they are what
+/// the person has to read correctly; every line the signature covers is one tap away.
+private struct DelegatePermissionView: View {
+    let summary: DelegateTransaction.PermissionSummary
+    let hasClaims: Bool
+    @State private var expanded = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Spending permission")
+                .font(.headline)
+            Text("An agent will be able to spend without asking you again, until these limits are reached.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !summary.limits.isEmpty {
+                VStack(spacing: 0) {
+                    ForEach(Array(summary.limits.enumerated()), id: \.offset) { idx, limit in
+                        if idx > 0 { Divider() }
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(limit.label)
+                                .font(.subheadline)
+                            Spacer(minLength: 12)
+                            Text(limit.amount)
+                                .font(.title2.weight(.bold))
+                            Text(limit.currency)
+                                .font(.subheadline.weight(.semibold))
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 14)
+                    }
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.secondary.opacity(0.4), lineWidth: 1)
+                )
+                .padding(.top, 4)
+            }
+
+            VStack(spacing: 0) {
+                ForEach(Array(summary.rows.enumerated()), id: \.offset) { idx, line in
+                    if idx > 0 { Divider() }
+                    HStack(alignment: .top, spacing: 0) {
+                        Text(line.label)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 88, alignment: .leading)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(line.value)
+                                .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                            if let detail = line.detail {
+                                Text(detail)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.vertical, 10)
+                }
+            }
+
+            if expanded {
+                ForEach(Array(summary.details.enumerated()), id: \.offset) { _, line in
+                    Text("\(line.label): \(line.value)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            // The count is the whole point: a person can check that the summary is not the whole
+            // story, and see exactly how much it is not.
+            Button(action: { expanded.toggle() }) {
+                Text(expanded ? "Show less" : "Show all \(summary.details.count) fields")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+        }
+        .padding(.top, hasClaims ? 12 : 0)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -291,6 +347,11 @@ private struct RequestedDocumentSection : View {
         
         let sharedText: String = {
             if !encryptionRequested {
+                // The requester is already named in the header; an authorization only needs to
+                // say the claims go along with the permission.
+                if transactionData.contains(where: { $0.type.grantsStandingAuthorization }) {
+                    return requester.origin != nil ? "Also shared with this site:" : "Also shared:"
+                }
                 return isKnown ? "This data will be shared with \(rpName):" : "This data will be shared:"
             }
             if let encTargetName = encryptionTargetTrustMetadata?.displayName {
@@ -359,10 +420,22 @@ private struct RequestedDocumentSection : View {
             }
         }
 
-        if !transactionData.isEmpty {
+        // Delegate SD-JWT sends one item per mandate, signed together, so they are described
+        // together; every other type keeps its one-item-at-a-time rendering.
+        let delegatePayloads = transactionData.compactMap { $0.payload as? DelegateTransaction.Payload }
+        let otherTransactionData = transactionData.filter { !($0.payload is DelegateTransaction.Payload) }
+
+        if !delegatePayloads.isEmpty {
+            DelegatePermissionView(
+                summary: DelegateTransaction.shared.describePermission(payloads: delegatePayloads),
+                hasClaims: hasClaims
+            )
+        }
+
+        if !otherTransactionData.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                ForEach(0..<transactionData.count, id: \.self) { idx in
-                    let data = transactionData[idx]
+                ForEach(0..<otherTransactionData.count, id: \.self) { idx in
+                    let data = otherTransactionData[idx]
                     DisplayTransactionData(
                         transactionData: data,
                         hasClaims: hasClaims,
@@ -397,6 +470,7 @@ private func getRelyingPartyName(
 private struct RelyingPartySection : View {
     let rpName: String
     let trustMetadata: TrustMetadata?
+    var isAuthorization: Bool = false
     let onRequesterClicked: () -> Void
 
     var body: some View {
@@ -428,8 +502,16 @@ private struct RelyingPartySection : View {
                     .onTapGesture { onRequesterClicked() }
             }
 
+            if isAuthorization {
+                // This sheet is the decision; the system picker before it only chose the card.
+                Text("Approve this request?")
+                    .font(.system(size: 22, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(rpName)
-                .font(.system(size: 22, weight: .bold))
+                .font(isAuthorization ? .body : .system(size: 22, weight: .bold))
+                .foregroundStyle(isAuthorization ? .secondary : .primary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .onTapGesture { onRequesterClicked() }
@@ -736,11 +818,24 @@ private struct ConsentMain: View {
     let onConfirm: (_: CredentialSelection) -> Void
     let onCancel: () -> Void
 
+    /// Approving a standing power to spend later is not sharing, so a request carrying a type that
+    /// grants one confirms with "Approve".
+    private var isAuthorization: Bool {
+        consentData.useCases.enumerated().contains { idx, useCase in
+            let selection = idx < selections.count ? selections[idx] : -1
+            guard selection >= 0, selection < useCase.solutions.count else { return false }
+            return useCase.solutions[selection].credentials.contains { credential in
+                credential.match.transactionData.contains { $0.type.grantsStandingAuthorization }
+            }
+        }
+    }
+
     var body: some View {
         SmartSheet(maxHeight: maxHeight, updateDetents: false, heightBinding: isActive ? $sheetHeight : nil) {
             RelyingPartySection(
                 rpName: rpName,
                 trustMetadata: trustMetadata,
+                isAuthorization: isAuthorization,
                 onRequesterClicked: onRequesterClicked
             )
             .padding(.horizontal)
@@ -803,7 +898,7 @@ private struct ConsentMain: View {
                     .controlSize(.large)
                     
                     let buttonText = if (isAtBottom) {
-                        "Share"
+                        isAuthorization ? "Approve" : "Share"
                     } else {
                         "More"
                     }
