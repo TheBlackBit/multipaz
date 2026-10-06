@@ -60,6 +60,13 @@ class TransactionData<PayloadT: Any>(
     suspend fun isApplicable(credential: Credential) = type.isApplicable(this, credential)
 
     /**
+     * The `typ` header the Key Binding JWT carries for this item, or `null` for the ordinary
+     * `kb+jwt` (see [TransactionType.sdJwtKbType]).
+     */
+    val sdJwtKbType: String?
+        get() = type.sdJwtKbType(this)
+
+    /**
      * Generates device-signed data elements for an Mdoc credential.
      *
      * @param credential credential being presented

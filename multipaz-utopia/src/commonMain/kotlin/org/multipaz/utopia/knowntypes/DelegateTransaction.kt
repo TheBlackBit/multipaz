@@ -59,8 +59,24 @@ object DelegateTransaction : TransactionType<DelegateTransaction.Payload>(
      */
     const val DELEGATE_PAYLOAD_CLAIM = "delegate_payload"
 
-    /** The `typ` a Delegate Key Binding JWT carries (Delegate SD-JWT §5.1.4). */
+    /** The `typ` a Delegate Key Binding JWT carries when it ends the chain (Delegate SD-JWT §5.1.4). */
     const val DELEGATE_KB_TYPE = "kb+sd-jwt"
+
+    /** The `typ` of one whose Delegate Payload names a further key, a KB-SD-JWT+KB (§5.1.4). */
+    const val DELEGATE_KB_KB_TYPE = "kb+sd-jwt+kb"
+
+    /**
+     * Delegate SD-JWT §5.1.4: "The typ parameter value MUST be replaced with `kb+sd-jwt` for a
+     * KB-SD-JWT, and `kb+sd-jwt+kb` for a KB-SD-JWT+KB" — the variant whose Delegate Payload names
+     * the next holder's key in `cnf`.
+     *
+     * AP2's wallet hop is that variant: the mandate names the agent's key, and the agent signs the
+     * purchase with it later. Typed `kb+sd-jwt`, the hop reads as the END of the chain, so a chain
+     * verifier refuses the agent's hop after it (CredentAgent's refuses with "typed kb+sd-jwt but
+     * names further key — expected kb+sd-jwt+kb").
+     */
+    override fun sdJwtKbType(transactionData: TransactionData<Payload>): String =
+        if ("cnf" in transactionData.payload.delegatePayload) DELEGATE_KB_KB_TYPE else DELEGATE_KB_TYPE
 
     /**
      * @property format the delegation format, `dSD-JWT` or `dSD-JWT+KB` (Delegate SD-JWT §7.1).
