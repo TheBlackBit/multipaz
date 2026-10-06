@@ -93,7 +93,8 @@ const val ISO_18013_TRANSACTION_DATA_NAMESPACE = "org.iso.transactiondata"
  *  specification fixes the shape and position of its own KB-JWT claims; they are then merged in
  *  verbatim, preserving arrays that the nesting would wrap in an object.
  * @param sdJwtKbType the `typ` header the Key Binding JWT must carry when this transaction type is
- *  present, or `null` (the default) for the ordinary `kb+jwt`.
+ *  present, or `null` (the default) for the ordinary `kb+jwt`. A type whose `typ` depends on the
+ *  payload overrides [sdJwtKbType] (the function) instead; this value is what it returns otherwise.
  * @param grantsStandingAuthorization whether approving this grants a standing power to act later,
  *  rather than disclosing data held now. A request carrying such a type is an authorization, not a
  *  disclosure: the consent sheet leads with what is being authorized and its confirm button reads
@@ -116,6 +117,15 @@ abstract class TransactionType<PayloadT: Any>(
         TransactionProtocol.ISO_18013_5 -> ISO_18013_TRANSACTION_DATA_NAMESPACE
         TransactionProtocol.OPENID4VP -> openId4VpMdocResponseNamespace
     }
+
+    /**
+     * The `typ` header the Key Binding JWT carries for [transactionData], or `null` for the
+     * ordinary `kb+jwt`.
+     *
+     * Returns the [sdJwtKbType] property by default. Override it when the `typ` depends on what is
+     * being signed, not only on the transaction type.
+     */
+    open fun sdJwtKbType(transactionData: TransactionData<PayloadT>): String? = sdJwtKbType
 
     /**
      * Serializes transaction data for use in OpenID4VP protocol.

@@ -119,6 +119,28 @@ class DelegateTransactionTest {
     fun theKeyBindingHasItsOwnMediaType() {
         assertEquals("kb+sd-jwt", DelegateTransaction.sdJwtKbType)
         assertEquals("kb+sd-jwt", DelegateTransaction.DELEGATE_KB_TYPE)
+        assertEquals("kb+sd-jwt+kb", DelegateTransaction.DELEGATE_KB_KB_TYPE)
+    }
+
+    // BYPASS: an AP2 mandate names the agent's key in `cnf`, so the wallet's hop is a KB-SD-JWT+KB
+    // (§5.1.4). Typed `kb+sd-jwt` it reads as the end of the chain, and a chain verifier refuses the
+    // agent's hop after it — what CredentAgent's merchant did to a purchase signed on a real phone.
+    @Test
+    fun aMandateNamingTheAgentsKeyIsTypedForFurtherDelegation() {
+        assertEquals("kb+sd-jwt+kb", transactionData(payload(0)).sdJwtKbType)
+        assertEquals("kb+sd-jwt+kb", transactionData(payload(1)).sdJwtKbType)
+    }
+
+    // The other half of the same rule: a mandate that names no further key ends the chain.
+    @Test
+    fun aMandateNamingNoFurtherKeyIsTypedTerminal() {
+        val terminal = JsonObject(mandates[0] - "cnf")
+        val payload = DelegateTransaction.Payload(
+            format = "dSD-JWT",
+            delegatePayloadDisclosure = disclosureOf(terminal),
+            delegatePayload = terminal,
+        )
+        assertEquals("kb+sd-jwt", transactionData(payload).sdJwtKbType)
     }
 
     @Test

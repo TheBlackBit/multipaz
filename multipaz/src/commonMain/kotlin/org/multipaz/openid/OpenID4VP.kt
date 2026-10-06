@@ -850,7 +850,7 @@ object OpenID4VP {
                     clientId
                 },
                 creationTime = Clock.System.now(),
-                type = match.transactionData.firstNotNullOfOrNull { it.type.sdJwtKbType } ?: "kb+jwt",
+                type = match.transactionData.firstNotNullOfOrNull { it.sdJwtKbType } ?: "kb+jwt",
             ) {
                 if (!match.transactionData.isEmpty()) {
                     for ((key, response) in transactionResponse) {
