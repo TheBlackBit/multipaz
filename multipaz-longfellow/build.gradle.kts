@@ -1,9 +1,12 @@
-@file:OptIn(ExperimentalWasmDsl::class)
+@file:OptIn(
+    ExperimentalWasmDsl::class,
+    kotlin.io.encoding.ExperimentalEncodingApi::class
+)
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Base64
+import kotlin.io.encoding.Base64
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -41,7 +44,7 @@ abstract class GeneratePayloadsTask : DefaultTask() {
             writer.write("import kotlin.io.encoding.Base64\n\n")
             inputFiles.forEach { file ->
                 val bytes = file.readBytes()
-                val base64String = Base64.getEncoder().encodeToString(bytes)
+                val base64String = Base64.encode(bytes)
                 // Chunk safely below the JVM 65k string literal limit
                 val chunks = base64String.chunked(30000)
                 // Sanitize the filename to use as a Kotlin variable name
@@ -137,7 +140,7 @@ kotlin {
         it.compilations.getByName("main") {
             val Longfellow by cinterops.creating {
                 definitionFile.set(project.file("$rootDir/multipaz-longfellow/src/iosMain/MdocZk.def"))
-                includeDirs.headerFilterOnly("$rootDir/multipaz-longfellow/src/iosMain/nativelibs/$zkLibExt/include")
+                includeDirs.headerFilterOnly("$rootDir/multipaz-longfellow/rust/include")
                 extraOpts("-libraryPath", "$rootDir/multipaz-longfellow/src/iosMain/nativelibs/$zkLibExt/lib")
                 packageName = "Longfellow"
             }
@@ -183,14 +186,27 @@ kotlin {
 
         val javaSharedMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                compileOnly(libs.jna)
+            }
         }
 
         val jvmMain by getting {
             dependsOn(javaSharedMain)
+            dependencies {
+                implementation(libs.jna)
+            }
         }
 
         val androidMain by getting {
             dependsOn(javaSharedMain)
+            dependencies {
+                implementation(libs.jna.get()) {
+                    artifact {
+                        type = "aar"
+                    }
+                }
+            }
         }
     }
 }

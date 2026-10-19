@@ -1,17 +1,25 @@
 package org.multipaz.presentment
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.multipaz.cbor.Bstr
 import org.multipaz.cbor.Cbor
+import org.multipaz.cbor.Simple
 import org.multipaz.cbor.Tagged
 import org.multipaz.cbor.buildCborArray
 import org.multipaz.crypto.Algorithm
 import org.multipaz.crypto.Crypto
 import org.multipaz.crypto.EcCurve
+import org.multipaz.crypto.EcPublicKey
 import org.multipaz.documenttype.knowntypes.DrivingLicense
+import org.multipaz.mdoc.connectionmethod.MdocConnectionMethod
+import org.multipaz.mdoc.connectionmethod.MdocConnectionMethodNfc
 import org.multipaz.mdoc.connectionmethod.MdocConnectionMethodNfcV2
+import org.multipaz.mdoc.engagement.buildDeviceEngagement
 import org.multipaz.mdoc.nfc.MdocHandoverType
 import org.multipaz.mdoc.nfc.MdocNfcV2EngagementHelper
 import org.multipaz.mdoc.nfc.MdocReaderNfcHandoverOptions
@@ -21,9 +29,11 @@ import org.multipaz.mdoc.request.DeviceRequestGenerator
 import org.multipaz.mdoc.response.DeviceResponse
 import org.multipaz.mdoc.role.MdocRole
 import org.multipaz.mdoc.sessionencryption.SessionEncryption
+import org.multipaz.mdoc.transport.MdocTransport
 import org.multipaz.mdoc.transport.NfcHybridTransportMdoc
 import org.multipaz.mdoc.transport.NfcHybridTransportMdocReader
 import org.multipaz.nfc.CommandApdu
+import org.multipaz.nfc.NfcDeactivationReason
 import org.multipaz.nfc.NfcIsoTag
 import org.multipaz.nfc.ResponseApdu
 import org.multipaz.prompt.promptModelSilentConsent
@@ -33,6 +43,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
+import kotlin.time.Duration
 
 class Iso18013PresentmentTest {
 
@@ -98,7 +109,7 @@ class Iso18013PresentmentTest {
             onError = { error ->
                 fail("onError: $error")
             },
-            negotiatedHandoverPicker = { connectionMethods -> connectionMethods.first() }
+            handoverPicker = { connectionMethods -> connectionMethods.first() }
         )
         currentEngagementHelper = engagementHelper
 
@@ -205,7 +216,7 @@ class Iso18013PresentmentTest {
                 mdocTransport.onMessageReceivedViaNfc(message)
             },
             onError = { error -> fail("Engagement 1 error: $error") },
-            negotiatedHandoverPicker = { connectionMethods -> connectionMethods.first() }
+            handoverPicker = { connectionMethods -> connectionMethods.first() }
         )
         currentEngagementHelper = engagementHelper1
 
@@ -233,7 +244,7 @@ class Iso18013PresentmentTest {
         }
 
         // Tap 1 disconnect
-        mdocTransport.onNfcDeactivated(0)
+        mdocTransport.onNfcDeactivated(NfcDeactivationReason.LINK_LOSS)
 
         // Tap 2 re-tap setup
         val engagementHelper2 = MdocNfcV2EngagementHelper(
@@ -250,7 +261,7 @@ class Iso18013PresentmentTest {
                 mdocTransport.onMessageReceivedViaNfc(message)
             },
             onError = { error -> fail("Engagement 2 error: $error") },
-            negotiatedHandoverPicker = { connectionMethods -> connectionMethods.first() }
+            handoverPicker = { connectionMethods -> connectionMethods.first() }
         )
         currentEngagementHelper = engagementHelper2
 
@@ -326,7 +337,7 @@ class Iso18013PresentmentTest {
                 mdocTransport.onMessageReceivedViaNfc(message)
             },
             onError = { error -> fail("Engagement 1 error: $error") },
-            negotiatedHandoverPicker = { connectionMethods -> connectionMethods.first() }
+            handoverPicker = { connectionMethods -> connectionMethods.first() }
         )
         currentEngagementHelper = engagementHelper1
 
@@ -359,7 +370,7 @@ class Iso18013PresentmentTest {
         }
 
         // Tap 1 disconnect
-        mdocTransport.onNfcDeactivated(0)
+        mdocTransport.onNfcDeactivated(NfcDeactivationReason.LINK_LOSS)
 
         // Tap 2 re-tap
         val engagementHelper2 = MdocNfcV2EngagementHelper(
@@ -376,7 +387,7 @@ class Iso18013PresentmentTest {
                 mdocTransport.onMessageReceivedViaNfc(message)
             },
             onError = { error -> fail("Engagement 2 error: $error") },
-            negotiatedHandoverPicker = { connectionMethods -> connectionMethods.first() }
+            handoverPicker = { connectionMethods -> connectionMethods.first() }
         )
         currentEngagementHelper = engagementHelper2
 
@@ -414,12 +425,69 @@ class Iso18013PresentmentTest {
         assertNotNull(encryptedResponse)
 
         // Wallet is removed too fast before reader sends session termination
-        mdocTransport.onNfcDeactivated(0)
+        mdocTransport.onNfcDeactivated(NfcDeactivationReason.LINK_LOSS)
 
         presentmentJob.join()
         assertTrue(
             presentmentException is Iso18013PresentmentNfcDisconnectedException,
             "Expected Iso18013PresentmentNfcDisconnectedException but got $presentmentException"
         )
+    }
+
+    @Test
+    fun testCancelledPresentmentClosesTransportWithoutSendingSessionTermination() = runTest {
+        val presentmentSource = createTestPresentmentSource()
+        val eDeviceKey = Crypto.createEcPrivateKey(EcCurve.P256)
+        val deviceEngagement = buildDeviceEngagement(eDeviceKey = eDeviceKey.publicKey) {}.toDataItem()
+        val waitingForRequest = CompletableDeferred<Unit>()
+        var sendMessageCalls = 0
+        var closeCalls = 0
+
+        val transport = object : MdocTransport() {
+            private val _state = MutableStateFlow(State.CONNECTED)
+            override val state: StateFlow<State> = _state
+            override val role: MdocRole = MdocRole.MDOC
+            override val connectionMethod: MdocConnectionMethod = MdocConnectionMethodNfc(0xffff, 0x10000)
+            override val scanningTime: Duration? = null
+            private val hangForever = CompletableDeferred<ByteArray>()
+
+            override suspend fun advertise() {}
+            override suspend fun open(eSenderKey: EcPublicKey) {}
+
+            override suspend fun sendMessage(message: ByteArray) {
+                sendMessageCalls += 1
+            }
+
+            override suspend fun waitForMessage(): ByteArray {
+                return hangForever.await()
+            }
+
+            override suspend fun close() {
+                // Suspend inside close() to verify NonCancellable context in finally block
+                yield()
+                closeCalls += 1
+                _state.value = State.CLOSED
+            }
+        }
+
+        val job = launch {
+            Iso18013Presentment(
+                transport = transport,
+                eDeviceKey = eDeviceKey,
+                deviceEngagement = deviceEngagement,
+                handover = Simple.NULL,
+                source = presentmentSource,
+                keyAgreementPossible = listOf(EcCurve.P256),
+                onWaitingForRequest = { waitingForRequest.complete(Unit) }
+            )
+        }
+
+        waitingForRequest.await()
+        job.cancel()
+        job.join()
+
+        assertEquals(0, sendMessageCalls)
+        assertEquals(1, closeCalls)
+        assertEquals(MdocTransport.State.CLOSED, transport.state.value)
     }
 }

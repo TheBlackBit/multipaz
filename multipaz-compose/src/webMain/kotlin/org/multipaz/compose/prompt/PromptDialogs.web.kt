@@ -6,6 +6,8 @@ import androidx.compose.ui.unit.Dp
 import coil3.ImageLoader
 import org.multipaz.prompt.ConsentPromptDialogModel
 import org.multipaz.prompt.ConvertToHumanReadableFn
+import org.multipaz.prompt.FaceMatcherLivenessPromptDialogModel
+import org.multipaz.prompt.FaceMatcherPromptDialogModel
 import org.multipaz.prompt.PassphrasePromptDialogModel
 import org.multipaz.prompt.PromptDialogModel
 import org.multipaz.prompt.PromptModel
@@ -32,6 +34,18 @@ actual fun PromptDialogs(
             model = model.getDialogModel(ConsentPromptDialogModel.DialogType),
             imageLoader = imageLoader,
             maxHeight = maxHeight
+        )
+    }
+    if (!excludeTypes.contains(FaceMatcherPromptDialogModel.DialogType)) {
+        FaceMatcherPromptDialog(
+            model = model.getDialogModel(FaceMatcherPromptDialogModel.DialogType),
+            toHumanReadable = toHumanReadable
+        )
+    }
+    if (!excludeTypes.contains(FaceMatcherLivenessPromptDialogModel.DialogType)) {
+        FaceMatcherLivenessPromptDialog(
+            model = model.getDialogModel(FaceMatcherLivenessPromptDialogModel.DialogType),
+            toHumanReadable = toHumanReadable
         )
     }
 }

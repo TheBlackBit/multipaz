@@ -3,6 +3,10 @@ package org.multipaz.compose.prompt
 import org.jetbrains.compose.resources.getString
 import org.multipaz.multipaz_compose.generated.resources.Res
 import org.multipaz.multipaz_compose.generated.resources.aks_unlock_present_pin_subtitle
+import org.multipaz.multipaz_compose.generated.resources.face_matcher_liveness_prompt_default_subtitle
+import org.multipaz.multipaz_compose.generated.resources.face_matcher_liveness_prompt_default_title
+import org.multipaz.multipaz_compose.generated.resources.face_matcher_prompt_default_subtitle
+import org.multipaz.multipaz_compose.generated.resources.face_matcher_prompt_default_title
 import org.multipaz.multipaz_compose.generated.resources.key_unlock_default_subtitle
 import org.multipaz.multipaz_compose.generated.resources.key_unlock_default_title
 import org.multipaz.multipaz_compose.generated.resources.key_unlock_present_bio_subtitle
@@ -10,6 +14,8 @@ import org.multipaz.multipaz_compose.generated.resources.key_unlock_present_pass
 import org.multipaz.multipaz_compose.generated.resources.key_unlock_present_title
 import org.multipaz.presentment.PresentmentUnlockReason
 import org.multipaz.prompt.ConvertToHumanReadableFn
+import org.multipaz.prompt.FaceLivenessReason
+import org.multipaz.prompt.FaceMatchingReason
 import org.multipaz.prompt.Reason
 import org.multipaz.securearea.PassphraseConstraints
 
@@ -17,8 +23,9 @@ import org.multipaz.securearea.PassphraseConstraints
  * Default implementation of [ConvertToHumanReadableFn] for use in [PromptDialogs].
  *
  * Uses translated string resources from the multipaz-compose module. Handles
- * [Reason.HumanReadable] (passes through as-is) and [PresentmentUnlockReason] with
- * appropriate subtitle based on whether the expected input is biometric, PIN, or passphrase.
+ * [Reason.HumanReadable] (passes through as-is), [PresentmentUnlockReason] with
+ * appropriate subtitle based on whether the expected input is biometric, PIN, or passphrase,
+ * [FaceMatchingReason] for face matching prompts, and [FaceLivenessReason] for face liveness prompts.
  * All other [Reason] values are mapped to a generic unlock prompt.
  *
  * @param unlockReason the reason a secure unlock prompt is being requested.
@@ -43,6 +50,18 @@ suspend fun defaultToHumanReadable(
             requireConfirmation = false
         )
     }
+
+    is FaceMatchingReason -> Reason.HumanReadable(
+        title = getString(Res.string.face_matcher_prompt_default_title),
+        subtitle = getString(Res.string.face_matcher_prompt_default_subtitle),
+        requireConfirmation = false
+    )
+
+    is FaceLivenessReason -> Reason.HumanReadable(
+        title = getString(Res.string.face_matcher_liveness_prompt_default_title),
+        subtitle = getString(Res.string.face_matcher_liveness_prompt_default_subtitle),
+        requireConfirmation = false
+    )
 
     else -> Reason.HumanReadable(
         title = getString(Res.string.key_unlock_default_title),

@@ -1,6 +1,5 @@
 package org.multipaz.crypto
 
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.io.bytestring.ByteString
 import kotlinx.io.bytestring.append
 import kotlinx.io.bytestring.buildByteString
@@ -76,14 +75,14 @@ object JsonWebEncryption {
             }
             val protectedHeaderB64 = Json.encodeToString(protectedHeader).encodeToByteArray().toBase64Url()
 
-            val algId = encAlg.joseAlgorithmIdentifier!!.toByteArray()
+            val algId = encAlg.joseAlgorithmIdentifier!!.encodeToByteArray()
             val contentEncryptionKey = Crypto.keyAgreement(senderEphemeralKey, recipientPublicKey).use { sharedSecret ->
                 concatKDF(
                     sharedSecretZ = sharedSecret,
                     keyDataLenBits = keyDataLenBits,
                     algorithmId = buildByteString { appendInt32(algId.size); append(algId) },
-                    partyUInfo =  buildByteString { apu?.let { appendInt32(it.size); append(it) } },
-                    partyVInfo =  buildByteString { apv?.let { appendInt32(it.size); append(it) } },
+                    partyUInfo =  buildByteString { val info = apu ?: ByteString(); appendInt32(info.size); append(info) },
+                    partyVInfo =  buildByteString { val info = apv ?: ByteString(); appendInt32(info.size); append(info) },
                     suppPubInfo = buildByteString { appendInt32(keyDataLenBits) }
                 )
             }
@@ -102,7 +101,7 @@ object JsonWebEncryption {
                     key = cek,
                     nonce = nonce,
                     messagePlaintext = messageToEncrypt,
-                    aad = protectedHeaderB64.toByteArray(),
+                    aad = protectedHeaderB64.encodeToByteArray(),
                 )
             }
             // Auth tag is a single block which is always 16 bytes long for AES, irrespective of
@@ -157,7 +156,7 @@ object JsonWebEncryption {
         val apu = ByteString(protectedHeader["apu"]?.jsonPrimitive?.content?.fromBase64Url() ?: byteArrayOf())
         val apv = ByteString(protectedHeader["apv"]?.jsonPrimitive?.content?.fromBase64Url() ?: byteArrayOf())
 
-        val algId = encAlg.joseAlgorithmIdentifier!!.toByteArray()
+        val algId = encAlg.joseAlgorithmIdentifier!!.encodeToByteArray()
         val contentEncryptionKey = recipientKey.keyAgreement(senderEphemeralKey).use { sharedSecret ->
             concatKDF(
                 sharedSecretZ = sharedSecret,
@@ -173,7 +172,7 @@ object JsonWebEncryption {
                 algorithm = encAlg,
                 key = cek,
                 nonce = ivB64.fromBase64Url(),
-                aad = protectedHeaderB64.toByteArray(),
+                aad = protectedHeaderB64.encodeToByteArray(),
                 messageCiphertext = cipherTextB64.fromBase64Url() + authenticationTagB64.fromBase64Url()
             )
         }

@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -95,6 +96,14 @@ fun SettingsScreen(
             )
         }
         item {
+            SettingToggle(
+                title = "NFCv2: Only Allow NFC Data Transfer",
+                isChecked = app.settingsModel.presentmentNfcV2OnlyAllowNfc.collectAsState().value,
+                onCheckedChange = { app.settingsModel.presentmentNfcV2OnlyAllowNfc.value = it },
+                enabled = nfcAvailable
+            )
+        }
+        item {
             SettingHeadline("ISO mdoc Transports (QR and NFC Static Handover)")
         }
         item {
@@ -119,7 +128,7 @@ fun SettingsScreen(
             )
         }
         item {
-            SettingHeadline("ISO mdoc NFC Negotiated Handover Preferred Order")
+            SettingHeadline("ISO mdoc NFC Negotiated Handover & NFCv2 Preferred Order")
         }
         for (n in negotiatedHandoverOrder.indices) {
             val prefix = negotiatedHandoverOrder[n]
@@ -305,6 +314,19 @@ fun SettingsScreen(
                 title = "Prefer Key Agreement to Signature",
                 isChecked = !app.settingsModel.presentmentPreferSignatureToKeyAgreement.collectAsState().value,
                 onCheckedChange = { app.settingsModel.presentmentPreferSignatureToKeyAgreement.value = !it },
+            )
+        }
+        item {
+            val choices = remember {
+                app.faceMatcherRepository.all.map { it.displayName } + listOf("None")
+            }
+            SettingMultipleChoice(
+                title = "Presentation Face Matcher",
+                choices = choices,
+                initialChoice = app.settingsModel.presentmentFaceMatcher.collectAsState().value,
+                onChoiceSelected = { choice ->
+                    app.settingsModel.presentmentFaceMatcher.value = choice
+                },
             )
         }
 

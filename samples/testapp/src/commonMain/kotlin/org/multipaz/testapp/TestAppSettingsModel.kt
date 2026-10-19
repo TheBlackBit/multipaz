@@ -153,6 +153,7 @@ class TestAppSettingsModel private constructor(
         bind(presentmentBleL2CapEnabled, "presentmentBleL2CapEnabled", false)
         bind(presentmentBleL2CapInEngagementEnabled, "presentmentBleL2CapInEngagementEnabled", true)
         bind(presentmentUseNegotiatedHandover, "presentmentUseNegotiatedHandover", true)
+        bind(presentmentNfcV2OnlyAllowNfc, "presentmentNfcV2OnlyAllowNfc", false)
         bind(presentmentNegotiatedHandoverPreferredOrder, "presentmentNegotiatedHandoverPreferredOrder",
             listOf(
                 "ble:central_client_mode:",
@@ -163,6 +164,7 @@ class TestAppSettingsModel private constructor(
         bind(presentmentShowConsentPrompt, "presentmentShowConsentPrompt", true)
         bind(presentmentRequireAuthentication, "presentmentRequireAuthentication", true)
         bind(presentmentPreferSignatureToKeyAgreement, "presentmentPreferSignatureToKeyAgreement", false)
+        bind(presentmentFaceMatcher, "presentmentFaceMatcher", "MobileFaceNet")
 
         bind(readerBleCentralClientModeEnabled, "readerBleCentralClientModeEnabled", true)
         bind(readerBlePeripheralServerModeEnabled, "readerBlePeripheralServerModeEnabled", true)
@@ -204,10 +206,12 @@ class TestAppSettingsModel private constructor(
     val presentmentBleL2CapEnabled = MutableStateFlow<Boolean>(false)
     val presentmentBleL2CapInEngagementEnabled = MutableStateFlow<Boolean>(false)
     val presentmentUseNegotiatedHandover = MutableStateFlow<Boolean>(false)
+    val presentmentNfcV2OnlyAllowNfc = MutableStateFlow<Boolean>(false)
     val presentmentNegotiatedHandoverPreferredOrder = MutableStateFlow<List<String>>(listOf())
     val presentmentShowConsentPrompt = MutableStateFlow<Boolean>(false)
     val presentmentRequireAuthentication = MutableStateFlow<Boolean>(false)
     val presentmentPreferSignatureToKeyAgreement = MutableStateFlow<Boolean>(false)
+    val presentmentFaceMatcher = MutableStateFlow<String>("MobileFaceNet")
 
     val readerBleCentralClientModeEnabled = MutableStateFlow<Boolean>(false)
     val readerBlePeripheralServerModeEnabled = MutableStateFlow<Boolean>(false)

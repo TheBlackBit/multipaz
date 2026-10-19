@@ -10,8 +10,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.io.bytestring.ByteString
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
+import org.jetbrains.skia.ImageInfo
 import org.multipaz.compose.camera.CameraFrame
 import org.multipaz.compose.camera.CameraImage
+import org.multipaz.facematch.OverlayFrame
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.PI
 
@@ -57,4 +59,25 @@ actual fun ImageBitmap.cropRotateScaleImage(
 actual fun rememberUiBoundCoroutineScope(
     getContext: @DisallowComposableCalls () -> CoroutineContext
 ): CoroutineScope = rememberCoroutineScope(getContext)
+
+actual fun OverlayFrame.toImageBitmap(): ImageBitmap {
+    return (platformHandle as? ImageBitmap) ?: ImageBitmap(width, height)
+}
+
+@Composable
+internal actual fun ScreenBrightnessEffect(brightness: Float?) {
+}
+
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
+internal actual fun fullScreenDialogProperties(): androidx.compose.ui.window.DialogProperties =
+    androidx.compose.ui.window.DialogProperties(
+        usePlatformDefaultWidth = false,
+        usePlatformInsets = false
+    )
+
+@Composable
+internal actual fun FullScreenDialogEffect() {
+}
+
+
 

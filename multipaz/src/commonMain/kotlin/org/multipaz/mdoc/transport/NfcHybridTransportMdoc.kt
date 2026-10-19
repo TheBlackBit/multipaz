@@ -16,6 +16,7 @@ import org.multipaz.crypto.EcPublicKey
 import org.multipaz.mdoc.connectionmethod.MdocConnectionMethod
 import org.multipaz.mdoc.role.MdocRole
 import org.multipaz.nfc.CommandApdu
+import org.multipaz.nfc.NfcDeactivationReason
 import org.multipaz.nfc.ResponseApdu
 import org.multipaz.util.Logger
 import kotlin.coroutines.cancellation.CancellationException
@@ -107,7 +108,7 @@ class NfcHybridTransportMdoc(
      *
      * @param reason the reason for the deactivation event.
      */
-    suspend fun onNfcDeactivated(reason: Int) {
+    fun onNfcDeactivated(reason: NfcDeactivationReason) {
         _isNfcConnected.value = false
         // For NFC-only connections, leaving the field is expected during multi-tap presentment.
         // We do not fail the transport so the presentment session can resume when re-tapped.
@@ -119,8 +120,18 @@ class NfcHybridTransportMdoc(
      * @param transport the negotiated transport which connected.
      */
     suspend fun setTransport(transport: MdocTransport) {
-        this.transport = transport
-        val backlog = mutex.withLock { transportMessageBacklog.map { it.toByteArray() } }
+        val backlog = mutex.withLock {
+            if (_state.value == State.CLOSED || _state.value == State.FAILED) {
+                null
+            } else {
+                this.transport = transport
+                transportMessageBacklog.map { it.toByteArray() }
+            }
+        }
+        if (backlog == null) {
+            transport.close()
+            return
+        }
         Logger.i(TAG, "Connected to transport, sending backlog of ${backlog.size} messages")
         backlog.forEachIndexed { idx, message ->
             transport.sendMessage(message)
@@ -128,17 +139,30 @@ class NfcHybridTransportMdoc(
             numSentViaTransport += 1
         }
 
-        transportListenMessageJob = CoroutineScope(Dispatchers.Default).launch {
+        val listenJob = CoroutineScope(Dispatchers.Default).launch {
             try {
                 while (true) {
-                        val message = transport.waitForMessage()
-                        Logger.i(TAG, "Received message over Transport of length ${message.size}")
-                        conveyMessage(ByteString(message), false)
+                    val message = transport.waitForMessage()
+                    Logger.i(TAG, "Received message over Transport of length ${message.size}")
+                    conveyMessage(ByteString(message), false)
                 }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 Logger.e(TAG, "Caught exception while waiting for message on transport", e)
             }
+        }
+        val shouldClose = mutex.withLock {
+            if (_state.value == State.CLOSED || _state.value == State.FAILED) {
+                this.transport = null
+                true
+            } else {
+                transportListenMessageJob = listenJob
+                false
+            }
+        }
+        if (shouldClose) {
+            listenJob.cancel()
+            transport.close()
         }
     }
 
@@ -278,6 +302,7 @@ class NfcHybridTransportMdoc(
                 }
             }
             incomingMessages.close()
+            writingQueue.close()
             transportListenMessageJob?.cancel()
             transportListenMessageJob = null
             transport?.close()

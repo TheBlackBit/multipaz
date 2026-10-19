@@ -25,6 +25,7 @@ import org.multipaz.cbor.putCborArray
 import org.multipaz.cbor.putCborMap
 import org.multipaz.cbor.toDataItem
 import org.multipaz.claim.Claim
+import org.multipaz.claim.MdocClaim
 import org.multipaz.claim.findMatchingClaim
 import org.multipaz.cose.Cose
 import org.multipaz.cose.CoseLabel
@@ -37,8 +38,12 @@ import org.multipaz.crypto.AsymmetricKey
 import org.multipaz.crypto.EcCurve
 import org.multipaz.crypto.SignatureVerificationException
 import org.multipaz.crypto.X509CertChain
+import org.multipaz.documenttype.DocumentAttribute
+import org.multipaz.documenttype.DocumentAttributeType
 import org.multipaz.documenttype.DocumentTypeRepository
 import org.multipaz.documenttype.ISO_18013_TRANSACTION_DATA_NAMESPACE
+import org.multipaz.documenttype.ISO_23220_5_CHV_1_DATA_ELEMENT
+import org.multipaz.documenttype.ISO_23220_5_CHV_1_NAMESPACE
 import org.multipaz.mdoc.credential.MdocCredential
 import org.multipaz.mdoc.response.Iso18015ResponseException
 import org.multipaz.mdoc.util.mdocVersionCompareTo
@@ -50,8 +55,11 @@ import org.multipaz.presentment.CredentialPresentmentSet
 import org.multipaz.presentment.CredentialPresentmentSetOption
 import org.multipaz.presentment.CredentialPresentmentSetOptionMember
 import org.multipaz.presentment.CredentialPresentmentSetOptionMemberMatch
+import org.multipaz.presentment.FaceMatchingMode
 import org.multipaz.presentment.PresentmentSource
 import org.multipaz.presentment.TransactionData
+import org.multipaz.presentment.canSatisfyChv1
+import org.multipaz.presentment.isChv1Claim
 import org.multipaz.request.Iso18013RequesterIdentity
 import org.multipaz.request.JsonRequestedClaim
 import org.multipaz.request.MdocRequestedClaim
@@ -527,7 +535,8 @@ data class DeviceRequest private constructor(
         val credential: Credential,
         val claims: Map<RequestedClaim, Claim>,
         val docRequest: DocRequest,
-        val transactionData: List<TransactionData<*>>
+        val transactionData: List<TransactionData<*>>,
+        val faceMatchNeeded: Boolean = false,
     )
 
     private data class DocRequestResult(
@@ -564,6 +573,17 @@ data class DeviceRequest private constructor(
         keyAgreementPossible: List<EcCurve> = emptyList(),
         requesterIdentities: List<RequesterIdentity> = emptyList(),
     ): CredentialQueryResult {
+        val effectiveRequesterIdentities = requesterIdentities.ifEmpty { getRequesterIdentities() }
+        val faceMatchingModeCache = mutableMapOf<String, FaceMatchingMode>()
+        suspend fun getOrComputeFaceMatchingMode(credential: Credential): FaceMatchingMode {
+            return faceMatchingModeCache.getOrPut(credential.document.identifier) {
+                presentmentSource.getFaceMatchingMode(
+                    credential = credential,
+                    requesterIdentities = effectiveRequesterIdentities
+                )
+            }
+        }
+
         // First find all matches for all DocRequests
         val docRequestResults = docRequests.map { docRequest ->
             findMatchesForDocRequest(
@@ -571,6 +591,7 @@ data class DeviceRequest private constructor(
                 presentmentSource = presentmentSource,
                 keyAgreementPossible = keyAgreementPossible,
                 requesterIdentities = requesterIdentities,
+                getFaceMatchingMode = ::getOrComputeFaceMatchingMode,
             )
         }
 
@@ -596,7 +617,8 @@ data class DeviceRequest private constructor(
                     credential = match.credential,
                     claims = match.claims,
                     source = CredentialMatchSourceIso18013(docRequest = match.docRequest),
-                    transactionData = match.transactionData
+                    transactionData = match.transactionData,
+                    faceMatchNeeded = match.faceMatchNeeded,
                 )
             }
             val member = CredentialPresentmentSetOptionMember(memberMatches)
@@ -630,7 +652,8 @@ data class DeviceRequest private constructor(
                                     credential = match.credential,
                                     claims = match.claims,
                                     source = CredentialMatchSourceIso18013(docRequest = match.docRequest),
-                                    transactionData = match.transactionData
+                                    transactionData = match.transactionData,
+                                    faceMatchNeeded = match.faceMatchNeeded,
                                 )
                             }
                             CredentialPresentmentSetOptionMember(matches)
@@ -669,6 +692,7 @@ data class DeviceRequest private constructor(
         presentmentSource: PresentmentSource,
         keyAgreementPossible: List<EcCurve>,
         requesterIdentities: List<RequesterIdentity>,
+        getFaceMatchingMode: suspend (Credential) -> FaceMatchingMode,
     ): DocRequestResult {
         // Find credentials matching the requested DocType
         val candidates = mutableListOf<Credential>()
@@ -710,6 +734,7 @@ data class DeviceRequest private constructor(
                 presentmentSource = presentmentSource,
                 keyAgreementPossible = effectiveKeyAgreementPossible,
                 requesterIdentities = requesterIdentities,
+                getFaceMatchingMode = getFaceMatchingMode,
             )
             if (result.match != null) {
                 matches.add(result.match)
@@ -763,6 +788,7 @@ data class DeviceRequest private constructor(
         presentmentSource: PresentmentSource,
         keyAgreementPossible: List<EcCurve>,
         requesterIdentities: List<RequesterIdentity>,
+        getFaceMatchingMode: suspend (Credential) -> FaceMatchingMode,
     ): ClaimMatchResult {
         val readerIdentifiers = cred.document.readerIdentifiers
         if (readerIdentifiers.isNotEmpty()) {
@@ -856,6 +882,7 @@ data class DeviceRequest private constructor(
             val selectedTransactions = mutableListOf<TransactionData<*>>()
             val missingElements = mutableListOf<String>()
             var transactionFailureReason: String? = null
+            var chv1Matched = false
 
             for (fieldOptions in logicalRequirements) {
                 val baseClaim = fieldOptions[0][0]
@@ -876,6 +903,14 @@ data class DeviceRequest private constructor(
                         }
                         missingElements.add("'${baseClaim.dataElementName}' in namespace '${baseClaim.namespaceName}'")
                     }
+                } else if (isChv1Claim(baseClaim)) {
+                    val faceMatchingMode = getFaceMatchingMode(cred)
+                    if (canSatisfyChv1(cred, presentmentSource, faceMatchingMode)) {
+                        chv1Matched = true
+                        requestedClaimsRemapped.add(baseClaim)
+                    } else {
+                        missingElements.add("'${baseClaim.dataElementName}' in namespace '${baseClaim.namespaceName}'")
+                    }
                 } else {
                     val remapped = remapClaim(cred, baseClaim, docRequest)
                     val foundClaim = remapped?.let { claimsInCredential.findMatchingClaim(it) }
@@ -893,7 +928,7 @@ data class DeviceRequest private constructor(
             }
 
             // In ISO 18013-5:2021 (v1.0), the request is satisfied if at least one requested element is present
-            if ((logicalRequirements.isNotEmpty() && matchingClaimValues.isEmpty() && selectedTransactions.isEmpty()) ||
+            if ((logicalRequirements.isNotEmpty() && matchingClaimValues.isEmpty() && selectedTransactions.isEmpty() && !chv1Matched) ||
                 logicalRequirements.isEmpty()) {
                 val reason = if (missingElements.size == 1) {
                     "missing data element ${missingElements[0]}"
@@ -909,12 +944,19 @@ data class DeviceRequest private constructor(
                 keyAgreementPossible = keyAgreementPossible
             )
             if (selectedCred != null) {
+                val faceMatchingMode = getFaceMatchingMode(selectedCred)
+                val faceMatchNeeded = when (faceMatchingMode) {
+                    FaceMatchingMode.NEVER -> false
+                    FaceMatchingMode.ALWAYS -> true
+                    FaceMatchingMode.ONLY_IF_REQUESTED -> chv1Matched
+                }
                 return ClaimMatchResult(
                     match = DocRequestMatch(
                         credential = selectedCred,
                         claims = matchingClaimValues,
                         docRequest = docRequest,
-                        transactionData = selectedTransactions
+                        transactionData = selectedTransactions,
+                        faceMatchNeeded = faceMatchNeeded,
                     ),
                     failureReason = null
                 )
@@ -934,7 +976,8 @@ data class DeviceRequest private constructor(
                         reqClaim = reqClaim,
                         docRequest = docRequest,
                         claimsInCredential = claimsInCredential,
-                        documentTypeRepository = presentmentSource.documentTypeRepository
+                        presentmentSource = presentmentSource,
+                        getFaceMatchingMode = getFaceMatchingMode,
                     )
                 }
             }
@@ -993,6 +1036,7 @@ data class DeviceRequest private constructor(
             val requestedClaimsRemapped = mutableListOf<RequestedClaim>()
             val selectedTransactions = mutableListOf<TransactionData<*>>()
             var didNotMatch = false
+            var chv1Matched = false
 
             for (reqClaim in requestedClaims) {
                 if (reqClaim.namespaceName == ISO_18013_TRANSACTION_DATA_NAMESPACE) {
@@ -1007,6 +1051,15 @@ data class DeviceRequest private constructor(
                         break
                     }
                     selectedTransactions.add(applicableTx)
+                } else if (isChv1Claim(reqClaim)) {
+                    val faceMatchingMode = getFaceMatchingMode(cred)
+                    if (canSatisfyChv1(cred, presentmentSource, faceMatchingMode)) {
+                        chv1Matched = true
+                        requestedClaimsRemapped.add(reqClaim)
+                    } else {
+                        didNotMatch = true
+                        break
+                    }
                 } else {
                     val reqClaimRemapped = remapClaim(cred, reqClaim, docRequest)
                     if (reqClaimRemapped == null) {
@@ -1033,12 +1086,19 @@ data class DeviceRequest private constructor(
                     keyAgreementPossible = keyAgreementPossible
                 )
                 if (selectedCred != null) {
+                    val faceMatchingMode = getFaceMatchingMode(selectedCred)
+                    val faceMatchNeeded = when (faceMatchingMode) {
+                        FaceMatchingMode.NEVER -> false
+                        FaceMatchingMode.ALWAYS -> true
+                        FaceMatchingMode.ONLY_IF_REQUESTED -> chv1Matched
+                    }
                     return ClaimMatchResult(
                         match = DocRequestMatch(
                             credential = selectedCred,
                             claims = matchingClaimValues,
                             docRequest = docRequest,
-                            transactionData = selectedTransactions
+                            transactionData = selectedTransactions,
+                            faceMatchNeeded = faceMatchNeeded,
                         ),
                         failureReason = null
                     )
@@ -1072,10 +1132,14 @@ data class DeviceRequest private constructor(
         reqClaim: MdocRequestedClaim,
         docRequest: DocRequest,
         claimsInCredential: List<Claim>,
-        documentTypeRepository: DocumentTypeRepository?,
+        presentmentSource: PresentmentSource,
+        getFaceMatchingMode: suspend (Credential) -> FaceMatchingMode,
     ): Boolean {
         return if (reqClaim.namespaceName == ISO_18013_TRANSACTION_DATA_NAMESPACE) {
-            findApplicableTransaction(cred, reqClaim, docRequest, documentTypeRepository) != null
+            findApplicableTransaction(cred, reqClaim, docRequest, presentmentSource.documentTypeRepository) != null
+        } else if (isChv1Claim(reqClaim)) {
+            val faceMatchingMode = getFaceMatchingMode(cred)
+            canSatisfyChv1(cred, presentmentSource, faceMatchingMode)
         } else {
             val remapped = remapClaim(cred, reqClaim, docRequest)
             remapped != null && claimsInCredential.findMatchingClaim(remapped) != null
@@ -1518,20 +1582,17 @@ internal fun deviceRequestAddQueries(
         // Identify which claims are 'base' (primary).
         // If claim_sets exists, the first set usually represents the primary preference.
         // If not, all claims are primary.
-        val primaryClaimIds = if (credQuery.claimSets.isNotEmpty()) {
+        val hasClaimSets = credQuery.claimSets.isNotEmpty()
+        val primaryClaimIds = if (hasClaimSets) {
             credQuery.claimSets.first().claimIdentifiers.toSet()
         } else {
-            // FIX: If no claim_sets, use all claim IDs from the 'claims' list.
-            // Some claims might not have an ID if they were parsed from a simple request,
-            // so we might need to handle claims without IDs if your parser allows them.
-            // Assuming your parser generates IDs or we iterate the list directly.
-            credQuery.claims.mapNotNull { it.id }.toSet()
+            emptySet()
         }
 
         credQuery.claims.forEach { requestedClaim ->
             // We include it in the main request if it's in the primary set
-            // OR if there are no sets (meaning primaryClaimIds includes everything).
-            if (primaryClaimIds.isEmpty() || primaryClaimIds.contains(requestedClaim.id)) {
+            // OR if there are no sets (meaning all claims are primary).
+            if (!hasClaimSets || primaryClaimIds.contains(requestedClaim.id)) {
                 when (requestedClaim) {
                     is MdocRequestedClaim -> {
                         val nsMap = nameSpaces.getOrPut(requestedClaim.namespaceName) { mutableMapOf() }

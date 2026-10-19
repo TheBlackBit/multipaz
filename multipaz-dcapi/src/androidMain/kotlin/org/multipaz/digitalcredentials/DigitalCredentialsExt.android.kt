@@ -47,7 +47,7 @@ import org.multipaz.documenttype.DocumentTypeRepository
 import org.multipaz.mdoc.credential.MdocCredential
 import org.multipaz.sdjwt.credential.SdJwtVcCredential
 import org.multipaz.util.Logger
-import org.multipaz.util.toBase64
+import org.multipaz.util.toBase64Url
 import java.io.ByteArrayOutputStream
 import kotlin.time.Clock
 
@@ -246,6 +246,13 @@ private suspend fun exportMdocCredential(
         putCborMap("mdoc") {
             put("documentId", document.identifier)
             put("docType", credential.docType)
+            val peData = credentialType?.mdocDocumentType?.supportsPortraitImageEquivalence
+            val hasPortrait = peData != null && claims.any {
+                it.namespaceName == peData.namespace && it.dataElementName == peData.dataElementName
+            }
+            if (hasPortrait) {
+                put("supportsPortraitImageEquivalence", true)
+            }
             if (issuerIdentifiers.isNotEmpty()) {
                 putCborArray("issuerIdentifiers") {
                     issuerIdentifiers.forEach { add(it) }
@@ -534,5 +541,5 @@ internal actual suspend fun defaultRequest(request: JsonObject): JsonObject {
  * @return the origin string of the form "android:apk-key-hash:<sha256_hash-of-apk-signing-cert>"
  */
 suspend fun getAppOrigin(appSigningInfo: ByteArray): String {
-    return "android:apk-key-hash:${Crypto.digest(Algorithm.SHA256, appSigningInfo).toBase64()}"
+    return "android:apk-key-hash:${Crypto.digest(Algorithm.SHA256, appSigningInfo).toBase64Url()}"
 }

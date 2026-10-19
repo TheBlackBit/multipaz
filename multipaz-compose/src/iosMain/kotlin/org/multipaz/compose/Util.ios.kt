@@ -2,6 +2,9 @@ package org.multipaz.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
@@ -13,8 +16,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.io.bytestring.ByteString
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
+import org.jetbrains.skia.ImageInfo
 import org.multipaz.compose.camera.CameraFrame
 import org.multipaz.compose.camera.CameraImage
+import org.multipaz.compose.camera.toSkiaImage
+import org.multipaz.facematch.OverlayFrame
 import platform.CoreGraphics.CGBitmapContextCreate
 import platform.CoreGraphics.CGBitmapContextCreateImage
 import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
@@ -27,6 +33,7 @@ import platform.CoreGraphics.CGSizeMake
 import platform.UIKit.UIGraphicsImageRenderer
 import platform.UIKit.UIGraphicsImageRendererFormat
 import platform.UIKit.UIImage
+import platform.UIKit.UIScreen
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.PI
 
@@ -159,4 +166,44 @@ actual fun ImageBitmap.cropRotateScaleImage(
 actual fun rememberUiBoundCoroutineScope(
     getContext: @DisallowComposableCalls () -> CoroutineContext
 ): CoroutineScope = rememberCoroutineScope(getContext)
+
+actual fun OverlayFrame.toImageBitmap(): ImageBitmap {
+    val uiImage = platformHandle as? UIImage
+    if (uiImage != null) {
+        val skiaImage = uiImage.toSkiaImage()
+        if (skiaImage != null) {
+            return skiaImage.toComposeImageBitmap()
+        }
+    }
+    return ImageBitmap(width, height)
+}
+
+@Composable
+internal actual fun ScreenBrightnessEffect(brightness: Float?) {
+    val initialBrightness = remember { UIScreen.mainScreen.brightness }
+
+    LaunchedEffect(brightness) {
+        UIScreen.mainScreen.brightness = brightness?.coerceIn(0.0f, 1.0f)?.toDouble() ?: initialBrightness
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            UIScreen.mainScreen.brightness = initialBrightness
+        }
+    }
+}
+
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
+internal actual fun fullScreenDialogProperties(): androidx.compose.ui.window.DialogProperties =
+    androidx.compose.ui.window.DialogProperties(
+        usePlatformDefaultWidth = false,
+        usePlatformInsets = false
+    )
+
+@Composable
+internal actual fun FullScreenDialogEffect() {
+}
+
+
+
 

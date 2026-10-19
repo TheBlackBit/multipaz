@@ -1,4 +1,5 @@
 import org.apache.commons.io.output.ByteArrayOutputStream
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 
 plugins {
@@ -181,10 +182,19 @@ dependencies {
     dokka(project(":multipaz-longfellow"))
     dokka(project(":multipaz-cbor-rpc"))
     dokka(project(":multipaz-android-legacy"))
+    dokka(project(":multipaz-facenet"))
 }
 
 subprojects {
     plugins.withId("org.jetbrains.dokka") {
+        extensions.configure<DokkaExtension> {
+            dokkaSourceSets.configureEach {
+                documentedVisibilities(
+                    VisibilityModifier.Public,
+                    VisibilityModifier.Protected
+                )
+            }
+        }
         dependencies {
             "dokkaPlugin"("org.multipaz:dokka-known-subclasses-plugin:1.0.0")
         }

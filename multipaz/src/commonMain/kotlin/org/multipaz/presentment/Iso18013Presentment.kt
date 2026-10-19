@@ -1,10 +1,13 @@
 package org.multipaz.presentment
 
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
@@ -13,6 +16,7 @@ import org.multipaz.cbor.Cbor
 import org.multipaz.cbor.DataItem
 import org.multipaz.cbor.Tagged
 import org.multipaz.cbor.buildCborArray
+import org.multipaz.credential.Credential
 import org.multipaz.crypto.EcCurve
 import org.multipaz.crypto.EcPrivateKey
 import org.multipaz.document.Document
@@ -49,9 +53,13 @@ private const val TAG = "Iso180135Presentment"
  * @param onWaitingForUserInput callback when waiting for user input.
  * @param onDocumentsInFocus callback with selected documents.
  * @param onSendingResponse callback when sending response.
+ * @throws FaceNotMatchedException if face matching failed or was canceled.
+ * @throws PresentmentCanceledException if the user canceled in a consent prompt.
+ * @throws PresentmentCannotSatisfyRequestException if it's not possible to satisfy the request.
  */
 @Throws(
     CancellationException::class,
+    FaceNotMatchedException::class,
     IllegalStateException::class,
     MdocTransportClosedException::class,
     Iso18013PresentmentTimeoutException::class,
@@ -73,26 +81,28 @@ suspend fun Iso18013Presentment(
     onSendingResponse: () -> Unit = {},
     onDeviceRequest: (deviceRequest: DeviceRequest) -> Unit = {},
 ) {
-    // Wait until state changes to CONNECTED, FAILED, or CLOSED
-    transport.state.first {
-        it == MdocTransport.State.CONNECTED ||
-                it == MdocTransport.State.FAILED ||
-                it == MdocTransport.State.CLOSED
-    }
-    if (transport.state.value != MdocTransport.State.CONNECTED) {
-        throw IllegalStateException("Expected state CONNECTED but found ${transport.state.value}")
-    }
-    val initialParams = engagementParams.value
-    Logger.dCbor(TAG, "Handover", initialParams.handover)
-    Logger.dCbor(TAG, "DeviceEngagement", initialParams.deviceEngagement)
     var numRequestsServed = 0
-    var sendSessionTermination = true
+    var sendSessionTermination = false
     var sessionEncryption: SessionEncryption? = null
     try {
+        // Wait until state changes to CONNECTED, FAILED, or CLOSED
+        transport.state.first {
+            it == MdocTransport.State.CONNECTED ||
+                    it == MdocTransport.State.FAILED ||
+                    it == MdocTransport.State.CLOSED
+        }
+        if (transport.state.value != MdocTransport.State.CONNECTED) {
+            throw IllegalStateException("Expected state CONNECTED but found ${transport.state.value}")
+        }
+        sendSessionTermination = true
+        val initialParams = engagementParams.value
+        Logger.dCbor(TAG, "Handover", initialParams.handover)
+        Logger.dCbor(TAG, "DeviceEngagement", initialParams.deviceEngagement)
         var activeEReaderKey: EReaderKey? = null
         var activeDeviceRequest: DeviceRequest? = null
         var cachedSelection: CredentialSelection? = null
         var cachedKeyUnlockDataProvider: KeyUnlockDataProvider? = null
+        var cachedFaceMatchedCredentials: List<Credential>? = null
         lateinit var sessionTranscript: DataItem
         lateinit var encodedSessionTranscript: ByteArray
         while (true) {
@@ -165,9 +175,10 @@ suspend fun Iso18013Presentment(
                 }
                 Logger.dCbor(TAG, "SessionTranscript", sessionTranscript)
                 encodedSessionTranscript = Cbor.encode(sessionTranscript)
+                sessionEncryption?.close()
                 sessionEncryption = SessionEncryption(
                     role = MdocRole.MDOC,
-                    eSelfKey = eDeviceKeyToUse,
+                    eSelfKey = eDeviceKeyToUse.duplicate(),
                     remotePublicKey = currentEReaderKey.publicKey,
                     encodedSessionTranscript = encodedSessionTranscript,
                     insertSequenceNumbers = insertSequenceNumbers
@@ -190,19 +201,25 @@ suspend fun Iso18013Presentment(
             val deviceRequest = DeviceRequest.fromDataItem(deviceRequestCbor)
             deviceRequest.verifyReaderAuthentication(sessionTranscript)
             onDeviceRequest(deviceRequest)
+            if (transport is NfcHybridTransportMdoc && transport.isNfcOnly) {
+                transport.markResponsePending()
+            }
 
             val selection: CredentialSelection
             val keyUnlockDataProvider: KeyUnlockDataProvider
+            val faceMatchedCredentials: List<Credential>
 
             val currentActiveRequest = activeDeviceRequest
             if (currentActiveRequest != null &&
                 deviceRequest.isStructurallyEquivalent(currentActiveRequest) &&
                 cachedSelection != null &&
-                cachedKeyUnlockDataProvider != null
+                cachedKeyUnlockDataProvider != null &&
+                cachedFaceMatchedCredentials != null
             ) {
                 Logger.i(TAG, "Reusing existing consent and key authentication for structurally equivalent DeviceRequest on re-tap")
                 selection = cachedSelection
                 keyUnlockDataProvider = cachedKeyUnlockDataProvider
+                faceMatchedCredentials = cachedFaceMatchedCredentials
             } else {
                 activeDeviceRequest = deviceRequest
                 selection = mdocPresentmentObtainConsent(
@@ -216,8 +233,14 @@ suspend fun Iso18013Presentment(
                     onDocumentsInFocus = onDocumentsInFocus
                 )
                 keyUnlockDataProvider = mdocPresentmentAuthenticateUser(selection)
+                faceMatchedCredentials = mdocPerformFaceMatching(
+                    selection = selection,
+                    source = source,
+                    onWaitingForUserInput = onWaitingForUserInput,
+                )
                 cachedSelection = selection
                 cachedKeyUnlockDataProvider = keyUnlockDataProvider
+                cachedFaceMatchedCredentials = faceMatchedCredentials
             }
 
             onSendingResponse()
@@ -234,21 +257,26 @@ suspend fun Iso18013Presentment(
             // Dynamic session transcript & session encryption update if engagementParams updated (e.g. re-tap)
             val latestParams = engagementParams.value
             if (latestParams != currentParams) {
+                if (latestParams.eDeviceKey !== currentParams.eDeviceKey) {
+                    currentParams.eDeviceKey.close()
+                }
                 val latestEDeviceKey = latestParams.eDeviceKey
                 val latestDeviceEngagement = latestParams.deviceEngagement
                 val latestHandover = latestParams.handover
                 val latestEReaderKey = latestParams.eReaderKey ?: activeEReaderKey!!.publicKey
                 val encodedCoseKeyToUse = latestParams.eReaderKey?.let { Cbor.encode(it.toCoseKey().toDataItem()) }
                     ?: activeEReaderKey!!.encodedCoseKey
+                activeEReaderKey = EReaderKey(latestEReaderKey, encodedCoseKeyToUse)
 
                 sessionTranscript = buildCborArray {
                     add(Tagged(Tagged.ENCODED_CBOR, Bstr(Cbor.encode(latestDeviceEngagement))))
                     add(Tagged(Tagged.ENCODED_CBOR, Bstr(encodedCoseKeyToUse)))
                     add(latestHandover)
                 }
+                sessionEncryption?.close()
                 sessionEncryption = SessionEncryption(
                     role = MdocRole.MDOC,
-                    eSelfKey = latestEDeviceKey,
+                    eSelfKey = latestEDeviceKey.duplicate(),
                     remotePublicKey = latestEReaderKey,
                     encodedSessionTranscript = Cbor.encode(sessionTranscript),
                     insertSequenceNumbers = insertSequenceNumbers
@@ -266,6 +294,7 @@ suspend fun Iso18013Presentment(
                     source = source,
                     requesterAppId = null,
                     requesterOrigin = null,
+                    faceMatchedCredentials = faceMatchedCredentials,
                 )
             }
             transport.sendMessage(
@@ -288,28 +317,36 @@ suspend fun Iso18013Presentment(
             Logger.i(TAG, "Response sent, keeping connection open")
         }
     } finally {
-        if (sendSessionTermination && (transport !is NfcHybridTransportMdoc || !transport.isNfcOnly || transport.isNfcConnected.value)) {
-            Logger.i(TAG, "Sending session-termination")
-            try {
-                transport.sendMessage(
-                    SessionEncryption.encodeStatus(
-                        statusCode = Constants.SESSION_DATA_STATUS_SESSION_TERMINATION,
-                        sequenceNumber = if (insertSequenceNumbers) {
-                            sessionEncryption?.nextSequenceNumber
-                        } else {
-                            null
-                        }
+        try {
+            if (sendSessionTermination &&
+                currentCoroutineContext().isActive &&
+                (transport !is NfcHybridTransportMdoc || !transport.isNfcOnly || transport.isNfcConnected.value)
+            ) {
+                Logger.i(TAG, "Sending session-termination")
+                try {
+                    transport.sendMessage(
+                        SessionEncryption.encodeStatus(
+                            statusCode = Constants.SESSION_DATA_STATUS_SESSION_TERMINATION,
+                            sequenceNumber = if (insertSequenceNumbers) {
+                                sessionEncryption?.nextSequenceNumber
+                            } else {
+                                null
+                            }
+                        )
                     )
-                )
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                Logger.w(TAG, "Caught error while sending session-termination", e)
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    Logger.w(TAG, "Caught error while sending session-termination", e)
+                }
+            }
+        } finally {
+            withContext(NonCancellable) {
+                sessionEncryption?.close()
+                engagementParams.value.eDeviceKey.close()
+                Logger.i(TAG, "Closing transport")
+                transport.close()
             }
         }
-        sessionEncryption?.close()
-        engagementParams.value.eDeviceKey.close()
-        Logger.i(TAG, "Closing transport")
-        transport.close()
     }
 }
 
@@ -331,9 +368,13 @@ suspend fun Iso18013Presentment(
  * @param onWaitingForUserInput callback when waiting for user input.
  * @param onDocumentsInFocus callback with selected documents.
  * @param onSendingResponse callback when sending response.
+ * @throws FaceNotMatchedException if face matching failed or was canceled.
+ * @throws PresentmentCanceledException if the user canceled in a consent prompt.
+ * @throws PresentmentCannotSatisfyRequestException if it's not possible to satisfy the request.
  */
 @Throws(
     CancellationException::class,
+    FaceNotMatchedException::class,
     IllegalStateException::class,
     MdocTransportClosedException::class,
     Iso18013PresentmentTimeoutException::class,

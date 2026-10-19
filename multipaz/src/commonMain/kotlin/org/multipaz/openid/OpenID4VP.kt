@@ -1,6 +1,5 @@
 package org.multipaz.openid
 
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.io.bytestring.decodeToString
 import kotlin.time.Clock
 import kotlinx.io.bytestring.encodeToByteString
@@ -43,12 +42,17 @@ import org.multipaz.mdoc.response.buildDeviceResponse
 import org.multipaz.mdoc.zkp.ZkSystem
 import org.multipaz.mdoc.zkp.ZkSystemSpec
 import org.multipaz.openid.dcql.DcqlCredentialQueryException
+import kotlinx.coroutines.withContext
 import org.multipaz.openid.dcql.DcqlQuery
 import org.multipaz.presentment.CredentialMatchSourceOpenID4VP
 import org.multipaz.presentment.CredentialPresentmentSetOptionMemberMatch
+import org.multipaz.presentment.FaceNotMatchedException
 import org.multipaz.presentment.PresentmentCanceledException
 import org.multipaz.presentment.PresentmentCannotSatisfyRequestException
 import org.multipaz.presentment.PresentmentSource
+import org.multipaz.presentment.computeDeviceNamespaces
+import org.multipaz.presentment.mdocPerformFaceMatching
+import org.multipaz.presentment.mdocPresentmentAuthenticateUser
 import org.multipaz.request.JsonRequestedClaim
 import org.multipaz.request.MdocRequestedClaim
 import org.multipaz.request.Requester
@@ -58,7 +62,6 @@ import org.multipaz.presentment.PresentmentUnlockReason
 import org.multipaz.presentment.ConsentData
 import org.multipaz.presentment.TransactionData
 import org.multipaz.presentment.TransactionProtocol
-import org.multipaz.presentment.computeTransactionResponse
 import org.multipaz.request.OpenID4VPRequesterIdentity
 import org.multipaz.request.RequesterIdentity
 import org.multipaz.util.Logger
@@ -184,7 +187,7 @@ object OpenID4VP {
             }
             if (jsonTransactionData.isNotEmpty()) {
                 put("transaction_data", JsonArray(jsonTransactionData.map {
-                    JsonPrimitive(it.toByteArray().toBase64Url())
+                    JsonPrimitive(it.encodeToByteArray().toBase64Url())
                 }))
             }
         }
@@ -325,6 +328,7 @@ object OpenID4VP {
      * @param requesterIdentities verifier identities that were used to sign the request (there
      *  may be multiple for multisigned requests, or none for unsigned requests).
      * @return the generated response according to OpenID4VP Section 8 Response.
+     * @throws FaceNotMatchedException if face matching failed or was canceled.
      * @throws PresentmentCanceledException if the user canceled in a consent prompt.
      * @throws PresentmentCannotSatisfyRequestException if it's not possible to satisfy the request.
      */
@@ -332,7 +336,8 @@ object OpenID4VP {
         CancellationException::class,
         IllegalStateException::class,
         PresentmentCanceledException::class,
-        PresentmentCannotSatisfyRequestException::class
+        PresentmentCannotSatisfyRequestException::class,
+        FaceNotMatchedException::class
     )
     @OptIn(ExperimentalEncodingApi::class)
     suspend fun generateResponse(
@@ -441,6 +446,14 @@ object OpenID4VP {
                 throw IllegalStateException("Problem processing transaction(s)", err)
             }
         } ?: emptyMap()
+        val requester = Requester(
+            requesterIdentities = requesterIdentities,
+            appId = appId,
+            origin = origin
+        )
+
+        val trustedRequesterIdentity = source.resolveTrust(requester)
+
         val dcqlResponse = try {
             dcqlQuery.execute(
                 presentmentSource = source,
@@ -450,14 +463,6 @@ object OpenID4VP {
         } catch (e: DcqlCredentialQueryException) {
             throw PresentmentCannotSatisfyRequestException("Unable to satisfy the request", e)
         }
-
-        val requester = Requester(
-            requesterIdentities = requesterIdentities,
-            appId = appId,
-            origin = origin
-        )
-
-        val trustedRequesterIdentity = source.resolveTrust(requester)
 
         // For unsigned requests, we must ignore client_id as per OpenID4VP section A.2. Request:
         //
@@ -502,40 +507,46 @@ object OpenID4VP {
             throw PresentmentCanceledException("User canceled at document selection time")
         }
 
+        val keyUnlockDataProvider = mdocPresentmentAuthenticateUser(selection)
+        val faceMatchedCredentials = mdocPerformFaceMatching(selection, source)
+
         var usingZk = false
         val credentialsPresented = mutableSetOf<Credential>()
-        selection.matches.forEach { match ->
-            match.source as CredentialMatchSourceOpenID4VP
-            val requestIsForZk = match.source.credentialQuery.format == "mso_mdoc_zk"
-            if (requestIsForZk) {
-                usingZk = true
+        withContext(keyUnlockDataProvider) {
+            selection.matches.forEach { match ->
+                match.source as CredentialMatchSourceOpenID4VP
+                val requestIsForZk = match.source.credentialQuery.format == "mso_mdoc_zk"
+                if (requestIsForZk) {
+                    usingZk = true
+                }
+                val credentialResponse = if (match.source.credentialQuery.mdocDocType != null) {
+                    openID4VPMsoMdoc(
+                        version = version,
+                        match = match,
+                        source = source,
+                        origin = origin,
+                        clientId = clientId,
+                        nonce = nonce,
+                        reReaderPublicKey = reReaderPublicKey,
+                        responseUri = responseUri,
+                        requestIsForZk = requestIsForZk,
+                        faceMatchedCredentials = faceMatchedCredentials,
+                    )
+                } else if (match.source.credentialQuery.vctValues != null) {
+                    openID4VPSdJwt(
+                        version = version,
+                        match = match,
+                        origin = origin,
+                        clientId = clientId,
+                        nonce = nonce,
+                        responseMode = responseMode
+                    )
+                } else {
+                    throw IllegalArgumentException("Expected ISO mdoc or IETF SD-JWT, got neither")
+                }
+                vpTokens[match.source.credentialQuery.id] = credentialResponse
+                credentialsPresented.add(match.credential)
             }
-            val credentialResponse = if (match.source.credentialQuery.mdocDocType != null) {
-                openID4VPMsoMdoc(
-                    version = version,
-                    match = match,
-                    source = source,
-                    origin = origin,
-                    clientId = clientId,
-                    nonce = nonce,
-                    reReaderPublicKey = reReaderPublicKey,
-                    responseUri = responseUri,
-                    requestIsForZk = requestIsForZk
-                )
-            } else if (match.source.credentialQuery.vctValues != null) {
-                openID4VPSdJwt(
-                    version = version,
-                    match = match,
-                    origin = origin,
-                    clientId = clientId,
-                    nonce = nonce,
-                    responseMode = responseMode
-                )
-            } else {
-                throw IllegalArgumentException("Expected ISO mdoc or IETF SD-JWT, got neither")
-            }
-            vpTokens[match.source.credentialQuery.id] = credentialResponse
-            credentialsPresented.add(match.credential)
         }
 
         val vpToken = when (version) {
@@ -615,6 +626,7 @@ object OpenID4VP {
         reReaderPublicKey: EcPublicKey?,
         responseUri: String?,
         requestIsForZk: Boolean,
+        faceMatchedCredentials: List<Credential> = emptyList(),
         onDocumentsInFocus: (documents: List<Document>) -> Unit = {},
     ): String {
         match.source as CredentialMatchSourceOpenID4VP
@@ -719,8 +731,8 @@ object OpenID4VP {
         val document = MdocDocument.fromPresentment(
             sessionTranscript = Cbor.decode(encodedSessionTranscript),
             credential = mdocCredential,
-            requestedClaims = match.source.credentialQuery.claims as List<MdocRequestedClaim>,
-            deviceNamespaces = computeTransactionResponse(match)
+            requestedClaims = match.claims.keys.filterIsInstance<MdocRequestedClaim>(),
+            deviceNamespaces = computeDeviceNamespaces(match, faceMatchedCredentials)
         )
         val deviceResponse = buildDeviceResponse(
             sessionTranscript = Cbor.decode(encodedSessionTranscript),

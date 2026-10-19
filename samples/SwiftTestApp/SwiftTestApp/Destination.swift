@@ -9,9 +9,11 @@ enum Destination: Hashable {
     case claimsScreen(documentId: String, credentialId: String)
     case consentPromptScreen
     case passphrasePromptScreen
+    case faceMatcherPromptScreen
     case iso18013ProximityPresentmentScreen
     case certificateViewerScreen(certificates: [X509Cert])
     case certificateExamplesScreen
     case verticalCardListScreen(focusedDocumentId: String?, animateListTransitions: Bool = false)
     case floatingItemListScreen
+    case fakeIssuerApprovalScreen(capturedImages: [FacePose: ByteString])
 }

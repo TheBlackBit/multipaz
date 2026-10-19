@@ -48,6 +48,7 @@ private fun createEUPersonalIDWithTransactionCannedRequest(
     mdocRequest = MdocCannedRequest(
         docType = eupidDocumentType.mdocDocumentType!!.docType,
         useZkp = false,
+        portraitEquivalenceRequest = null,
         namespacesToRequest = listOf(
             makeMdocNamespaceRequest(
                 mdocDocumentType = eupidDocumentType.mdocDocumentType!!,

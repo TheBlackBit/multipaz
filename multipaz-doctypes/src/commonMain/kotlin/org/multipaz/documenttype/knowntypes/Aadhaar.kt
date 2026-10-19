@@ -8,6 +8,7 @@ import org.multipaz.documenttype.Icon
 import org.multipaz.util.fromBase64Url
 import kotlinx.datetime.LocalDate
 import org.multipaz.documenttype.DocumentAttributeSensitivity
+import org.multipaz.documenttype.PortraitEquivalenceRequest
 
 /**
  * Object containing the metadata of the Aadhaar Document Type.
@@ -26,9 +27,10 @@ object Aadhaar {
     fun getDocumentType(): DocumentType {
         return DocumentType.Builder("Aadhaar")
             .addMdocDocumentType(AADHAAR_DOCTYPE)
+            .setSupportsPortraitImageEquivalence(AADHAAR_NAMESPACE, "resident_image")
             .addMdocAttribute(
                 type = DocumentAttributeType.Date,
-                identifier = "CredentialIssuingDate",
+                identifier = "credential_issuing_date",
                 displayName = "Credential issuing date",
                 description = "Date of credential issuance",
                 mandatory = false,
@@ -39,7 +41,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Date,
-                identifier = "EnrolmentDate",
+                identifier = "enrolment_date",
                 displayName = "Enrollment date",
                 description = "Date of enrollment",
                 mandatory = false,
@@ -50,7 +52,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "EnrolmentNumber",
+                identifier = "enrolment_number",
                 displayName = "Enrollment number",
                 description = "Enrollment number",
                 mandatory = false,
@@ -60,7 +62,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
-                identifier = "IsNRI",
+                identifier = "is_nri",
                 displayName = "Is NRI",
                 description = "Resident is NRI",
                 mandatory = false,
@@ -70,7 +72,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Picture,
-                identifier = "ResidentImage",
+                identifier = "resident_image",
                 displayName = "Photo",
                 description = "Photo of the resident",
                 mandatory = false,
@@ -81,7 +83,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "ResidentName",
+                identifier = "resident_name",
                 displayName = "Name",
                 description = "Resident name",
                 mandatory = false,
@@ -91,7 +93,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalResidentName",
+                identifier = "local_resident_name",
                 displayName = "Local name",
                 description = "Resident name in local language",
                 mandatory = false,
@@ -101,7 +103,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
-                identifier = "AgeAbove18",
+                identifier = "age_above18",
                 displayName = "Age above 18",
                 description = "Age above 18",
                 mandatory = false,
@@ -112,7 +114,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
-                identifier = "AgeAbove50",
+                identifier = "age_above50",
                 displayName = "Age above 50",
                 description = "Age above 50",
                 mandatory = false,
@@ -123,7 +125,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
-                identifier = "AgeAbove60",
+                identifier = "age_above60",
                 displayName = "Age above 60",
                 description = "Age above 60",
                 mandatory = false,
@@ -134,7 +136,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Boolean,
-                identifier = "AgeAbove75",
+                identifier = "age_above75",
                 displayName = "Age above 75",
                 description = "Age above 75",
                 mandatory = false,
@@ -145,7 +147,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.Date,
-                identifier = "Dob",
+                identifier = "dob",
                 displayName = "Date of birth",
                 description = "Date of birth",
                 mandatory = false,
@@ -155,7 +157,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Gender",
+                identifier = "gender",
                 displayName = "Gender",
                 description = "Gender",
                 mandatory = false,
@@ -165,7 +167,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Building",
+                identifier = "building",
                 displayName = "Building",
                 description = "Building",
                 mandatory = false,
@@ -175,7 +177,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalBuilding",
+                identifier = "local_building",
                 displayName = "Local building",
                 description = "Local building",
                 mandatory = false,
@@ -185,7 +187,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Locality",
+                identifier = "locality",
                 displayName = "Locality",
                 description = "Locality",
                 mandatory = false,
@@ -195,7 +197,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalLocality",
+                identifier = "local_locality",
                 displayName = "Local locality",
                 description = "Local locality",
                 mandatory = false,
@@ -205,7 +207,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Street",
+                identifier = "street",
                 displayName = "Street",
                 description = "Street",
                 mandatory = false,
@@ -215,7 +217,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalStreet",
+                identifier = "local_street",
                 displayName = "Local street",
                 description = "Local street",
                 mandatory = false,
@@ -225,7 +227,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Landmark",
+                identifier = "landmark",
                 displayName = "Landmark",
                 description = "Landmark",
                 mandatory = false,
@@ -235,7 +237,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalLandmark",
+                identifier = "local_landmark",
                 displayName = "Local landmark",
                 description = "Local landmark",
                 mandatory = false,
@@ -245,7 +247,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Vtc",
+                identifier = "vtc",
                 displayName = "VTC",
                 description = "Village/town/city",
                 mandatory = false,
@@ -255,7 +257,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalVtc",
+                identifier = "local_vtc",
                 displayName = "Local VTC",
                 description = "Local village/town/city",
                 mandatory = false,
@@ -265,7 +267,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "SubDistrict",
+                identifier = "sub_district",
                 displayName = "Sub-district",
                 description = "Sub-district",
                 mandatory = false,
@@ -275,7 +277,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalSubDistrict",
+                identifier = "local_sub_district",
                 displayName = "Local Sub-district",
                 description = "Local Sub-district",
                 mandatory = false,
@@ -285,7 +287,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "District",
+                identifier = "district",
                 displayName = "District",
                 description = "District",
                 mandatory = false,
@@ -295,7 +297,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalDistrict",
+                identifier = "local_district",
                 displayName = "Local district",
                 description = "Local district",
                 mandatory = false,
@@ -305,7 +307,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "State",
+                identifier = "state",
                 displayName = "State",
                 description = "State",
                 mandatory = false,
@@ -315,7 +317,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalState",
+                identifier = "local_state",
                 displayName = "Local state",
                 description = "Local state",
                 mandatory = false,
@@ -325,7 +327,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "PoName",
+                identifier = "po_name",
                 displayName = "PO name",
                 description = "Post office name",
                 mandatory = false,
@@ -335,7 +337,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalPoName",
+                identifier = "local_po_name",
                 displayName = "Local PO name",
                 description = "Local post office name",
                 mandatory = false,
@@ -345,7 +347,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "PinCode",
+                identifier = "pincode",
                 displayName = "Pincode",
                 description = "Pincode",
                 mandatory = false,
@@ -355,7 +357,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Address",
+                identifier = "address",
                 displayName = "Address",
                 description = "Address",
                 mandatory = false,
@@ -365,7 +367,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "LocalAddress",
+                identifier = "local_address",
                 displayName = "Local address",
                 description = "Local address",
                 mandatory = false,
@@ -375,7 +377,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Mobile",
+                identifier = "mobile",
                 displayName = "Mobile",
                 description = "Mobile",
                 mandatory = false,
@@ -385,7 +387,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "MaskedMobile",
+                identifier = "masked_mobile",
                 displayName = "Masked mobile",
                 description = "Masked mobile",
                 mandatory = false,
@@ -395,7 +397,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "Email",
+                identifier = "email",
                 displayName = "Email",
                 description = "Email",
                 mandatory = false,
@@ -405,7 +407,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "MaskedEmail",
+                identifier = "masked_email",
                 displayName = "Masked email",
                 description = "Masked email",
                 mandatory = false,
@@ -415,7 +417,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "MaskedUID",
+                identifier = "masked_uid",
                 displayName = "Masked UID",
                 description = "Masked UID",
                 mandatory = false,
@@ -425,7 +427,7 @@ object Aadhaar {
             )
             .addMdocAttribute(
                 type = DocumentAttributeType.String,
-                identifier = "AadhaarType",
+                identifier = "aadhaar_type",
                 displayName = "Type",
                 description = "Type",
                 mandatory = false,
@@ -449,7 +451,7 @@ object Aadhaar {
                 displayName = "Age over 18",
                 mdocDataElements = mapOf(
                     AADHAAR_NAMESPACE to mapOf(
-                        "AgeAbove18" to false,
+                        "age_above18" to false,
                     )
                 )
             )
@@ -458,7 +460,7 @@ object Aadhaar {
                 displayName ="Age over 18 (ZKP)",
                 mdocDataElements = mapOf(
                     AADHAAR_NAMESPACE to mapOf(
-                        "AgeAbove18" to false,
+                        "age_above18" to false,
                     )
                 ),
                 mdocUseZkp = true
@@ -468,9 +470,31 @@ object Aadhaar {
                 displayName = "Age over 18 + portrait",
                 mdocDataElements = mapOf(
                     AADHAAR_NAMESPACE to mapOf(
-                        "AgeAbove18" to false,
-                        "ResidentImage" to false,
+                        "age_above18" to false,
+                        "resident_image" to false,
                     )
+                )
+            )
+            .addSampleRequest(
+                id = "age_over_18_and_portrait_equivalence",
+                displayName = "Age over 18 + portrait equivalence",
+                mdocDataElements = mapOf(
+                    AADHAAR_NAMESPACE to mapOf(
+                        "age_above18" to false,
+                    ),
+                ),
+                portraitEquivalenceRequest = PortraitEquivalenceRequest()
+            )
+            .addSampleRequest(
+                id = "age_over_18_and_portrait_or_portrait_equivalence",
+                displayName = "Age over 18 + (portrait OR portrait equivalence)",
+                mdocDataElements = mapOf(
+                    AADHAAR_NAMESPACE to mapOf(
+                        "age_above18" to false,
+                    ),
+                ),
+                portraitEquivalenceRequest = PortraitEquivalenceRequest(
+                    includePortrait = true
                 )
             )
             .addSampleRequest(

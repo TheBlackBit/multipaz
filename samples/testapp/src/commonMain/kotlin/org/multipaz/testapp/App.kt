@@ -103,6 +103,10 @@ import org.multipaz.nfc.ExternalNfcReaderStore
 import org.multipaz.presentment.PresentmentSource
 import org.multipaz.presentment.SimplePresentmentSource
 import org.multipaz.presentment.uriSchemePresentment
+import org.multipaz.facenet.FaceNetFaceMatcher
+import org.multipaz.facenet.FaceNetModelConfig
+import org.multipaz.facematch.FaceMatcherRepository
+import org.multipaz.facematch.FacePose
 import org.multipaz.prompt.PromptModel
 import org.multipaz.prompt.promptModelRequestConsent
 import org.multipaz.prompt.promptModelSilentConsent
@@ -125,6 +129,10 @@ import org.multipaz.testapp.ui.AndroidKeystoreSecureAreaScreen
 import org.multipaz.testapp.ui.CertificateScreen
 import org.multipaz.testapp.ui.CertificateViewerExamplesScreen
 import org.multipaz.testapp.ui.ConsentPromptScreen
+import org.multipaz.testapp.ui.FaceMatcherPromptScreen
+import org.multipaz.testapp.ui.FakeIssuerApprovalScreen
+import org.multipaz.testapp.ui.saveFaceMatcherReferencePortrait
+import org.multipaz.facenet.testdata.FaceTestData
 import org.multipaz.testapp.ui.CredentialClaimsViewerScreen
 import org.multipaz.testapp.ui.CredentialViewerScreen
 import org.multipaz.testapp.ui.DcRequestScreen
@@ -201,6 +209,7 @@ class App private constructor (val promptModel: PromptModel) {
     lateinit var documentTypeRepository: DocumentTypeRepository
 
     lateinit var secureAreaRepository: SecureAreaRepository
+    lateinit var faceMatcherRepository: FaceMatcherRepository
     lateinit var softwareSecureArea: SoftwareSecureArea
     lateinit var documentStore: DocumentStore
     lateinit var documentModel: DocumentModel
@@ -247,6 +256,16 @@ class App private constructor (val promptModel: PromptModel) {
             documentTypeRepository = documentTypeRepository,
             zkSystemRepository = zkSystemRepository,
             eventLogger = eventLogger,
+            getFaceMatcherFn = {
+                val selected = settingsModel.presentmentFaceMatcher.value
+                if (selected == "None") {
+                    null
+                } else {
+                    faceMatcherRepository.all.find { it.displayName == selected }
+                        ?: faceMatcherRepository.lookup(selected)
+                        ?: faceMatcherRepository.defaultMatcher
+                }
+            },
             resolveTrustFn = ::resolveTrust,
             showConsentPromptFn = if (settingsModel.presentmentShowConsentPrompt.value) {
                 ::promptModelRequestConsent
@@ -335,6 +354,7 @@ class App private constructor (val promptModel: PromptModel) {
                 Pair(::trustManagersInit, "trustManagersInit"),
                 Pair(::provisioningModelInit, "provisioningModelInit"),
                 Pair(::zkSystemRepositoryInit, "zkSystemRepositoryInit"),
+                Pair(::faceMatcherRepositoryInit, "faceMatcherRepositoryInit"),
                 Pair(::observeModeInit, "observeModeInit"),
                 Pair(::digitalCredentialsInit, "digitalCredentialsInit"),
             )
@@ -477,6 +497,24 @@ class App private constructor (val promptModel: PromptModel) {
         longfellowSystem.addDefaultCircuits()
         zkSystemRepository = ZkSystemRepository().apply {
             add(longfellowSystem)
+        }
+    }
+
+    private suspend fun faceMatcherRepositoryInit() {
+        faceMatcherRepository = FaceMatcherRepository().apply {
+            add(
+                FaceNetFaceMatcher(
+                    modelBytes = FaceTestData.testModel,
+                    config = FaceNetModelConfig.MOBILE_FACENET
+                )
+            )
+            add(
+                FaceNetFaceMatcher(
+                    modelBytes = FaceTestData.testModel,
+                    config = FaceNetModelConfig.MOBILE_FACENET,
+                    debug = true
+                )
+            )
         }
     }
 
@@ -1107,6 +1145,7 @@ class App private constructor (val promptModel: PromptModel) {
                 clientPreferences = CompletableDeferred(provisioningSupport.getOpenID4VCIClientPreferences()),
                 backend = CompletableDeferred(provisioningSupport.getOpenID4VCIBackend())
             )
+            val capturedPortraitsForApproval = remember { mutableStateOf<Map<FacePose, ByteString>>(emptyMap()) }
             NavHost(
                 navController = navController,
                 startDestination = StartDestination,
@@ -1169,6 +1208,11 @@ class App private constructor (val promptModel: PromptModel) {
                             onClickConsentSheetList = {
                                 navController.navigate(
                                     ConsentPromptDestination
+                                )
+                            },
+                            onClickFaceMatcherPrompt = {
+                                navController.navigate(
+                                    FaceMatcherPromptDestination
                                 )
                             },
                             onClickQrCodes = { navController.navigate(QrCodesDestination) },
@@ -1533,8 +1577,49 @@ class App private constructor (val promptModel: PromptModel) {
                     WithAppBar(navController, "Consent Prompt use-cases") {
                         ConsentPromptScreen(
                             secureAreaRepository = secureAreaRepository,
+                            faceMatcherRepository = faceMatcherRepository,
                             promptModel = promptModel,
                             showToast = { message -> showToast(message) },
+                        )
+                    }
+                }
+                composable<FaceMatcherPromptDestination> { backStackEntry ->
+                    WithAppBar(navController, "Face Matcher Prompt use-cases") {
+                        FaceMatcherPromptScreen(
+                            promptModel = promptModel,
+                            faceMatcherRepository = faceMatcherRepository,
+                            showToast = { message -> showToast(message) },
+                            storage = TestAppConfiguration.storage,
+                            onPortraitsCaptured = { portraits ->
+                                capturedPortraitsForApproval.value = portraits
+                                navController.navigate(FakeIssuerApprovalDestination)
+                            }
+                        )
+                    }
+                }
+                composable<FakeIssuerApprovalDestination> { backStackEntry ->
+                    WithAppBar(navController, "Approve Portrait for Issuer") {
+                        FakeIssuerApprovalScreen(
+                            capturedImages = capturedPortraitsForApproval.value,
+                            onExit = {
+                                capturedPortraitsForApproval.value = emptyMap()
+                                navController.popBackStack<FaceMatcherPromptDestination>(inclusive = false)
+                            },
+                            onExitAndSetFrontAsReference = { frontPortrait ->
+                                coroutineScope.launch {
+                                    try {
+                                        saveFaceMatcherReferencePortrait(
+                                            storage = TestAppConfiguration.storage,
+                                            bytes = frontPortrait
+                                        )
+                                        showToast("Reference portrait updated from FRONT capture")
+                                    } catch (e: Throwable) {
+                                        showToast("Failed to save reference portrait: ${e.message}")
+                                    }
+                                    capturedPortraitsForApproval.value = emptyMap()
+                                    navController.popBackStack<FaceMatcherPromptDestination>(inclusive = false)
+                                }
+                            }
                         )
                     }
                 }
@@ -1560,6 +1645,7 @@ class App private constructor (val promptModel: PromptModel) {
                             presentmentSource = getPresentmentSource(),
                             settingsModel = settingsModel,
                             promptModel = promptModel,
+                            faceMatcherRepository = faceMatcherRepository,
                             showToast = { message -> showToast(message) },
                         )
                     }
