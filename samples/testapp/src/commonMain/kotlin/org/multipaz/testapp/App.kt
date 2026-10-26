@@ -267,7 +267,15 @@ class App private constructor (val promptModel: PromptModel) {
             },
             resolveTrustFn = ::resolveTrust,
             showConsentPromptFn = if (settingsModel.presentmentShowConsentPrompt.value) {
-                ::promptModelRequestConsent
+                { requester, trustedRequesterIdentity, consentData, preselectedDocuments, onDocumentsInFocus ->
+                    promptModelRequestConsent(
+                        requester = requester,
+                        trustedRequesterIdentity = trustedRequesterIdentity,
+                        consentData = consentData,
+                        preselectedDocuments = preselectedDocuments,
+                        onDocumentsInFocus = onDocumentsInFocus,
+                    )
+                }
             } else {
                 ::promptModelSilentConsent
             },
