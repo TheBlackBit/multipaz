@@ -75,6 +75,8 @@ import org.multipaz.presentment.ConsentData
 import org.multipaz.facematch.FaceMatcher
 import org.multipaz.facematch.FaceMatcherRepository
 import org.multipaz.prompt.PromptModel
+import org.multipaz.prompt.TransactionDataRendererRepository
+import org.multipaz.prompt.promptModelRequestConsent
 import org.multipaz.prompt.requestConsent
 import org.multipaz.request.Iso18013RequesterIdentity
 import org.multipaz.request.Requester
@@ -146,6 +148,8 @@ private enum class Example(
     PHOTO_ID_MANDATORY("PhotoID: Mandatory data elements (2 docs)"),
     PAYMENT("DPC: Payment Confirmation"),
     PAYMENT_ONLY_CONF("DPC: Payment Confirmation (only confirmation)"),
+    TRANSIT_FARE("DPC: Transit ticket (consent example)"),
+    PRESCRIPTION_PICKUP("mDL: Prescription pickup (consent example)"),
     OPENID4VP_COMPLEX_EXAMPLE("Complex example from OpenID4VP Appendix D"),
     MDL_AND_BOARDING_PASS_EXAMPLE("mDL AND Boarding pass"),
     MDL_AND_OPTIONAL_BOARDING_PASS_EXAMPLE("mDL AND optional Boarding pass"),
@@ -209,6 +213,7 @@ fun ConsentPromptScreen(
     promptModel: PromptModel,
     showToast: (message: String) -> Unit,
     faceMatcherRepository: FaceMatcherRepository? = null,
+    transactionDataRendererRepository: TransactionDataRendererRepository? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     var example by remember { mutableStateOf(Example.MDL_US_TRANSPORTATION) }
@@ -318,7 +323,8 @@ fun ConsentPromptScreen(
             validFrom = credsValidFrom,
             validUntil = credsValidUntil,
             expectedUpdate = null,
-            domain = "mdoc"
+            domain = "mdoc",
+            deviceKeyAuthorizedNamespaces = listOf(PrescriptionPickupTransaction.openId4VpMdocResponseNamespace)
         )
         documentMdl = createdDocumentMdl
         val createdDocumentPhotoId = documentStore!!.createDocument(
@@ -390,6 +396,7 @@ fun ConsentPromptScreen(
             deviceKeyAuthorizedNamespaces = listOf(
                 PaymentTransaction.openId4VpMdocResponseNamespace,
                 PingTransaction.openId4VpMdocResponseNamespace,
+                TransitFareTransaction.openId4VpMdocResponseNamespace,
             ),
             deviceKeyAuthorizedDataElements = mapOf(
                 ISO_18013_TRANSACTION_DATA_NAMESPACE to listOf(
@@ -483,7 +490,8 @@ fun ConsentPromptScreen(
                         identityReaderIcon = identityReaderIcon,
                         documentStore = documentStore,
                         documentTypeRepository = documentTypeRepository,
-                        faceMatcherRepository = faceMatcherRepository
+                        faceMatcherRepository = faceMatcherRepository,
+                        transactionDataRendererRepository = transactionDataRendererRepository
                     )
                     val trustedRequesterIdentity =
                         queryResult.source.resolveTrust(queryResult.requester)
@@ -520,6 +528,7 @@ fun ConsentPromptScreen(
                                 consentData = consentData,
                                 preselectedDocuments = preselectedDocuments,
                                 onDocumentsInFocus = onDocumentsInFocus,
+                                transactionDataRendererRepository = transactionDataRendererRepository,
                             )
                         },
                         paData = AndroidPresentmentActivityData()
@@ -718,7 +727,8 @@ private suspend fun getQueryResult(
     identityReaderIcon: ByteString,
     documentStore: DocumentStore?,
     documentTypeRepository: DocumentTypeRepository,
-    faceMatcherRepository: FaceMatcherRepository? = null
+    faceMatcherRepository: FaceMatcherRepository? = null,
+    transactionDataRendererRepository: TransactionDataRendererRepository? = null
 ): QueryResult {
     val dcql = when (example) {
         Example.MDL_AGE_OVER_21_AND_PORTRAIT ->
@@ -739,6 +749,26 @@ private suspend fun getQueryResult(
             DigitalPaymentCredential.getDocumentType().cannedRequests.find { it.id == "payment_transaction" }!!.mdocRequest!!.toDcql(emptyList())
         Example.PAYMENT_ONLY_CONF ->
             DigitalPaymentCredential.getDocumentType().cannedRequests.find { it.id == "payment_transaction_only_conf" }!!.mdocRequest!!.toDcql(emptyList())
+        Example.TRANSIT_FARE ->
+            DigitalPaymentCredential.getDocumentType().cannedRequests.find { it.id == "payment_transaction_only_conf" }!!.mdocRequest!!.toDcql(emptyList())
+        Example.PRESCRIPTION_PICKUP -> Json.parseToJsonElement(
+            """
+            {
+              "credentials": [
+                {
+                  "id": "cred1",
+                  "format": "mso_mdoc",
+                  "meta": { "doctype_value": "${DrivingLicense.MDL_DOCTYPE}" },
+                  "claims": [
+                    { "path": ["${DrivingLicense.MDL_NAMESPACE}", "given_name"] },
+                    { "path": ["${DrivingLicense.MDL_NAMESPACE}", "family_name"] },
+                    { "path": ["${DrivingLicense.MDL_NAMESPACE}", "birth_date"] }
+                  ]
+                }
+              ]
+            }
+            """.trimIndent()
+        ).jsonObject
         Example.OPENID4VP_COMPLEX_EXAMPLE -> Json.parseToJsonElement(
             """
             {
@@ -1044,6 +1074,16 @@ private suspend fun getQueryResult(
                 TrustedRequesterIdentity(requester.requesterIdentities.first(), it)
             }
         },
+        showConsentPromptFn = { requester, trustedRequesterIdentity, consentData, preselectedDocuments, onDocumentsInFocus ->
+            promptModelRequestConsent(
+                requester = requester,
+                trustedRequesterIdentity = trustedRequesterIdentity,
+                consentData = consentData,
+                preselectedDocuments = preselectedDocuments,
+                onDocumentsInFocus = onDocumentsInFocus,
+                transactionDataRendererRepository = transactionDataRendererRepository,
+            )
+        },
         domainsMdocSignature = listOf("mdoc"),
         domainsKeyBoundSdJwt = listOf("sdjwt")
     )
@@ -1057,6 +1097,12 @@ private suspend fun getQueryResult(
             Example.PAYMENT_ONLY_CONF -> DigitalPaymentCredential.getDocumentType()
                 .cannedRequests.find { it.id == "payment_transaction_only_conf" }!!
                 .toTransactionDataMap("cred1")
+            Example.TRANSIT_FARE -> mapOf(
+                "cred1" to listOf(exampleTransactionData(TransitFareTransaction, TransitFareTransaction.sampleData))
+            )
+            Example.PRESCRIPTION_PICKUP -> mapOf(
+                "cred1" to listOf(exampleTransactionData(PrescriptionPickupTransaction, PrescriptionPickupTransaction.sampleData))
+            )
 
             else -> emptyMap()
         }
@@ -1081,6 +1127,8 @@ private suspend fun getQueryResult(
         Example.PHOTO_ID_MANDATORY,
         Example.PAYMENT,
         Example.PAYMENT_ONLY_CONF,
+        Example.TRANSIT_FARE,
+        Example.PRESCRIPTION_PICKUP,
         Example.OPENID4VP_COMPLEX_EXAMPLE,
         Example.MDL_AND_BOARDING_PASS_EXAMPLE,
         Example.MDL_AND_OPTIONAL_BOARDING_PASS_EXAMPLE,

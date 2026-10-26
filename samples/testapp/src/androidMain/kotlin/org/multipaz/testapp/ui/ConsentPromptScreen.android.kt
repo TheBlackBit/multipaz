@@ -17,7 +17,6 @@ import org.multipaz.presentment.PresentmentCanceledException
 import org.multipaz.presentment.PresentmentSource
 import org.multipaz.presentment.ConsentData
 import org.multipaz.prompt.AndroidPromptModel
-import org.multipaz.prompt.promptModelRequestConsent
 import org.multipaz.prompt.showBiometricPrompt
 import org.multipaz.prompt.showFaceMatcherPrompt
 import org.multipaz.prompt.Reason
@@ -48,7 +47,9 @@ actual suspend fun launchAndroidPresentmentActivity(
             PresentmentActivity.presentmentModel.setWaitingForUserInput()
 
             if (paData.showConsent) {
-                val selection = promptModelRequestConsent(
+                // Ask through the source, as presentment does, so its consent prompt function and
+                // the app's transaction data renderers are used.
+                val selection = source.showConsentPrompt(
                     requester = requester,
                     trustedRequesterIdentity = trustedRequesterIdentity,
                     consentData = consentData,
